@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find '/c/Users/anasi/OneDrive/Desktop/Edu Rate' -type f -not -path */.git/*)",
+      "Bash(start http://localhost:8000)",
+      "Bash(python -m http.server 8000)"
+    ]
+  }
+}

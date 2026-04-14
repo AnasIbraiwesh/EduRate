@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Professors — EduRate</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to content</a>
+<div id="navbar-placeholder"></div>
+
+<main id="main-content">
+
+  <!-- ── Page Header ──────────────────────────────────────── -->
+  <div style="background:var(--primary);padding:36px 0 28px">
+    <div class="container">
+      <div class="er-breadcrumb">
+        <a href="index.html">Home</a>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        Professors
+      </div>
+      <h1 class="heading-1" style="color:var(--white);margin-bottom:6px">All Professors</h1>
+      <p style="color:rgba(255,255,255,0.65);font-size:14px;margin:0">Search and discover professors across Jordanian universities</p>
+    </div>
+  </div>
+
+  <!-- ── Filters Bar ──────────────────────────────────────── -->
+  <div style="background:var(--white);border-bottom:1px solid var(--gray-200);padding:16px 0;position:sticky;top:64px;z-index:100">
+    <div class="container">
+      <div class="row g-3 align-items-center">
+        <div class="col-12 col-md-4">
+          <div class="er-input-wrapper">
+            <span class="input-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </span>
+            <input type="text" id="searchInput" class="er-input" placeholder="Search professors..."
+                   aria-label="Search professors" autocomplete="off">
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <select id="deptFilter" class="er-select" aria-label="Filter by department">
+            <option value="">All Departments</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Business Administration">Business Admin</option>
+            <option value="Electrical Engineering">Electrical Eng.</option>
+            <option value="Medicine">Medicine</option>
+            <option value="Mathematics">Mathematics</option>
+            <option value="Architecture">Architecture</option>
+            <option value="Physics">Physics</option>
+            <option value="Information Technology">Information Tech.</option>
+          </select>
+        </div>
+        <div class="col-6 col-md-3">
+          <select id="uniFilter" class="er-select" aria-label="Filter by university">
+            <option value="">All Universities</option>
+            <option value="University of Jordan">Univ. of Jordan</option>
+            <option value="JUST">JUST</option>
+            <option value="Yarmouk University">Yarmouk Univ.</option>
+            <option value="GJU">GJU</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-2">
+          <select id="sortSelect" class="er-select" aria-label="Sort results">
+            <option value="rating-desc">Highest Rated</option>
+            <option value="wta-desc">Would Take Again</option>
+            <option value="reviews-desc">Most Reviews</option>
+            <option value="name-asc">Name A–Z</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Results ──────────────────────────────────────────── -->
+  <section class="content-section">
+    <div class="container">
+      <div class="sort-bar">
+        <span class="results-count" id="resultsCount">Showing 8 professors</span>
+      </div>
+      <div class="row g-4" id="profGrid" role="list" aria-live="polite" aria-label="Professor results"></div>
+      <div id="emptyState" class="empty-state d-none">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <h4>No professors found</h4>
+        <p>Try adjusting your search or filters</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+<script src="js/professors.js"></script>
+</body>
+</html>

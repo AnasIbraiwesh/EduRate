@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Professor Profile — EduRate</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to content</a>
+<div id="navbar-placeholder"></div>
+
+<main id="main-content">
+
+  <!-- ── Profile Header ───────────────────────────────────── -->
+  <div class="profile-header">
+    <div class="container">
+      <div class="er-breadcrumb">
+        <a href="index.html">Home</a>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        <a href="professors.html">Professors</a>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        <span id="breadcrumbName">Profile</span>
+      </div>
+      <div class="profile-header-content">
+        <div>
+          <h1 class="profile-title" id="profName">Loading...</h1>
+          <div class="profile-meta" id="profMeta"></div>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+          <a href="#" id="compareBtn" class="btn-er-secondary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+            Compare
+          </a>
+          <button class="btn-er-primary" data-bs-toggle="modal" data-bs-target="#reviewModal">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Write a Review
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Main Content ─────────────────────────────────────── -->
+  <section class="content-section">
+    <div class="container">
+      <div class="row g-4">
+
+        <!-- ── Left Sidebar ──────────────────────────────── -->
+        <div class="col-lg-3">
+
+          <!-- Avatar & Info Card -->
+          <div class="score-card mb-4">
+            <div class="prof-avatar mx-auto mb-3" id="profAvatar" style="width:72px;height:72px;font-size:26px"></div>
+            <div style="font-family:var(--font-heading);font-weight:700;font-size:18px;color:var(--primary);margin-bottom:4px" id="profNameCard"></div>
+            <div style="font-size:12px;color:var(--gray-400);margin-bottom:4px" id="profTitle"></div>
+            <div style="font-size:12px;color:var(--gray-400);margin-bottom:16px" id="profUni"></div>
+
+            <div class="score-big" id="overallScore">—</div>
+            <div class="stars-row" id="overallStars"></div>
+            <p class="review-count" id="reviewCount" style="margin-bottom:16px"></p>
+
+            <div style="background:rgba(16,185,129,0.08);border-radius:var(--radius-md);padding:14px;margin-bottom:16px">
+              <div style="font-size:12px;color:var(--gray-400);margin-bottom:2px">Would Take Again</div>
+              <div style="font-family:var(--font-heading);font-weight:700;font-size:24px;color:var(--success)" id="wtaPercent">—</div>
+            </div>
+
+            <a id="compareBtn2" href="#" class="btn-er-secondary w-100" style="height:38px;font-size:13px;text-align:center">Compare</a>
+          </div>
+
+          <!-- Courses -->
+          <div class="review-card" id="coursesCard"></div>
+
+        </div>
+
+        <!-- ── Right Main Column ─────────────────────────── -->
+        <div class="col-lg-9">
+
+          <!-- Rating Breakdown -->
+          <div class="review-card mb-4">
+            <h2 class="heading-2 mb-4">Rating Breakdown</h2>
+            <div class="row g-0">
+              <div class="col-md-7" id="categoryBars"></div>
+              <div class="col-md-5">
+                <div style="position:relative;height:200px">
+                  <canvas id="sentimentChart" aria-label="Sentiment chart"></canvas>
+                </div>
+                <div id="sentimentLegend" class="sentiment-legend mt-2"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Grade Distribution -->
+          <div class="review-card mb-4">
+            <h2 class="heading-2 mb-3">Grade Distribution</h2>
+            <div style="position:relative;height:160px">
+              <canvas id="gradeChart" aria-label="Grade distribution chart"></canvas>
+            </div>
+          </div>
+
+          <!-- Reviews -->
+          <div>
+            <div class="sort-bar">
+              <h2 class="heading-2 m-0">Student Reviews</h2>
+              <div class="d-flex align-items-center gap-2 flex-wrap">
+                <!-- Course filter pills -->
+                <div id="coursePills" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+                <select id="reviewSort" class="er-select" style="width:160px" aria-label="Sort reviews">
+                  <option value="recent">Most Recent</option>
+                  <option value="highest">Highest Rated</option>
+                  <option value="lowest">Lowest Rated</option>
+                  <option value="helpful">Most Helpful</option>
+                </select>
+              </div>
+            </div>
+            <div id="reviewsList" aria-live="polite" aria-label="Student reviews"></div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── Review Modal ──────────────────────────────────────── -->
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-modal="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content" style="border-radius:var(--radius-lg);border:none">
+      <div class="er-modal-header">
+        <h3 class="er-modal-title" id="reviewModalLabel">Write a Review</h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+
+        <div class="er-form-group">
+          <label for="courseSelect" class="er-label">Course <span style="color:var(--danger)">*</span></label>
+          <select id="courseSelect" class="er-select" aria-label="Select course"></select>
+        </div>
+
+        <div class="er-form-group">
+          <label class="er-label">Overall Rating</label>
+          <div class="star-input" id="starInput" role="radiogroup" aria-label="Overall rating">
+            <input type="radio" id="s5" name="rating" value="5"><label for="s5" title="5 stars">★</label>
+            <input type="radio" id="s4" name="rating" value="4"><label for="s4" title="4 stars">★</label>
+            <input type="radio" id="s3" name="rating" value="3"><label for="s3" title="3 stars">★</label>
+            <input type="radio" id="s2" name="rating" value="2"><label for="s2" title="2 stars">★</label>
+            <input type="radio" id="s1" name="rating" value="1"><label for="s1" title="1 star">★</label>
+          </div>
+        </div>
+
+        <div class="er-form-group">
+          <label class="er-label">Would you take this professor again?</label>
+          <div style="display:flex;gap:10px">
+            <button type="button" class="role-btn active" id="wtaYes" onclick="setWTA('yes')" style="max-width:100px">👍 Yes</button>
+            <button type="button" class="role-btn"        id="wtaNo"  onclick="setWTA('no')"  style="max-width:100px">👎 No</button>
+          </div>
+        </div>
+
+        <div class="row g-3 mb-3" id="profCategorySliders"></div>
+
+        <div class="er-form-group">
+          <label for="reviewComment" class="er-label">Your Review <span style="color:var(--gray-400)">(min. 20 characters)</span></label>
+          <textarea id="reviewComment" class="er-textarea" rows="4" placeholder="Describe your experience with this professor..."></textarea>
+          <span class="er-error-text" id="commentError" role="alert">Please write at least 20 characters.</span>
+          <div style="text-align:right;font-size:11px;color:var(--gray-400);margin-top:4px"><span id="charCount">0</span> characters</div>
+        </div>
+
+        <div class="er-form-group">
+          <label for="gradeReceived" class="er-label">Grade Received (optional)</label>
+          <select id="gradeReceived" class="er-select" style="max-width:160px">
+            <option value="">Select grade</option>
+            <option>A+</option><option>A</option><option>A-</option>
+            <option>B+</option><option>B</option><option>B-</option>
+            <option>C+</option><option>C</option><option>C-</option>
+            <option>D</option><option>F</option>
+          </select>
+        </div>
+
+      </div>
+      <div class="modal-footer" style="border-top:1px solid var(--gray-200);padding:16px 24px">
+        <button type="button" class="btn-er-ghost" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn-er-primary" onclick="submitProfReview()">Submit Review</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+<script src="js/professor-profile.js"></script>
+</body>
+</html>
