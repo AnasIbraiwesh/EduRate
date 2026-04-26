@@ -2,7 +2,13 @@
   "permissions": {
     "allow": [
       "Bash(python -m http.server 3000)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(netstat -ano)",
+      "Bash(awk '{print $5}')",
+      "Bash(python -m http.server 8080)",
+      "Bash(git checkout *)",
+      "Bash(git stash *)",
+      "Bash(python -m http.server 8082)"
     ]
   }
 }

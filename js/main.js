@@ -10,7 +10,8 @@ function buildNavbar(activePage) {
     { id: 'home',        href: 'index.html',               label: 'Home' },
     { id: 'universities',href: 'universities.html',         label: 'Universities' },
     { id: 'professors',  href: 'professors.html',           label: 'Professors' },
-    { id: 'compare',     href: 'compare.html',              label: 'Compare' }
+    { id: 'compare',        href: 'compare.html',          label: 'Compare' },
+    { id: 'recommendations',href: 'recommendations.html',  label: 'Recommendations' }
   ];
 
   const navLinks = pages.map(p =>
@@ -379,7 +380,7 @@ function uniCardHTML(uni) {
     <div class="col-lg-4 col-md-6">
       <div class="uni-card card-hover h-100">
         <div class="uni-card-header">
-          <div style="font-size:32px;margin-bottom:8px" aria-hidden="true">🏛</div>
+          ${uni.image ? `<img src="${uni.image}" style="width:100%;height:200px;object-fit:cover;display:block;margin-bottom:8px">` : `<div style="font-size:32px;margin-bottom:8px">🏛</div>`}
           <div class="uni-card-name">${uni.name}</div>
           <div class="uni-card-location"><i class="bi bi-geo-alt" aria-hidden="true"></i>${uni.city}, ${uni.country}</div>
         </div>

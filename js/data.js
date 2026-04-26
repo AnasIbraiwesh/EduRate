@@ -8,6 +8,7 @@ const UNIVERSITIES = [
   {
     id: 1,
     name: "University of Jordan",
+    image: "images/universities/TUOJ.jpg",
     shortName: "UJ",
     city: "Amman",
     country: "Jordan",
@@ -33,6 +34,7 @@ const UNIVERSITIES = [
   {
     id: 2,
     name: "Jordan University of Science and Technology",
+    image: "images/universities/Techno.jpeg",
     shortName: "JUST",
     city: "Irbid",
     country: "Jordan",
@@ -57,6 +59,7 @@ const UNIVERSITIES = [
   },
   {
     id: 3,
+    image: "images/universities/PSUOT.jpeg",
     name: "Princess Sumaya University for Technology",
     shortName: "PSUT",
     city: "Amman",
@@ -82,6 +85,7 @@ const UNIVERSITIES = [
   },
   {
     id: 4,
+    image: "images/universities/GJU.jpeg",
     name: "German Jordanian University",
     shortName: "GJU",
     city: "Madaba",
@@ -107,27 +111,28 @@ const UNIVERSITIES = [
   },
   {
     id: 5,
-    name: "Yarmouk University",
-    shortName: "YU",
-    city: "Irbid",
+    name: "Al-Hussein Technical University",
+    image: "images/universities/HTU.jpg",
+    shortName: "HTU",
+    city: "Amman",
     country: "Jordan",
-    website: "http://www.yu.edu.jo",
-    founded: 1976,
-    description: "Yarmouk University is a public Jordanian university known for its arts, humanities, and science programs.",
+    website: "http://www.htu.edu.jo",
+    founded: 2016,
+    description: "Al-Hussein Technical University is a Jordanian public university focused on technical and vocational education to meet labor market needs.",
     totalReviews: 93,
     ratings: {
-      location: 3.7,
-      reputation: 3.8,
-      opportunities: 3.4,
-      happiness: 3.9,
-      internetQuality: 2.9,
-      facilities: 3.6,
-      clubsActivities: 4.0,
-      socialLife: 4.2,
-      foodCafeteria: 3.5,
-      safety: 4.1
+      location: 4.8,
+      reputation: 4.9,
+      opportunities: 4.9,
+      happiness: 4.8,
+      internetQuality: 4.7,
+      facilities: 4.9,
+      clubsActivities: 4.8,
+      socialLife: 4.7,
+      foodCafeteria: 4.6,
+      safety: 4.9
     },
-    overallRating: 3.71,
+    overallRating: 4.80,
     professors: [2, 5]
   },
   {
