@@ -210,7 +210,7 @@ a:hover { color: var(--secondary-dark); text-decoration: underline; }
   font-size: 14px; font-weight: 500;
   transition: all var(--transition);
 }
-.btn-nav-solid:hover { background: var(--secondary-dark); }
+.btn-nav-solid:hover { background: var(--secondary-dark); border-color: var(--secondary-dark); color: #fff; }
 
 /* User avatar menu */
 .user-avatar-btn {
@@ -1107,6 +1107,30 @@ input[type="range"] {
   color: var(--text-primary);
 }
 
+/* ── 22. RTL (Arabic) Overrides ──────────────────────────── */
+[dir="rtl"] body { font-family: 'Cairo', 'Inter', sans-serif; }
+
+/* Flip dashboard border accent */
+[dir="rtl"] .dashboard-nav .nav-link { border-left: none; border-right: 3px solid transparent; }
+[dir="rtl"] .dashboard-nav .nav-link.active { border-left-color: transparent; border-right-color: var(--primary); }
+
+/* Password toggle stays visually on the correct side */
+[dir="rtl"] .password-wrap .form-control { padding-right: 12px; padding-left: 44px; }
+[dir="rtl"] .password-toggle { right: auto; left: 12px; }
+
+/* Star input: undo the row-reverse used for LTR star trick */
+[dir="rtl"] .star-input { flex-direction: row; }
+
+/* Input group border radius flip */
+[dir="rtl"] .input-group .btn { border-radius: var(--radius-md) 0 0 var(--radius-md); }
+[dir="rtl"] .input-group .form-control:first-child { border-radius: 0 var(--radius-md) var(--radius-md) 0; }
+
+/* Compare cell label border */
+[dir="rtl"] .compare-cell-label { border-right: none; border-left: 1px solid var(--border); }
+
+/* Lang switcher button spacing */
+.lang-toggle-btn { font-size: 13px; font-weight: 600; padding: 4px 10px; }
+
 /* ── 23. FAQ Page ─────────────────────────────────────────── */
 .faq-search-wrap {
   max-width: 560px; margin: 0 auto 40px;
@@ -1143,7 +1167,7 @@ input[type="range"] {
   color: var(--secondary);
   margin-bottom: 12px;
   padding-bottom: 8px;
-  border-bottom: 2px solid #ebf5fb;
+  border-bottom: 2px solid var(--primary);
 }
 .accordion-item {
   border: 1px solid var(--border) !important;

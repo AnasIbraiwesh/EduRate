@@ -5,13 +5,16 @@
 
 // ── 1. Navbar ─────────────────────────────────────────────────
 function buildNavbar(activePage) {
+  window._activePage = activePage;
   const user = AUTH.get();
+  const tFn = (typeof t === 'function') ? t : (k) => k;
   const pages = [
-    { id: 'home',        href: 'index.html',               label: 'Home' },
-    { id: 'universities',href: 'universities.html',         label: 'Universities' },
-    { id: 'professors',  href: 'professors.html',           label: 'Professors' },
-    { id: 'compare',        href: 'compare.html',          label: 'Compare' },
-    { id: 'recommendations',href: 'recommendations.html',  label: 'Recommendations' }
+    { id: 'home',            href: 'index.html',           label: tFn('nav.home') },
+    { id: 'universities',    href: 'universities.html',    label: tFn('nav.universities') },
+    { id: 'professors',      href: 'professors.html',      label: tFn('nav.professors') },
+    { id: 'compare',         href: 'compare.html',         label: tFn('nav.compare') },
+    { id: 'recommendations', href: 'recommendations.html', label: tFn('nav.recommendations') },
+    { id: 'faq',             href: 'faq.html',             label: tFn('nav.faq') }
   ];
 
   const navLinks = pages.map(p =>
@@ -37,8 +40,8 @@ function buildNavbar(activePage) {
          </ul>
        </div>`
     : `<div class="d-flex gap-2">
-         <a href="login.html" class="btn-nav-outline">Log In</a>
-         <a href="signup.html" class="btn-nav-solid">Sign Up</a>
+         <a href="login.html" class="btn-nav-outline">${tFn('nav.login')}</a>
+         <a href="signup.html" class="btn-nav-solid">${tFn('nav.signup')}</a>
        </div>`;
 
   const html = `
@@ -57,10 +60,11 @@ function buildNavbar(activePage) {
           <div class="navbar-search-wrap mx-3 d-none d-lg-block" role="search">
             <i class="bi bi-search search-icon" aria-hidden="true"></i>
             <input type="search" id="navbar-search" autocomplete="off"
-              placeholder="Search universities or professors…"
+              placeholder="${tFn('nav.search_ph')}"
               aria-label="Search universities or professors">
             <div class="search-dropdown" id="search-dropdown" role="listbox" aria-label="Search results"></div>
           </div>
+          <button class="btn btn-sm btn-outline-light me-2 lang-toggle-btn" onclick="I18N.setLanguage(I18N.current === 'en' ? 'ar' : 'en')" aria-label="Switch language" style="white-space:nowrap;min-width:58px">${tFn('lang.switch')}</button>
           <div class="ms-auto">${authHTML}</div>
         </div>
       </div>
@@ -83,6 +87,7 @@ function buildNavbar(activePage) {
 
 // ── 2. Footer ─────────────────────────────────────────────────
 function buildFooter() {
+  const tFn = (typeof t === 'function') ? t : (k) => k;
   const html = `
     <footer class="site-footer" role="contentinfo">
       <div class="container">
@@ -92,8 +97,8 @@ function buildFooter() {
               <span style="font-size:22px">🎓</span>
               <span style="font-family:var(--font-heading);font-size:20px;font-weight:700;color:#fff">Edu<span style="color:#2E86C1">Rate</span></span>
             </div>
-            <h5>About Us</h5>
-            <p>Jordan's trusted platform for honest university and professor reviews. Helping students make better academic decisions since 2024.</p>
+            <h5>${tFn('footer.about_title')}</h5>
+            <p>${tFn('footer.about_text')}</p>
             <div class="footer-social" aria-label="Social media links">
               <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
               <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
@@ -102,35 +107,35 @@ function buildFooter() {
             </div>
           </div>
           <div class="col-lg-2 col-md-6">
-            <h5>Quick Links</h5>
+            <h5>${tFn('footer.quick_links')}</h5>
             <ul class="footer-links">
-              <li><a href="index.html">Home</a></li>
-              <li><a href="universities.html">Universities</a></li>
-              <li><a href="professors.html">Professors</a></li>
-              <li><a href="compare.html">Compare</a></li>
-              <li><a href="faq.html">FAQ</a></li>
+              <li><a href="index.html">${tFn('nav.home')}</a></li>
+              <li><a href="universities.html">${tFn('nav.universities')}</a></li>
+              <li><a href="professors.html">${tFn('nav.professors')}</a></li>
+              <li><a href="compare.html">${tFn('nav.compare')}</a></li>
+              <li><a href="faq.html">${tFn('nav.faq')}</a></li>
             </ul>
           </div>
           <div class="col-lg-4 col-md-6">
-            <h5>Contact</h5>
+            <h5>${tFn('footer.contact')}</h5>
             <ul class="footer-links">
               <li><a href="mailto:support@edurate.jo"><i class="bi bi-envelope me-2"></i>support@edurate.jo</a></li>
-              <li><a href="#"><i class="bi bi-geo-alt me-2"></i>Amman, Jordan</a></li>
+              <li><a href="#"><i class="bi bi-geo-alt me-2"></i>${tFn('footer.contact_city')}</a></li>
             </ul>
-            <p class="mt-3" style="font-size:13px">Have a question or want to report an issue? We typically respond within 24 hours.</p>
+            <p class="mt-3" style="font-size:13px">${tFn('footer.contact_note')}</p>
           </div>
           <div class="col-lg-3 col-md-6">
-            <h5>Legal</h5>
+            <h5>${tFn('footer.legal')}</h5>
             <ul class="footer-links">
-              <li><a href="#">Privacy Policy</a></li>
-              <li><a href="#">Terms of Service</a></li>
-              <li><a href="#">Cookie Policy</a></li>
-              <li><a href="#">Community Guidelines</a></li>
+              <li><a href="#">${tFn('footer.privacy')}</a></li>
+              <li><a href="#">${tFn('footer.terms')}</a></li>
+              <li><a href="#">${tFn('footer.cookies')}</a></li>
+              <li><a href="#">${tFn('footer.community')}</a></li>
             </ul>
           </div>
         </div>
         <div class="footer-bottom">
-          <p>&copy; 2026 EduRate. All rights reserved. Built by Osama Jankoot · Anas Ibraiwish · Saif Hamadeh</p>
+          <p>${tFn('footer.rights')}</p>
         </div>
       </div>
     </footer>`;

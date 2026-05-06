@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Compare Universities — EduRate</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link id="bs-rtl" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" disabled>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
@@ -69,6 +70,16 @@
         <div style="max-height:400px;display:flex;justify-content:center">
           <canvas id="compare-chart" aria-label="Radar chart comparing two universities" role="img" style="max-width:500px"></canvas>
         </div>
+        <div class="row mt-4 g-3">
+          <div class="col-md-6 text-center">
+            <h6 id="chart-u1-title" class="text-muted mb-2"></h6>
+            <canvas id="chart-u1" role="img"></canvas>
+          </div>
+          <div class="col-md-6 text-center">
+            <h6 id="chart-u2-title" class="text-muted mb-2"></h6>
+            <canvas id="chart-u2" role="img"></canvas>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -86,9 +97,27 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <script src="js/data.js"></script>
+<script src="js/translations.js"></script>
+<script src="js/i18n.js"></script>
 <script src="js/main.js"></script>
 <script>
-let compareChart = null;
+let compareChart = null, chartU1 = null, chartU2 = null;
+
+function createRadarChart(canvasId, label, data, borderColor, bgColor) {
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  return new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: UNIVERSITY_CATEGORIES.map(c => c.label),
+      datasets: [{ label, data, borderColor, backgroundColor: bgColor, borderWidth: 2, pointBackgroundColor: borderColor }]
+    },
+    options: {
+      responsive: true,
+      scales: { r: { min: 0, max: 5, ticks: { stepSize: 1, font: { size: 9 } }, pointLabels: { font: { size: 10 } } } },
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }
+    }
+  });
+}
 
 function populateSelects() {
   const sorted = [...UNIVERSITIES].sort((a,b) => a.name.localeCompare(b.name));
@@ -201,11 +230,18 @@ function renderComparison(u1, u2) {
       plugins: { legend: { position: 'bottom', labels: { font: { size: 12 } } } }
     }
   });
+  if (chartU1) chartU1.destroy();
+  if (chartU2) chartU2.destroy();
+  document.getElementById('chart-u1-title').textContent = u1.shortName;
+  document.getElementById('chart-u2-title').textContent = u2.shortName;
+  chartU1 = createRadarChart('chart-u1', u1.shortName, UNIVERSITY_CATEGORIES.map(c => u1.ratings[c.key]), '#1B4F72', 'rgba(27,79,114,.2)');
+  chartU2 = createRadarChart('chart-u2', u2.shortName, UNIVERSITY_CATEGORIES.map(c => u2.ratings[c.key]), '#27AE60', 'rgba(39,174,96,.15)');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   buildNavbar('compare');
   buildFooter();
+  I18N.init();
   populateSelects();
 
   // Pre-select from URL params

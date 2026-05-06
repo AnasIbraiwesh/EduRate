@@ -8,7 +8,12 @@
       "Bash(python -m http.server 8080)",
       "Bash(git checkout *)",
       "Bash(git stash *)",
-      "Bash(python -m http.server 8082)"
+      "Bash(python -m http.server 8082)",
+      "WebSearch",
+      "WebFetch(domain:www.just.edu.jo)",
+      "Bash(Get-ChildItem -Recurse -File -Filter \"*.html\")",
+      "Bash(Select-Object FullName)",
+      "Bash(start *)"
     ]
   }
 }
