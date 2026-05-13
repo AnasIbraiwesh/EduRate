@@ -31,7 +31,7 @@ namespace eduRateSystem.Seed
             }
             var existingAdmin = await userManager.FindByEmailAsync(adminEmail);
 
-            if (existingAdmin != null)
+            if (existingAdmin == null)
             {
                 var adminUser = new ApplicationUser
                 {
