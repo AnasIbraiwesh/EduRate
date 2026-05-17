@@ -16,24 +16,8 @@
       display: flex; align-items: center; justify-content: center;
       padding: 40px 16px;
     }
-    .auth-page-inner { width: 100%; max-width: 520px; }
-    .role-card {
-      border: 2px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 16px;
-      cursor: pointer;
-      transition: border-color var(--transition), background var(--transition);
-      display: flex; align-items: center; gap: 14px;
-    }
-    .role-card:has(input:checked), .role-card.selected {
-      border-color: var(--secondary);
-      background: #ebf5fb;
-    }
-    .role-card input[type="radio"] { accent-color: var(--secondary); width:18px; height:18px; }
-    .role-icon { font-size: 28px; flex-shrink: 0; }
-    /* Password strength */
+    .auth-page-inner { width: 100%; max-width: 480px; }
     .pw-strength { height: 4px; border-radius: var(--radius-pill); margin-top: 6px; transition: width .3s, background .3s; }
-    /* Verification screen */
     #verify-screen { display: none; }
   </style>
 </head>
@@ -49,38 +33,33 @@
       <div class="auth-card">
         <div class="auth-header">
           <div class="auth-logo">Edu<span>Rate</span></div>
-          <h1 class="auth-title">Create Your Account</h1>
-          <p class="auth-subtitle">Join thousands of students sharing honest reviews</p>
+          <h1 class="auth-title" data-i18n="signup.title">Create Your Account</h1>
+          <p class="auth-subtitle" data-i18n="signup.subtitle">Join thousands of students sharing honest reviews</p>
         </div>
 
         <form id="signup-form" novalidate aria-label="Sign up form">
-          <!-- Full Name -->
-          <div class="mb-3">
-            <label for="fullname" class="form-label">Full Name</label>
-            <input type="text" id="fullname" name="fullname"
-              class="form-control" placeholder="Enter your full name"
-              autocomplete="name" required>
-            <div class="invalid-feedback" id="name-error" role="alert"></div>
-          </div>
-
           <!-- University Email -->
           <div class="mb-3">
-            <label for="email" class="form-label">University Email</label>
+            <label for="email" class="form-label" data-i18n="signup.email_label">University Email</label>
             <input type="email" id="email" name="email"
-              class="form-control" placeholder="yourname@university.edu.jo"
+              class="form-control"
+              data-i18n-placeholder="signup.email_ph"
+              placeholder="yourname@university.edu.jo"
               autocomplete="email" required>
-            <div class="form-text">Must be a valid university email address</div>
+            <div class="form-text" data-i18n="signup.email_hint">Must be a valid university email address</div>
             <div class="invalid-feedback" id="email-error" role="alert"></div>
           </div>
 
           <!-- Password -->
           <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
+            <label for="password" class="form-label" data-i18n="signup.pw_label">Password</label>
             <div class="password-wrap">
               <input type="password" id="password" name="password"
-                class="form-control" placeholder="Minimum 8 characters"
+                class="form-control"
+                data-i18n-placeholder="signup.pw_ph"
+                placeholder="Minimum 8 characters"
                 autocomplete="new-password" required>
-              <button type="button" class="password-toggle" id="toggle-pw1" aria-label="Show/hide password">
+              <button type="button" class="password-toggle" id="toggle-pw" aria-label="Show/hide password">
                 <i class="bi bi-eye" aria-hidden="true"></i>
               </button>
             </div>
@@ -89,66 +68,39 @@
             <div class="invalid-feedback" id="pw-error" role="alert"></div>
           </div>
 
-          <!-- Confirm Password -->
-          <div class="mb-3">
-            <label for="confirm-pw" class="form-label">Confirm Password</label>
-            <div class="password-wrap">
-              <input type="password" id="confirm-pw" name="confirm-pw"
-                class="form-control" placeholder="Re-enter your password"
-                autocomplete="new-password" required>
-              <button type="button" class="password-toggle" id="toggle-pw2" aria-label="Show/hide password">
-                <i class="bi bi-eye" aria-hidden="true"></i>
-              </button>
-            </div>
-            <div class="invalid-feedback" id="confirm-pw-error" role="alert"></div>
-          </div>
-
           <!-- University -->
           <div class="mb-3">
-            <label for="university" class="form-label">University</label>
+            <label for="university" class="form-label" data-i18n="signup.uni_label">University</label>
             <select id="university" name="university" class="form-select" required aria-label="Select your university">
-              <option value="" selected disabled>Select your university…</option>
+              <option value="" selected disabled data-i18n="signup.uni_default">Select your university…</option>
             </select>
             <div class="invalid-feedback" id="uni-error" role="alert"></div>
           </div>
 
-          <!-- Role -->
+          <!-- Major -->
           <div class="mb-4">
-            <label class="form-label d-block">I am a…</label>
-            <div class="row g-2">
-              <div class="col-6">
-                <label class="role-card" for="role-student">
-                  <input type="radio" id="role-student" name="role" value="student" required>
-                  <span class="role-icon" aria-hidden="true">🎓</span>
-                  <div>
-                    <div class="fw-600" style="font-size:15px">Student</div>
-                    <div style="font-size:12px;color:var(--text-secondary)">Write & read reviews</div>
-                  </div>
-                </label>
-              </div>
-              <div class="col-6">
-                <label class="role-card" for="role-prof">
-                  <input type="radio" id="role-prof" name="role" value="professor" required>
-                  <span class="role-icon" aria-hidden="true">👨‍🏫</span>
-                  <div>
-                    <div class="fw-600" style="font-size:15px">Professor</div>
-                    <div style="font-size:12px;color:var(--text-secondary)">View your dashboard</div>
-                  </div>
-                </label>
-              </div>
-            </div>
-            <div class="invalid-feedback d-block" id="role-error" role="alert" style="display:none!important"></div>
+            <label for="major" class="form-label" data-i18n="signup.major_label">Major</label>
+            <select id="major" name="major" class="form-select" required aria-label="Select your major">
+              <option value="" selected disabled data-i18n="signup.major_default">Select your major…</option>
+              <option value="Engineering" data-i18n="signup.major_engineering">Engineering</option>
+              <option value="Technology & IT" data-i18n="signup.major_tech">Technology & IT</option>
+              <option value="Medicine" data-i18n="signup.major_medicine">Medicine</option>
+              <option value="Business" data-i18n="signup.major_business">Business</option>
+              <option value="Arts & Humanities" data-i18n="signup.major_arts">Arts & Humanities</option>
+            </select>
+            <div class="invalid-feedback" id="major-error" role="alert"></div>
           </div>
 
           <button type="submit" class="btn btn-primary w-100 btn-lg" id="signup-btn">
-            <span id="signup-text">Create Account</span>
+            <span id="signup-text" data-i18n="signup.btn">Create Account</span>
             <span id="signup-spinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-label="Loading"></span>
           </button>
         </form>
 
-        <div class="divider-text">or</div>
+        <div class="divider-text" data-i18n="signup.or">or</div>
         <p class="text-center" style="font-size:15px">
-          Already have an account? <a href="login.html" class="fw-600">Log In</a>
+          <span data-i18n="signup.have_account">Already have an account?</span>
+          <a href="login.html" class="fw-600" data-i18n="signup.login_link">Log In</a>
         </p>
       </div>
     </div>
@@ -157,14 +109,14 @@
     <div id="verify-screen">
       <div class="auth-card text-center">
         <div style="font-size:64px;margin-bottom:16px" aria-hidden="true">📧</div>
-        <h2 class="auth-title">Check Your Email</h2>
-        <p class="auth-subtitle mb-4">We've sent a verification link to <strong id="verify-email"></strong>.</p>
-        <p style="font-size:14px;color:var(--text-secondary)">Click the link in the email to activate your account. If you don't see it, check your spam folder.</p>
+        <h2 class="auth-title" data-i18n="signup.verify_title">Check Your Email</h2>
+        <p class="auth-subtitle mb-4"><span data-i18n="signup.verify_desc">We've sent a verification link to</span> <strong id="verify-email"></strong>.</p>
+        <p style="font-size:14px;color:var(--text-secondary)" data-i18n="signup.verify_spam">Click the link in the email to activate your account. If you don't see it, check your spam folder.</p>
         <div class="mt-4">
-          <a href="login.html" class="btn btn-primary btn-lg w-100">Go to Login</a>
+          <a href="login.html" class="btn btn-primary btn-lg w-100" data-i18n="signup.go_login">Go to Login</a>
         </div>
         <p class="mt-3 text-center" style="font-size:13px;color:var(--text-secondary)">
-          Didn't receive the email? <a href="#">Resend</a>
+          Didn't receive the email? <a href="#" data-i18n="signup.resend">Resend</a>
         </p>
       </div>
     </div>
@@ -180,6 +132,13 @@
 <script src="js/data.js"></script>
 <script src="js/main.js"></script>
 <script>
+const UNI_DOMAINS = ['ju.edu.jo','just.edu.jo','psut.edu.jo','gju.edu.jo','htu.edu.jo','bau.edu.jo'];
+
+function isUniEmail(email) {
+  const domain = email.split('@')[1] || '';
+  return UNI_DOMAINS.includes(domain.toLowerCase());
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   buildNavbar('');
   buildFooter();
@@ -196,17 +155,13 @@ document.addEventListener('DOMContentLoaded', () => {
     uniSelect.appendChild(opt);
   });
 
-  // Password toggles
-  function makeToggle(btnId, inputId) {
-    document.getElementById(btnId).addEventListener('click', function() {
-      const pw = document.getElementById(inputId);
-      const icon = this.querySelector('i');
-      if (pw.type === 'password') { pw.type = 'text'; icon.className = 'bi bi-eye-slash'; }
-      else { pw.type = 'password'; icon.className = 'bi bi-eye'; }
-    });
-  }
-  makeToggle('toggle-pw1', 'password');
-  makeToggle('toggle-pw2', 'confirm-pw');
+  // Password toggle
+  document.getElementById('toggle-pw').addEventListener('click', function() {
+    const pw = document.getElementById('password');
+    const icon = this.querySelector('i');
+    if (pw.type === 'password') { pw.type = 'text'; icon.className = 'bi bi-eye-slash'; }
+    else { pw.type = 'password'; icon.className = 'bi bi-eye'; }
+  });
 
   // Password strength meter
   document.getElementById('password').addEventListener('input', function() {
@@ -235,26 +190,22 @@ document.addEventListener('DOMContentLoaded', () => {
   // Form submit
   document.getElementById('signup-form').addEventListener('submit', e => {
     e.preventDefault();
-    const name    = document.getElementById('fullname').value.trim();
-    const email   = document.getElementById('email').value.trim();
-    const pw      = document.getElementById('password').value;
-    const cpw     = document.getElementById('confirm-pw').value;
-    const uniId   = document.getElementById('university').value;
-    const role    = document.querySelector('input[name="role"]:checked')?.value;
+    const email  = document.getElementById('email').value.trim();
+    const pw     = document.getElementById('password').value;
+    const uniId  = document.getElementById('university').value;
+    const major  = document.getElementById('major').value;
     let valid = true;
 
-    // Clear errors
     document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-    document.querySelectorAll('.invalid-feedback').forEach(el => { el.textContent = ''; el.style.display = ''; });
+    document.querySelectorAll('.invalid-feedback').forEach(el => { el.textContent = ''; });
 
-    if (!name || name.length < 2) {
-      document.getElementById('fullname').classList.add('is-invalid');
-      document.getElementById('name-error').textContent = 'Full name must be at least 2 characters.';
-      valid = false;
-    }
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       document.getElementById('email').classList.add('is-invalid');
       document.getElementById('email-error').textContent = 'Enter a valid email address.';
+      valid = false;
+    } else if (!isUniEmail(email)) {
+      document.getElementById('email').classList.add('is-invalid');
+      document.getElementById('email-error').textContent = 'Please use your university email (e.g. name@ju.edu.jo).';
       valid = false;
     }
     if (!pw || pw.length < 8 || !/[A-Z]/.test(pw) || !/[0-9]/.test(pw)) {
@@ -262,26 +213,24 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('pw-error').textContent = 'Password must be at least 8 characters with 1 uppercase letter and 1 number.';
       valid = false;
     }
-    if (pw !== cpw) {
-      document.getElementById('confirm-pw').classList.add('is-invalid');
-      document.getElementById('confirm-pw-error').textContent = 'Passwords do not match.';
-      valid = false;
-    }
     if (!uniId) {
       document.getElementById('university').classList.add('is-invalid');
       document.getElementById('uni-error').textContent = 'Please select your university.';
       valid = false;
     }
-    if (!role) {
-      document.getElementById('role-error').textContent = 'Please select your role.';
-      document.getElementById('role-error').style.display = 'block';
+    if (!major) {
+      document.getElementById('major').classList.add('is-invalid');
+      document.getElementById('major-error').textContent = 'Please select your major.';
       valid = false;
     }
     if (!valid) return;
 
-    document.getElementById('signup-btn').disabled = true;
+    const btn = document.getElementById('signup-btn');
+    const signupText = document.getElementById('signup-text');
+    btn.disabled = true;
     document.getElementById('signup-spinner').classList.remove('d-none');
-    document.getElementById('signup-text').textContent = 'Creating Account…';
+    signupText.removeAttribute('data-i18n');
+    signupText.textContent = '…';
 
     setTimeout(() => {
       document.getElementById('register-form-wrap').style.display = 'none';

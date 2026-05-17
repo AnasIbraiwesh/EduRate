@@ -28,27 +28,19 @@
     <div class="auth-card">
       <div class="auth-header">
         <div class="auth-logo">Edu<span>Rate</span></div>
-        <h1 class="auth-title">Welcome Back</h1>
-        <p class="auth-subtitle">Log in to write reviews and get recommendations</p>
-      </div>
-
-      <!-- Demo logins -->
-      <div class="alert alert-info d-flex gap-2 align-items-start py-2 px-3 mb-4" style="font-size:13px;border-radius:var(--radius-md)">
-        <i class="bi bi-info-circle-fill mt-1 flex-shrink-0"></i>
-        <div>
-          <strong>Demo:</strong> student@ju.edu.jo / password123 (Student)<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prof@psut.edu.jo / password123 (Professor)
-        </div>
+        <h1 class="auth-title" data-i18n="login.title">Welcome Back</h1>
+        <p class="auth-subtitle" data-i18n="login.subtitle">Log in to write reviews and get recommendations</p>
       </div>
 
       <form id="login-form" novalidate aria-label="Login form">
         <!-- Email -->
         <div class="mb-3">
-          <label for="email" class="form-label">Email Address</label>
+          <label for="email" class="form-label" data-i18n="login.email_label">Email Address</label>
           <div class="input-group">
             <span class="input-group-text bg-transparent" style="border-right:0"><i class="bi bi-envelope text-muted" aria-hidden="true"></i></span>
             <input type="email" id="email" name="email"
               class="form-control" style="border-left:0"
+              data-i18n-placeholder="login.email_ph"
               placeholder="your@university.edu"
               autocomplete="email" required>
           </div>
@@ -56,14 +48,13 @@
         </div>
 
         <!-- Password -->
-        <div class="mb-3">
-          <div class="d-flex justify-content-between align-items-center">
-            <label for="password" class="form-label mb-0">Password</label>
-            <a href="#" class="form-text text-secondary" style="font-size:13px">Forgot Password?</a>
-          </div>
+        <div class="mb-4">
+          <label for="password" class="form-label" data-i18n="login.pw_label">Password</label>
           <div class="password-wrap mt-1">
             <input type="password" id="password" name="password"
-              class="form-control" placeholder="Enter your password"
+              class="form-control"
+              data-i18n-placeholder="login.pw_ph"
+              placeholder="Enter your password"
               autocomplete="current-password" required>
             <button type="button" class="password-toggle" id="toggle-pw" aria-label="Show/hide password">
               <i class="bi bi-eye" aria-hidden="true"></i>
@@ -72,23 +63,17 @@
           <div class="invalid-feedback" id="pw-error" role="alert"></div>
         </div>
 
-        <!-- Remember me -->
-        <div class="mb-4 form-check">
-          <input class="form-check-input" type="checkbox" id="remember">
-          <label class="form-check-label" for="remember" style="font-size:14px">Remember me for 30 days</label>
-        </div>
-
         <button type="submit" class="btn btn-primary w-100 btn-lg" id="login-btn">
-          <span id="login-text">Log In</span>
+          <span id="login-text" data-i18n="login.btn">Log In</span>
           <span id="login-spinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-label="Loading"></span>
         </button>
       </form>
 
-      <div class="divider-text">or</div>
+      <div class="divider-text" data-i18n="login.or">or</div>
 
       <p class="text-center" style="font-size:15px">
-        Don't have an account?
-        <a href="signup.html" class="fw-600">Sign Up</a>
+        <span data-i18n="login.no_account">Don't have an account?</span>
+        <a href="signup.html" class="fw-600" data-i18n="login.signup_link">Sign Up</a>
       </p>
     </div>
   </div>
@@ -107,10 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
   buildFooter();
   I18N.init();
 
-  // Redirect if already logged in
   if (AUTH.isLoggedIn()) window.location.href = 'index.html';
 
-  // Password toggle
   document.getElementById('toggle-pw').addEventListener('click', function() {
     const pw = document.getElementById('password');
     const icon = this.querySelector('i');
@@ -118,14 +101,12 @@ document.addEventListener('DOMContentLoaded', () => {
     else { pw.type = 'password'; icon.className = 'bi bi-eye'; }
   });
 
-  // Form submit
   document.getElementById('login-form').addEventListener('submit', e => {
     e.preventDefault();
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     let valid = true;
 
-    // Validate
     document.querySelectorAll('.invalid-feedback').forEach(el => el.textContent = '');
     document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
 
@@ -145,13 +126,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (!valid) return;
 
-    // Simulate login
-    document.getElementById('login-btn').disabled = true;
+    const btn = document.getElementById('login-btn');
+    const loginText = document.getElementById('login-text');
+    btn.disabled = true;
     document.getElementById('login-spinner').classList.remove('d-none');
-    document.getElementById('login-text').textContent = 'Logging in…';
+    loginText.removeAttribute('data-i18n');
+    loginText.textContent = '…';
 
     setTimeout(() => {
-      // Demo credentials
       if (email === 'student@ju.edu.jo' && password === 'password123') {
         AUTH.set({ name: 'Ahmed Al-Rashid', email, role: 'student', university: 1 });
         showToast('Welcome back, Ahmed!', 'success');
@@ -161,10 +143,11 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast('Welcome back, Dr. Nasser!', 'success');
         setTimeout(() => window.location.href = 'dashboard.html', 1000);
       } else {
-        document.getElementById('login-btn').disabled = false;
+        btn.disabled = false;
         document.getElementById('login-spinner').classList.add('d-none');
-        document.getElementById('login-text').textContent = 'Log In';
-        showToast('Invalid email or password. Try the demo credentials.', 'error');
+        loginText.setAttribute('data-i18n', 'login.btn');
+        loginText.textContent = t('login.btn');
+        showToast('Invalid email or password.', 'error');
       }
     }, 1200);
   });

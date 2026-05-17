@@ -176,13 +176,14 @@ function ratingBgColor(rating) {
 // ── 5. Sentiment Badge HTML ───────────────────────────────────
 function sentimentBadgeHTML(sentiment) {
   const map = {
-    positive: { cls: 'badge-positive', icon: 'bi-hand-thumbs-up-fill', label: 'Positive' },
-    neutral:  { cls: 'badge-neutral',  icon: 'bi-dash-circle-fill',     label: 'Neutral'  },
-    negative: { cls: 'badge-negative', icon: 'bi-hand-thumbs-down-fill',label: 'Negative' }
+    positive: { cls: 'badge-positive', icon: 'bi-hand-thumbs-up-fill', label: () => t('common.sentiment_positive') },
+    neutral:  { cls: 'badge-neutral',  icon: 'bi-dash-circle-fill',     label: () => t('common.sentiment_neutral')  },
+    negative: { cls: 'badge-negative', icon: 'bi-hand-thumbs-down-fill',label: () => t('common.sentiment_negative') }
   };
   const s = map[sentiment] || map.neutral;
-  return `<span class="badge-sentiment ${s.cls}" aria-label="Sentiment: ${s.label}">
-            <i class="bi ${s.icon}" aria-hidden="true"></i> ${s.label}
+  const lbl = s.label();
+  return `<span class="badge-sentiment ${s.cls}" aria-label="Sentiment: ${lbl}">
+            <i class="bi ${s.icon}" aria-hidden="true"></i> ${lbl}
           </span>`;
 }
 
@@ -205,7 +206,7 @@ function renderUniversityReviewCard(review) {
           <div class="reviewer-avatar" aria-hidden="true">${review.reviewer.slice(-2)}</div>
           <div>
             <div class="reviewer-name">${review.reviewer}
-              <span class="verified-badge ms-1"><i class="bi bi-patch-check-fill" aria-hidden="true"></i> Verified Student</span>
+              <span class="verified-badge ms-1"><i class="bi bi-patch-check-fill" aria-hidden="true"></i> ${t('common.verified_student')}</span>
             </div>
             <div class="reviewer-meta">${formatDate(review.date)}</div>
           </div>
@@ -227,13 +228,13 @@ function renderUniversityReviewCard(review) {
 function renderProfessorReviewCard(review) {
   const avg = +(Object.values(review.ratings).reduce((a, b) => a + b, 0) / 3).toFixed(1);
   const wta = review.wouldTakeAgain
-    ? '<span class="chip" style="background:#d5f5e3;color:#1e8449"><i class="bi bi-check-circle-fill me-1"></i>Would Take Again</span>'
-    : '<span class="chip" style="background:#fde8e6;color:#c0392b"><i class="bi bi-x-circle-fill me-1"></i>Would Not Take Again</span>';
+    ? `<span class="chip" style="background:#d5f5e3;color:#1e8449"><i class="bi bi-check-circle-fill me-1"></i>${t('common.would_take')}</span>`
+    : `<span class="chip" style="background:#fde8e6;color:#c0392b"><i class="bi bi-x-circle-fill me-1"></i>${t('common.would_not_take')}</span>`;
 
   const replyHTML = review.profReply
     ? `<div class="prof-reply">
          <div class="prof-reply-header">
-           <i class="bi bi-patch-check-fill"></i> Professor Response
+           <i class="bi bi-patch-check-fill"></i> ${t('common.prof_response')}
          </div>
          <p style="font-size:14px;color:var(--text-secondary);margin:0">${escapeHTML(review.profReply)}</p>
        </div>` : '';
@@ -245,7 +246,7 @@ function renderProfessorReviewCard(review) {
           <div class="reviewer-avatar" aria-hidden="true">${review.reviewer.slice(-2)}</div>
           <div>
             <div class="reviewer-name">${review.reviewer}
-              <span class="verified-badge ms-1"><i class="bi bi-patch-check-fill" aria-hidden="true"></i> Verified Student</span>
+              <span class="verified-badge ms-1"><i class="bi bi-patch-check-fill" aria-hidden="true"></i> ${t('common.verified_student')}</span>
             </div>
             <div class="reviewer-meta">${formatDate(review.date)} &middot; <strong>${escapeHTML(review.course)}</strong>${review.grade ? ` &middot; Grade: ${review.grade}` : ''}</div>
           </div>
@@ -333,12 +334,12 @@ function initNavSearch() {
       const unis  = searchUniversities(q).slice(0, 4);
       const profs = searchProfessors(q).slice(0, 4);
       if (!unis.length && !profs.length) {
-        dropdown.innerHTML = `<div class="p-3 text-center" style="font-size:14px;color:var(--text-secondary)">No results found</div>`;
+        dropdown.innerHTML = `<div class="p-3 text-center" style="font-size:14px;color:var(--text-secondary)">${t('common.no_results')}</div>`;
       } else {
         let html = '';
         if (unis.length) {
           html += `<div class="search-dropdown-section">
-                     <div class="search-dropdown-label">Universities</div>
+                     <div class="search-dropdown-label">${t('common.search_unis')}</div>
                      ${unis.map(u => `
                        <a class="search-dropdown-item text-decoration-none" href="university-profile.html?id=${u.id}">
                          <div class="item-icon uni" aria-hidden="true">🏛</div>
@@ -349,7 +350,7 @@ function initNavSearch() {
         if (unis.length && profs.length) html += '<div class="search-divider"></div>';
         if (profs.length) {
           html += `<div class="search-dropdown-section">
-                     <div class="search-dropdown-label">Professors</div>
+                     <div class="search-dropdown-label">${t('common.search_profs')}</div>
                      ${profs.map(p => `
                        <a class="search-dropdown-item text-decoration-none" href="professor-profile.html?id=${p.id}">
                          <div class="item-icon prof" aria-hidden="true">👨‍🏫</div>
@@ -385,7 +386,7 @@ function uniCardHTML(uni) {
     <div class="col-lg-4 col-md-6">
       <div class="uni-card card-hover h-100">
         <div class="uni-card-header">
-          ${uni.image ? `<img src="${uni.image}" style="width:100%;height:200px;object-fit:cover;display:block;margin-bottom:8px">` : `<div style="font-size:32px;margin-bottom:8px">🏛</div>`}
+          ${uni.image ? `<img src="${uni.image}" style="width:calc(100% + 48px);height:200px;object-fit:cover;display:block;margin-left:-24px;margin-right:-24px;margin-bottom:8px">` : `<div style="font-size:32px;margin-bottom:8px">🏛</div>`}
           <div class="uni-card-name">${uni.name}</div>
           <div class="uni-card-location"><i class="bi bi-geo-alt" aria-hidden="true"></i>${uni.city}, ${uni.country}</div>
         </div>

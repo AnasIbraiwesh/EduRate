@@ -16,22 +16,22 @@
 
 <header class="page-hero">
   <div class="container">
-    <span class="hero-eyebrow"><i class="bi bi-stars me-1"></i>Personalized For You</span>
-    <h1 class="mt-2 mb-2">Find the University That Fits You Like a Glove</h1>
-    <p class="mb-0">Not every university is for everyone — answer 3 quick questions and we'll match you with the best fit.</p>
+    <span class="hero-eyebrow"><i class="bi bi-stars me-1"></i><span data-i18n="recs.eyebrow">Personalized For You</span></span>
+    <h1 class="mt-2 mb-2" data-i18n="recs.hero_title">Find the University That Fits You Like a Glove</h1>
+    <p class="mb-0" data-i18n="recs.hero_subtitle">Not every university is for everyone — answer 3 quick questions and we'll match you with the best fit.</p>
   </div>
 </header>
 
 <div class="container py-5" style="max-width:750px">
-  <h2 class="fw-bold mb-1">Find Your University</h2>
-  <p class="text-muted mb-4">Enter your details and we'll recommend the best match for you.</p>
+  <h2 class="fw-bold mb-1" data-i18n="recs.form_h2">Find Your University</h2>
+  <p class="text-muted mb-4" data-i18n="recs.form_desc">Enter your details and we'll recommend the best match for you.</p>
 
   <div class="card shadow-sm p-4 mb-5">
     <div class="row g-3">
       <div class="col-md-4">
-        <label class="form-label fw-semibold">City</label>
+        <label class="form-label fw-semibold" data-i18n="recs.city_label">City</label>
         <select id="rec-city" class="form-select">
-          <option value="">Any City</option>
+          <option value="" data-i18n="recs.city_any">Any City</option>
           <option>Amman</option>
           <option>Irbid</option>
           <option>Madaba</option>
@@ -39,23 +39,23 @@
         </select>
       </div>
       <div class="col-md-4">
-        <label class="form-label fw-semibold">Major</label>
+        <label class="form-label fw-semibold" data-i18n="recs.major_label">Major</label>
         <select id="rec-major" class="form-select">
-          <option value="">Any Major</option>
-          <option>Engineering</option>
-          <option>Technology & IT</option>
-          <option>Medicine</option>
-          <option>Business</option>
-          <option>Arts & Humanities</option>
+          <option value="" data-i18n="recs.major_any">Any Major</option>
+          <option value="Engineering" data-i18n="signup.major_engineering">Engineering</option>
+          <option value="Technology & IT" data-i18n="signup.major_tech">Technology & IT</option>
+          <option value="Medicine" data-i18n="signup.major_medicine">Medicine</option>
+          <option value="Business" data-i18n="signup.major_business">Business</option>
+          <option value="Arts & Humanities" data-i18n="signup.major_arts">Arts & Humanities</option>
         </select>
       </div>
       <div class="col-md-4">
-        <label class="form-label fw-semibold">Your Grade (%)</label>
-        <input type="number" id="rec-grade" class="form-control" placeholder="e.g. 85" min="0" max="100">
+        <label class="form-label fw-semibold" data-i18n="recs.grade_label">Your Grade (%)</label>
+        <input type="number" id="rec-grade" class="form-control" data-i18n-placeholder="recs.grade_ph" placeholder="e.g. 85" min="0" max="100">
       </div>
       <div class="col-12">
         <button class="btn btn-primary w-100" onclick="recommend()">
-          <i class="bi bi-search me-2"></i>Find Universities
+          <i class="bi bi-search me-2"></i><span data-i18n="recs.find_btn">Find Universities</span>
         </button>
       </div>
     </div>
@@ -95,7 +95,7 @@ function recommend() {
   const container = document.getElementById('rec-results');
   container.innerHTML = results.length
     ? results.map(uniCardHTML).join('')
-    : '<p class="text-muted">No universities matched. Try different filters.</p>';
+    : `<p class="text-muted" data-i18n="recs.no_match">${t('recs.no_match')}</p>`;
 }
 
 document.addEventListener('DOMContentLoaded', () => { buildNavbar('recommendations'); buildFooter(); I18N.init(); });

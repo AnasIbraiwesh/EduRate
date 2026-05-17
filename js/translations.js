@@ -206,12 +206,41 @@ const TRANSLATIONS = {
     "dash.no_reviews":  "No reviews yet.",
 
     // Common
-    "common.verified_student": "Verified Student",
-    "common.would_take":       "Would Take Again",
-    "common.would_not_take":   "Would Not Take Again",
-    "common.prof_response":    "Professor Response",
-    "common.no_results":       "No results found",
-    "common.loading":          "Loading…"
+    "common.verified_student":    "Verified Student",
+    "common.would_take":          "Would Take Again",
+    "common.would_not_take":      "Would Not Take Again",
+    "common.prof_response":       "Professor Response",
+    "common.no_results":          "No results found",
+    "common.loading":             "Loading…",
+    "common.sentiment_positive":  "Positive",
+    "common.sentiment_neutral":   "Neutral",
+    "common.sentiment_negative":  "Negative",
+    "common.search_unis":         "Universities",
+    "common.search_profs":        "Professors",
+
+    // Signup — new fields
+    "signup.major_label":         "Major",
+    "signup.major_default":       "Select your major…",
+    "signup.major_engineering":   "Engineering",
+    "signup.major_tech":          "Technology & IT",
+    "signup.major_medicine":      "Medicine",
+    "signup.major_business":      "Business",
+    "signup.major_arts":          "Arts & Humanities",
+
+    // Recommendations — extra strings
+    "recs.eyebrow":       "Personalized For You",
+    "recs.hero_title":    "Find the University That Fits You Like a Glove",
+    "recs.hero_subtitle": "Not every university is for everyone — answer 3 quick questions and we'll match you with the best fit.",
+    "recs.form_h2":       "Find Your University",
+    "recs.form_desc":     "Enter your details and we'll recommend the best match for you.",
+    "recs.city_label":    "City",
+    "recs.city_any":      "Any City",
+    "recs.major_label":   "Major",
+    "recs.major_any":     "Any Major",
+    "recs.grade_label":   "Your Grade (%)",
+    "recs.grade_ph":      "e.g. 85",
+    "recs.find_btn":      "Find Universities",
+    "recs.no_match":      "No universities matched. Try different filters."
   },
 
   ar: {
@@ -421,11 +450,40 @@ const TRANSLATIONS = {
     "dash.no_reviews":  "لا توجد تقييمات بعد.",
 
     // Common
-    "common.verified_student": "طالب موثّق",
-    "common.would_take":       "سيأخذ المادة مجدداً",
-    "common.would_not_take":   "لن يأخذ المادة مجدداً",
-    "common.prof_response":    "رد الأستاذ",
-    "common.no_results":       "لا توجد نتائج",
-    "common.loading":          "جارٍ التحميل…"
+    "common.verified_student":    "طالب موثّق",
+    "common.would_take":          "سيأخذ المادة مجدداً",
+    "common.would_not_take":      "لن يأخذ المادة مجدداً",
+    "common.prof_response":       "رد الأستاذ",
+    "common.no_results":          "لا توجد نتائج",
+    "common.loading":             "جارٍ التحميل…",
+    "common.sentiment_positive":  "إيجابي",
+    "common.sentiment_neutral":   "محايد",
+    "common.sentiment_negative":  "سلبي",
+    "common.search_unis":         "الجامعات",
+    "common.search_profs":        "الأساتذة",
+
+    // Signup — new fields
+    "signup.major_label":         "التخصص",
+    "signup.major_default":       "اختر تخصصك…",
+    "signup.major_engineering":   "هندسة",
+    "signup.major_tech":          "تقنية المعلومات",
+    "signup.major_medicine":      "طب",
+    "signup.major_business":      "إدارة أعمال",
+    "signup.major_arts":          "آداب وعلوم إنسانية",
+
+    // Recommendations — extra strings
+    "recs.eyebrow":       "مخصص لك",
+    "recs.hero_title":    "ابحث عن الجامعة التي تناسبك تماماً",
+    "recs.hero_subtitle": "ليست كل جامعة مناسبة للجميع — أجب على 3 أسئلة سريعة وسنطابقك مع الأنسب.",
+    "recs.form_h2":       "ابحث عن جامعتك",
+    "recs.form_desc":     "أدخل بياناتك وسنوصي لك بأفضل جامعة.",
+    "recs.city_label":    "المدينة",
+    "recs.city_any":      "أي مدينة",
+    "recs.major_label":   "التخصص",
+    "recs.major_any":     "أي تخصص",
+    "recs.grade_label":   "معدلك (%)",
+    "recs.grade_ph":      "مثال: 85",
+    "recs.find_btn":      "ابحث عن الجامعات",
+    "recs.no_match":      "لا توجد جامعات مطابقة. جرّب فلاتر مختلفة."
   }
 };

@@ -19,15 +19,15 @@
   <div class="container">
     <div class="row align-items-center">
       <div class="col-lg-7">
-        <span class="hero-eyebrow" style="font-size:12px"><i class="bi bi-mortarboard me-1" aria-hidden="true"></i>All Educators</span>
-        <h1 class="mt-2 mb-2">Professors in Jordan</h1>
-        <p class="mb-0">Find and compare professors rated by verified students</p>
+        <span class="hero-eyebrow" style="font-size:12px"><i class="bi bi-mortarboard me-1" aria-hidden="true"></i><span data-i18n="profs.eyebrow">All Educators</span></span>
+        <h1 class="mt-2 mb-2" data-i18n="profs.title">Professors in Jordan</h1>
+        <p class="mb-0" data-i18n="profs.subtitle">Find and compare professors rated by verified students</p>
       </div>
       <div class="col-lg-5 mt-3 mt-lg-0">
         <div class="input-group">
           <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted" aria-hidden="true"></i></span>
           <input type="search" id="prof-search" class="form-control border-start-0 ps-0"
-            placeholder="Search by name or department…"
+            data-i18n-placeholder="profs.search_ph" placeholder="Search by name or department…"
             aria-label="Search professors" autocomplete="off">
         </div>
       </div>
@@ -41,32 +41,32 @@
     <!-- Sidebar Filters -->
     <div class="col-lg-3">
       <aside class="filter-sidebar" aria-label="Filter professors">
-        <div class="filter-title"><i class="bi bi-funnel" aria-hidden="true"></i> Filters</div>
+        <div class="filter-title"><i class="bi bi-funnel" aria-hidden="true"></i> <span data-i18n="unis.filter_title">Filters</span></div>
 
         <div class="filter-group">
-          <label for="dept-filter">Department</label>
+          <label for="dept-filter" data-i18n="profs.dept_label">Department</label>
           <select id="dept-filter" class="form-select" aria-label="Filter by department">
-            <option value="">All Departments</option>
+            <option value="" data-i18n="profs.all_depts">All Departments</option>
           </select>
         </div>
 
         <div class="filter-group">
-          <label for="uni-filter">University</label>
+          <label for="uni-filter" data-i18n="profs.uni_label">University</label>
           <select id="uni-filter" class="form-select" aria-label="Filter by university">
-            <option value="">All Universities</option>
+            <option value="" data-i18n="profs.all_unis">All Universities</option>
           </select>
         </div>
 
         <div class="filter-group">
-          <label for="rating-min">Minimum Rating: <strong id="rating-min-val">1.0</strong></label>
+          <label for="rating-min"><span data-i18n="profs.rating_label">Minimum Rating:</span> <strong id="rating-min-val">1.0</strong></label>
           <input type="range" id="rating-min" min="1" max="5" step="0.5" value="1"
             aria-label="Minimum rating filter">
         </div>
 
         <div class="filter-group">
-          <label for="wta-filter">Min. Would Take Again</label>
+          <label for="wta-filter" data-i18n="profs.wta_label">Min. Would Take Again</label>
           <select id="wta-filter" class="form-select" aria-label="Filter by would take again">
-            <option value="0">Any</option>
+            <option value="0" data-i18n="profs.wta_any">Any</option>
             <option value="50">50%+</option>
             <option value="70">70%+</option>
             <option value="80">80%+</option>
@@ -77,12 +77,12 @@
         <div class="filter-group">
           <label>
             <input type="checkbox" id="verified-only" class="form-check-input me-1">
-            Verified professors only
+            <span data-i18n="profs.verified_only">Verified professors only</span>
           </label>
         </div>
 
         <button class="btn btn-outline-secondary btn-sm w-100 mt-2" id="reset-filters">
-          <i class="bi bi-arrow-counterclockwise me-1" aria-hidden="true"></i> Reset Filters
+          <i class="bi bi-arrow-counterclockwise me-1" aria-hidden="true"></i> <span data-i18n="profs.reset">Reset Filters</span>
         </button>
       </aside>
     </div>
@@ -90,14 +90,14 @@
     <!-- Results -->
     <div class="col-lg-9">
       <div class="results-toolbar">
-        <p class="results-count mb-0">Showing <strong id="results-count">0</strong> professors</p>
+        <p class="results-count mb-0"><span data-i18n="profs.showing">Showing</span> <strong id="results-count">0</strong> <span data-i18n="profs.count_suffix">professors</span></p>
         <div class="d-flex gap-2 align-items-center">
-          <span style="font-size:13px;color:var(--text-secondary)">Sort:</span>
+          <span style="font-size:13px;color:var(--text-secondary)" data-i18n="unis.sort_inline">Sort:</span>
           <select id="sort-by" class="form-select form-select-sm" style="width:180px" aria-label="Sort professors">
-            <option value="rating">Highest Rated</option>
-            <option value="reviews">Most Reviewed</option>
-            <option value="wta">Would Take Again</option>
-            <option value="alpha">Alphabetical</option>
+            <option value="rating" data-i18n="profs.sort_rating">Highest Rated</option>
+            <option value="reviews" data-i18n="profs.sort_reviews">Most Reviewed</option>
+            <option value="wta" data-i18n="profs.sort_wta">Would Take Again</option>
+            <option value="alpha" data-i18n="profs.sort_alpha">Alphabetical</option>
           </select>
         </div>
       </div>

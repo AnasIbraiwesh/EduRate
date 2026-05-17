@@ -19,15 +19,15 @@
   <div class="container">
     <div class="row align-items-center">
       <div class="col-lg-7">
-        <span class="hero-eyebrow" style="font-size:12px"><i class="bi bi-building me-1" aria-hidden="true"></i>All Institutions</span>
-        <h1 class="mt-2 mb-2">Universities in Jordan</h1>
-        <p class="mb-0">Browse and compare universities rated by verified students</p>
+        <span class="hero-eyebrow" style="font-size:12px"><i class="bi bi-building me-1" aria-hidden="true"></i><span data-i18n="unis.eyebrow">All Institutions</span></span>
+        <h1 class="mt-2 mb-2" data-i18n="unis.title">Universities in Jordan</h1>
+        <p class="mb-0" data-i18n="unis.subtitle">Browse and compare universities rated by verified students</p>
       </div>
       <div class="col-lg-5 mt-3 mt-lg-0">
         <div class="input-group">
           <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted" aria-hidden="true"></i></span>
           <input type="search" id="uni-search" class="form-control border-start-0 ps-0"
-            placeholder="Search by name or city…"
+            data-i18n-placeholder="unis.search_ph" placeholder="Search by name or city…"
             aria-label="Search universities" autocomplete="off">
         </div>
       </div>
@@ -41,12 +41,12 @@
     <!-- Sidebar Filters -->
     <div class="col-lg-3">
       <aside class="filter-sidebar" aria-label="Filter universities">
-        <div class="filter-title"><i class="bi bi-funnel" aria-hidden="true"></i> Filters</div>
+        <div class="filter-title"><i class="bi bi-funnel" aria-hidden="true"></i> <span data-i18n="unis.filter_title">Filters</span></div>
 
         <div class="filter-group">
-          <label for="city-filter">City / Location</label>
+          <label for="city-filter" data-i18n="unis.city_label">City / Location</label>
           <select id="city-filter" class="form-select" aria-label="Filter by city">
-            <option value="">All Cities</option>
+            <option value="" data-i18n="unis.all_cities">All Cities</option>
             <option value="Amman">Amman</option>
             <option value="Irbid">Irbid</option>
             <option value="Madaba">Madaba</option>
@@ -55,22 +55,22 @@
         </div>
 
         <div class="filter-group">
-          <label for="rating-min">Minimum Rating: <strong id="rating-min-val">1.0</strong></label>
+          <label for="rating-min"><span data-i18n="unis.rating_label">Minimum Rating:</span> <strong id="rating-min-val">1.0</strong></label>
           <input type="range" id="rating-min" min="1" max="5" step="0.5" value="1"
             aria-label="Minimum rating filter">
         </div>
 
         <div class="filter-group">
-          <label for="sort-by">Sort By</label>
+          <label for="sort-by" data-i18n="unis.sort_label">Sort By</label>
           <select id="sort-by" class="form-select" aria-label="Sort universities">
-            <option value="rating">Highest Rated</option>
-            <option value="reviews">Most Reviewed</option>
-            <option value="alpha">Alphabetical</option>
+            <option value="rating" data-i18n="unis.sort_rating">Highest Rated</option>
+            <option value="reviews" data-i18n="unis.sort_reviews">Most Reviewed</option>
+            <option value="alpha" data-i18n="unis.sort_alpha">Alphabetical</option>
           </select>
         </div>
 
         <button class="btn btn-outline-secondary btn-sm w-100 mt-2" id="reset-filters">
-          <i class="bi bi-arrow-counterclockwise me-1" aria-hidden="true"></i> Reset Filters
+          <i class="bi bi-arrow-counterclockwise me-1" aria-hidden="true"></i> <span data-i18n="unis.reset">Reset Filters</span>
         </button>
       </aside>
     </div>
@@ -78,13 +78,13 @@
     <!-- Results -->
     <div class="col-lg-9">
       <div class="results-toolbar">
-        <p class="results-count mb-0">Showing <strong id="results-count">0</strong> universities</p>
+        <p class="results-count mb-0"><span data-i18n="unis.showing">Showing</span> <strong id="results-count">0</strong> <span data-i18n="unis.count_suffix">universities</span></p>
         <div class="d-flex gap-2 align-items-center">
-          <span style="font-size:13px;color:var(--text-secondary)">Sort:</span>
+          <span style="font-size:13px;color:var(--text-secondary)" data-i18n="unis.sort_inline">Sort:</span>
           <select id="sort-by-inline" class="form-select form-select-sm" style="width:160px" aria-label="Sort universities">
-            <option value="rating">Highest Rated</option>
-            <option value="reviews">Most Reviewed</option>
-            <option value="alpha">Alphabetical</option>
+            <option value="rating" data-i18n="unis.sort_rating">Highest Rated</option>
+            <option value="reviews" data-i18n="unis.sort_reviews">Most Reviewed</option>
+            <option value="alpha" data-i18n="unis.sort_alpha">Alphabetical</option>
           </select>
         </div>
       </div>

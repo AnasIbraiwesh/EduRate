@@ -1,0 +1,50 @@
+# .NET build output
+bin/
+obj/
+
+# Compiled binaries
+*.dll
+*.exe
+*.pdb
+*.nupkg
+*.snupkg
+
+# NuGet
+packages/
+.nuget/
+*.nuget.props
+*.nuget.targets
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# VS Code
+.vscode/
+
+# JetBrains
+.idea/
+
+# Environment / secrets
+.env
+.env.*
+*.env
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+user-secrets.json
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Logs
+*.log
+logs/
