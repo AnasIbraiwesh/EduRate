@@ -1,0 +1,18 @@
+# .NET build output
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Configuration with secrets
+appsettings.json
+appsettings.*.json
+
+# IDE tool config
+.claude/
+
+# Logs
+*.log

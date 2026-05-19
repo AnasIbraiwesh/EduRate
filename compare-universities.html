@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compare Universities — EduRate</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="navbar-placeholder"></div>
+
+<header class="page-hero">
+  <div class="container">
+    <h1><i class="bi bi-layout-split me-2" aria-hidden="true"></i>Compare Universities</h1>
+    <p class="mb-0">Select two universities to compare them side-by-side</p>
+  </div>
+</header>
+
+<main class="container py-5">
+  <!-- ── Selector ────────────────────────────────────────── -->
+  <div class="compare-selector">
+    <div class="row align-items-end g-3">
+      <div class="col-md-5">
+        <label for="uni1-select" class="form-label fw-600">University A</label>
+        <select id="uni1-select" class="form-select" aria-label="Select first university">
+          <option value="" selected disabled>Choose a university…</option>
+        </select>
+      </div>
+      <div class="col-md-2 d-flex justify-content-center">
+        <div class="compare-vs" aria-hidden="true">VS</div>
+      </div>
+      <div class="col-md-5">
+        <label for="uni2-select" class="form-label fw-600">University B</label>
+        <select id="uni2-select" class="form-select" aria-label="Select second university">
+          <option value="" selected disabled>Choose a university…</option>
+        </select>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <button class="btn btn-primary btn-lg" id="compare-btn">
+        <i class="bi bi-bar-chart me-2" aria-hidden="true"></i>Compare Now
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Results ─────────────────────────────────────────── -->
+  <div id="compare-results" class="d-none" aria-live="polite">
+    <!-- Headers -->
+    <div class="row g-0 mb-0" id="compare-headers"></div>
+
+    <!-- Category rows -->
+    <div class="profile-card" style="border-radius:0 0 var(--radius-xl) var(--radius-xl)">
+      <div id="compare-rows"></div>
+
+      <!-- Overall winner -->
+      <div id="overall-winner" class="p-4 text-center" style="background:#f0f9ff;border-top:2px solid var(--secondary)"></div>
+    </div>
+
+    <!-- Radar Chart -->
+    <div class="profile-card mt-4">
+      <div class="profile-card-header">
+        <h2><i class="bi bi-graph-up text-primary me-2" aria-hidden="true"></i>Visual Comparison</h2>
+      </div>
+      <div class="profile-card-body">
+        <div style="max-height:400px;display:flex;justify-content:center">
+          <canvas id="compare-chart" aria-label="Radar chart comparing two universities" role="img" style="max-width:500px"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Placeholder -->
+  <div id="compare-placeholder" class="empty-state mt-4">
+    <div class="empty-state-icon" aria-hidden="true"><i class="bi bi-building"></i></div>
+    <h3>Select Two Universities</h3>
+    <p>Choose two universities from the dropdowns above to see a detailed side-by-side comparison.</p>
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+<script>
+let compareChart = null;
+
+function populateSelects() {
+  const sorted = [...UNIVERSITIES].sort((a,b) => a.name.localeCompare(b.name));
+  ['uni1-select','uni2-select'].forEach(id => {
+    const el = document.getElementById(id);
+    sorted.forEach(u => {
+      const opt = document.createElement('option');
+      opt.value = u.id; opt.textContent = u.name;
+      el.appendChild(opt);
+    });
+  });
+}
+
+function renderComparison(u1, u2) {
+  document.getElementById('compare-placeholder').classList.add('d-none');
+  document.getElementById('compare-results').classList.remove('d-none');
+
+  // Headers
+  document.getElementById('compare-headers').innerHTML = `
+    <div class="col-5">
+      <div class="compare-col-header">
+        <h3>${u1.name}</h3>
+        <p>${u1.city}, ${u1.country}</p>
+        <div class="rating-display justify-content-center">
+          ${starsHTML(u1.overallRating)}
+          <span style="color:#fff;font-weight:700">${u1.overallRating}</span>
+          <span style="color:rgba(255,255,255,.7);font-size:13px">(${u1.totalReviews})</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-2 d-flex align-items-stretch">
+      <div class="compare-cell-label d-flex align-items-center justify-content-center" style="width:100%;border-radius:0;background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;font-size:13px;font-weight:700">
+        CATEGORY
+      </div>
+    </div>
+    <div class="col-5">
+      <div class="compare-col-header" style="background:linear-gradient(135deg,#1a5276,var(--success))">
+        <h3>${u2.name}</h3>
+        <p>${u2.city}, ${u2.country}</p>
+        <div class="rating-display justify-content-center">
+          ${starsHTML(u2.overallRating)}
+          <span style="color:#fff;font-weight:700">${u2.overallRating}</span>
+          <span style="color:rgba(255,255,255,.7);font-size:13px">(${u2.totalReviews})</span>
+        </div>
+      </div>
+    </div>`;
+
+  // Category rows
+  let u1Wins = 0, u2Wins = 0;
+  const rows = UNIVERSITY_CATEGORIES.map(c => {
+    const v1 = u1.ratings[c.key], v2 = u2.ratings[c.key];
+    const w1 = v1 > v2, w2 = v2 > v1;
+    if (w1) u1Wins++;
+    if (w2) u2Wins++;
+    return `
+      <div class="compare-row">
+        <div class="compare-cell${w1 ? ' winner' : ''}" style="flex:1">
+          <div style="width:100%">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+              ${starsHTML(v1,'sm')}
+              <strong>${v1.toFixed(1)}</strong>
+              ${w1 ? '<span class="winner-badge">Winner</span>' : ''}
+            </div>
+            <div class="rating-bar-track" style="height:8px">
+              <div class="rating-bar-fill ${ratingColorClass(v1)}" style="width:${(v1/5)*100}%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="compare-cell-label">${c.label}</div>
+        <div class="compare-cell${w2 ? ' winner' : ''}" style="flex:1">
+          <div style="width:100%">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+              ${starsHTML(v2,'sm')}
+              <strong>${v2.toFixed(1)}</strong>
+              ${w2 ? '<span class="winner-badge">Winner</span>' : ''}
+            </div>
+            <div class="rating-bar-track" style="height:8px">
+              <div class="rating-bar-fill ${ratingColorClass(v2)}" style="width:${(v2/5)*100}%"></div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+  document.getElementById('compare-rows').innerHTML = rows;
+
+  // Overall winner
+  const winner = u1Wins > u2Wins ? u1 : u2Wins > u1Wins ? u2 : null;
+  document.getElementById('overall-winner').innerHTML = winner
+    ? `<div style="font-size:32px;margin-bottom:8px" aria-hidden="true">🏆</div>
+       <h3 style="color:var(--primary);margin-bottom:4px">Overall Winner: ${winner.name}</h3>
+       <p style="color:var(--text-secondary);margin:0">Won ${winner === u1 ? u1Wins : u2Wins} out of ${UNIVERSITY_CATEGORIES.length} categories</p>`
+    : `<h3 style="color:var(--text-secondary)">It's a Tie!</h3>
+       <p style="color:var(--text-secondary);margin:0">Both universities scored equally across all categories</p>`;
+
+  // Radar chart
+  if (compareChart) compareChart.destroy();
+  const ctx = document.getElementById('compare-chart').getContext('2d');
+  compareChart = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: UNIVERSITY_CATEGORIES.map(c => c.label),
+      datasets: [
+        { label: u1.shortName, data: UNIVERSITY_CATEGORIES.map(c => u1.ratings[c.key]), borderColor: '#1B4F72', backgroundColor: 'rgba(27,79,114,.2)', borderWidth: 2, pointBackgroundColor: '#1B4F72' },
+        { label: u2.shortName, data: UNIVERSITY_CATEGORIES.map(c => u2.ratings[c.key]), borderColor: '#27AE60', backgroundColor: 'rgba(39,174,96,.15)', borderWidth: 2, pointBackgroundColor: '#27AE60' }
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: { r: { min: 0, max: 5, ticks: { stepSize: 1, font: { size: 10 } }, pointLabels: { font: { size: 11 } } } },
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 12 } } } }
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  buildNavbar('compare');
+  buildFooter();
+  populateSelects();
+
+  // Pre-select from URL params
+  const id1 = getParam('id1'), id2 = getParam('id2');
+  if (id1) document.getElementById('uni1-select').value = id1;
+  if (id2) document.getElementById('uni2-select').value = id2;
+  if (id1 && id2) {
+    const u1 = getUniversityById(id1), u2 = getUniversityById(id2);
+    if (u1 && u2) renderComparison(u1, u2);
+  }
+
+  document.getElementById('compare-btn').addEventListener('click', () => {
+    const id1 = document.getElementById('uni1-select').value;
+    const id2 = document.getElementById('uni2-select').value;
+    if (!id1 || !id2) { showToast('Please select both universities.', 'error'); return; }
+    if (id1 === id2) { showToast('Please select two different universities.', 'error'); return; }
+    const u1 = getUniversityById(id1), u2 = getUniversityById(id2);
+    renderComparison(u1, u2);
+    history.replaceState(null, '', `?id1=${id1}&id2=${id2}`);
+  });
+});
+</script>
+</body>
+</html>

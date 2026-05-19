@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Professor Profile — EduRate</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="navbar-placeholder"></div>
+
+<!-- ── Profile Banner ──────────────────────────────────────── -->
+<header class="profile-banner" style="background:linear-gradient(135deg,#1a5276,var(--success))" aria-label="Professor profile header">
+  <div class="container">
+    <nav aria-label="Breadcrumb" class="mb-3">
+      <ol class="breadcrumb mb-0" style="font-size:13px">
+        <li class="breadcrumb-item"><a href="index.html" style="color:rgba(255,255,255,.7)">Home</a></li>
+        <li class="breadcrumb-item"><a href="professors.html" style="color:rgba(255,255,255,.7)">Professors</a></li>
+        <li class="breadcrumb-item active" style="color:#fff" id="breadcrumb-name">Loading…</li>
+      </ol>
+    </nav>
+    <div class="row align-items-center g-4">
+      <div class="col-lg-8">
+        <div style="font-size:56px;margin-bottom:8px" aria-hidden="true">👨‍🏫</div>
+        <h1 class="profile-name" id="prof-name">Loading…</h1>
+        <div class="profile-meta" id="prof-meta"></div>
+        <div id="course-chips" class="mb-4"></div>
+        <div class="profile-rating-big" id="prof-rating-big"></div>
+        <div class="d-flex gap-2 flex-wrap">
+          <button class="btn btn-lg" id="rate-btn"
+            style="background:#fff;color:#1a5276;border-radius:var(--radius-md)"
+            data-bs-toggle="modal" data-bs-target="#reviewModal">
+            <i class="bi bi-star me-2" aria-hidden="true"></i>Rate This Professor
+          </button>
+          <a id="compare-btn" href="#" class="btn btn-outline-light btn-lg">
+            <i class="bi bi-layout-split me-2" aria-hidden="true"></i>Compare
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-4 d-none d-lg-flex justify-content-center">
+        <div class="text-center">
+          <!-- Would Take Again Donut -->
+          <canvas id="wta-chart" width="150" height="150" aria-label="Would take again chart" role="img"></canvas>
+          <p style="color:rgba(255,255,255,.8);font-size:14px;margin-top:8px">Would Take Again</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ── Main Content ────────────────────────────────────────── -->
+<main class="container py-5" id="main-content">
+  <div class="row g-4">
+    <!-- Left: Metrics + Chart -->
+    <div class="col-lg-4">
+      <!-- Rating Metrics -->
+      <div class="profile-card mb-4">
+        <div class="profile-card-header">
+          <h2><i class="bi bi-bar-chart-fill me-2" style="color:var(--success)" aria-hidden="true"></i>Rating Summary</h2>
+        </div>
+        <div class="profile-card-body" id="rating-metrics"></div>
+      </div>
+
+      <!-- Grade Distribution -->
+      <div class="profile-card mb-4">
+        <div class="profile-card-header">
+          <h2><i class="bi bi-mortarboard me-2" style="color:var(--success)" aria-hidden="true"></i>Grade Distribution</h2>
+        </div>
+        <div class="profile-card-body">
+          <div class="chart-wrap" style="height:200px">
+            <canvas id="grade-chart" aria-label="Grade distribution chart" role="img"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="profile-card">
+        <div class="profile-card-header">
+          <h2><i class="bi bi-info-circle me-2" style="color:var(--success)" aria-hidden="true"></i>Quick Info</h2>
+        </div>
+        <div class="profile-card-body" id="quick-info"></div>
+      </div>
+    </div>
+
+    <!-- Right: Reviews -->
+    <div class="col-lg-8">
+      <div class="profile-card">
+        <div class="profile-card-header flex-wrap gap-2">
+          <h2><i class="bi bi-chat-quote me-2" style="color:var(--success)" aria-hidden="true"></i>Student Reviews</h2>
+          <div class="d-flex gap-2 flex-wrap">
+            <select id="course-filter" class="form-select form-select-sm" style="width:180px" aria-label="Filter reviews by course">
+              <option value="">All Courses</option>
+            </select>
+            <select id="sort-reviews" class="form-select form-select-sm" style="width:150px" aria-label="Sort reviews">
+              <option value="recent">Most Recent</option>
+              <option value="highest">Highest Rated</option>
+              <option value="lowest">Lowest Rated</option>
+            </select>
+          </div>
+        </div>
+        <div class="profile-card-body">
+          <div id="no-reviews" class="empty-state d-none">
+            <div class="empty-state-icon" aria-hidden="true"><i class="bi bi-chat-right-text"></i></div>
+            <h3>No reviews yet</h3>
+            <p>Be the first to rate this professor!</p>
+            <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#reviewModal">Rate This Professor</button>
+          </div>
+          <div id="reviews-container" aria-live="polite" aria-label="Student reviews"></div>
+          <div id="reviews-pagination" class="mt-3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ── Review Modal ────────────────────────────────────────── -->
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-modal="true" role="dialog">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header" style="background:linear-gradient(135deg,#1a5276,var(--success))">
+        <h2 class="modal-title" id="reviewModalLabel"><i class="bi bi-star me-2" aria-hidden="true"></i>Rate This Professor</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="modal-auth-msg" class="text-center py-4">
+          <div style="font-size:48px;margin-bottom:16px" aria-hidden="true">🔒</div>
+          <h3>Login Required</h3>
+          <p class="text-muted mb-4">You must be logged in as a student to rate professors.</p>
+          <a href="login.html" class="btn btn-secondary">Log In</a>
+          <a href="signup.html" class="btn btn-outline-secondary ms-2">Sign Up</a>
+        </div>
+        <form id="prof-review-form" novalidate style="display:none">
+          <div class="row g-3">
+            <!-- Course -->
+            <div class="col-md-6">
+              <label for="review-course" class="form-label">Course <span style="color:var(--danger)">*</span></label>
+              <select id="review-course" class="form-select" required aria-label="Select course">
+                <option value="" selected disabled>Select a course…</option>
+              </select>
+              <div class="invalid-feedback" id="course-error" role="alert"></div>
+            </div>
+            <!-- Grade -->
+            <div class="col-md-6">
+              <label for="review-grade" class="form-label">Grade Received</label>
+              <select id="review-grade" class="form-select" aria-label="Grade received">
+                <option value="">Prefer not to say</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+                <option value="F">F</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Would Take Again -->
+          <div class="mt-3 mb-2">
+            <label class="form-label">Would Take Again? <span style="color:var(--danger)">*</span></label>
+            <div class="d-flex gap-2" role="group" aria-label="Would take again">
+              <button type="button" class="btn btn-outline-success flex-fill wta-btn" data-val="true" id="wta-yes">
+                <i class="bi bi-check-circle me-1" aria-hidden="true"></i> Yes
+              </button>
+              <button type="button" class="btn btn-outline-danger flex-fill wta-btn" data-val="false" id="wta-no">
+                <i class="bi bi-x-circle me-1" aria-hidden="true"></i> No
+              </button>
+            </div>
+            <div class="invalid-feedback d-block" id="wta-error" style="display:none!important" role="alert"></div>
+          </div>
+
+          <!-- Rating categories -->
+          <div class="review-form-section">Ratings</div>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label mb-1" style="font-size:13px;font-weight:600">Difficulty</label>
+              <div id="star-difficulty"></div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb-1" style="font-size:13px;font-weight:600">Workload</label>
+              <div id="star-workload"></div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label mb-1" style="font-size:13px;font-weight:600">Friendliness</label>
+              <div id="star-friendliness"></div>
+            </div>
+          </div>
+
+          <!-- Written review -->
+          <div class="review-form-section mt-4">Written Review</div>
+          <div class="mb-2">
+            <label for="review-text" class="form-label">Your Review <span style="color:var(--danger)">*</span></label>
+            <textarea id="review-text" class="form-control" rows="4" minlength="50"
+              placeholder="Share your experience with this professor (minimum 50 characters)…" required></textarea>
+            <div class="form-text d-flex justify-content-between">
+              <span>Minimum 50 characters</span>
+              <span id="char-count" style="color:var(--danger)">0 / 50</span>
+            </div>
+            <div class="invalid-feedback" id="review-text-error" role="alert"></div>
+            <div id="abusive-warning" class="alert alert-warning py-2 mt-2 d-none" role="alert">
+              <i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i>
+              Your review may contain inappropriate language. Please revise before submitting.
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer" id="modal-footer-content"></div>
+    </div>
+  </div>
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+<script>
+const REVIEWS_PER_PAGE = 5;
+let currentPage = 1;
+let allReviews = [];
+let prof = null;
+let wtaSelected = null;
+let starValues = {};
+let gradeChart = null, wtaChart = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  buildNavbar('professors');
+  buildFooter();
+
+  const id = getParam('id');
+  prof = getProfessorById(id);
+
+  if (!prof) {
+    document.getElementById('main-content').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon"><i class="bi bi-exclamation-circle"></i></div>
+        <h3>Professor Not Found</h3>
+        <p>The professor you're looking for doesn't exist.</p>
+        <a href="professors.html" class="btn btn-secondary">Browse Professors</a>
+      </div>`;
+    return;
+  }
+
+  // ── Header ─────────────────────────────────────────────────
+  document.title = `${prof.name} — EduRate`;
+  document.getElementById('prof-name').innerHTML = `${prof.name}
+    ${prof.isVerified ? '<span class="badge-verified ms-2"><i class="bi bi-patch-check-fill me-1" aria-hidden="true"></i>Verified</span>' : ''}`;
+  document.getElementById('breadcrumb-name').textContent = prof.name;
+  document.getElementById('prof-meta').innerHTML = `
+    <span><i class="bi bi-mortarboard" aria-hidden="true"></i>${prof.department}</span>
+    <span><i class="bi bi-building" aria-hidden="true"></i><a href="university-profile.html?id=${prof.university}" style="color:rgba(255,255,255,.8)">${prof.universityName}</a></span>
+    <span><i class="bi bi-journal-text" aria-hidden="true"></i>${prof.courses.length} Courses</span>`;
+  document.getElementById('course-chips').innerHTML = prof.courses.map(c =>
+    `<span class="chip" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3)">${c}</span>`
+  ).join('');
+  document.getElementById('prof-rating-big').innerHTML = `
+    <div class="rating-num">${prof.overallRating.toFixed(1)}</div>
+    <div>
+      <div class="rating-stars">${starsHTML(prof.overallRating, 'lg')}</div>
+      <div style="color:rgba(255,255,255,.7);font-size:14px">${prof.totalReviews} reviews</div>
+    </div>`;
+  document.getElementById('compare-btn').href = `compare-professors.html?id1=${prof.id}`;
+
+  // WTA Donut
+  const wtaCtx = document.getElementById('wta-chart').getContext('2d');
+  wtaChart = new Chart(wtaCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Would Take Again', 'Would Not'],
+      datasets: [{ data: [prof.wouldTakeAgain, 100 - prof.wouldTakeAgain], backgroundColor: ['#27AE60','rgba(255,255,255,.2)'], borderWidth: 0, hoverBorderWidth: 0 }]
+    },
+    options: {
+      cutout: '70%', responsive: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.raw}%` } }
+      }
+    }
+  });
+  // Center text plugin
+  Chart.register({
+    id: 'wta-center-text',
+    afterDraw(chart) {
+      if (chart.canvas.id !== 'wta-chart') return;
+      const { ctx, chartArea: { left, right, top, bottom } } = chart;
+      ctx.save();
+      ctx.font = 'bold 20px Poppins,sans-serif';
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(`${prof.wouldTakeAgain}%`, (left + right) / 2, (top + bottom) / 2);
+      ctx.restore();
+    }
+  });
+
+  // ── Rating Metrics ────────────────────────────────────────
+  document.getElementById('rating-metrics').innerHTML =
+    PROFESSOR_CATEGORIES.map(c => ratingBarHTML(c.label, prof.ratings[c.key])).join('') +
+    `<div class="mt-4 p-3" style="background:#eafaf1;border-radius:var(--radius-md);display:flex;align-items:center;gap:12px">
+       <div style="font-size:28px;font-weight:700;color:var(--success)">${prof.wouldTakeAgain}%</div>
+       <div>
+         <div style="font-weight:600;font-size:14px;color:var(--text-primary)">Would Take Again</div>
+         <div style="font-size:13px;color:var(--text-secondary)">Based on ${prof.totalReviews} reviews</div>
+       </div>
+     </div>`;
+
+  // ── Grade Distribution Chart ──────────────────────────────
+  allReviews = getProfessorReviews(prof.id);
+  const gradeMap = { A: 0, B: 0, C: 0, D: 0, F: 0 };
+  allReviews.forEach(r => { if (r.grade && gradeMap[r.grade] !== undefined) gradeMap[r.grade]++; });
+  const gradeCtx = document.getElementById('grade-chart').getContext('2d');
+  gradeChart = new Chart(gradeCtx, {
+    type: 'bar',
+    data: {
+      labels: Object.keys(gradeMap),
+      datasets: [{
+        label: 'Students',
+        data: Object.values(gradeMap),
+        backgroundColor: ['#27AE60','#2E86C1','#F39C12','#E67E22','#E74C3C'],
+        borderRadius: 6, borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+    }
+  });
+
+  // ── Quick Info ─────────────────────────────────────────────
+  document.getElementById('quick-info').innerHTML = `
+    <div class="d-flex flex-column gap-2">
+      <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+        <span style="font-size:14px;color:var(--text-secondary)">University</span>
+        <a href="university-profile.html?id=${prof.university}" style="font-size:14px;font-weight:600">${getUniversityById(prof.university)?.shortName}</a>
+      </div>
+      <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+        <span style="font-size:14px;color:var(--text-secondary)">Department</span>
+        <span style="font-size:14px;font-weight:600">${prof.department}</span>
+      </div>
+      <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+        <span style="font-size:14px;color:var(--text-secondary)">Total Reviews</span>
+        <span style="font-size:14px;font-weight:600">${prof.totalReviews}</span>
+      </div>
+      <div class="d-flex justify-content-between align-items-center py-2">
+        <span style="font-size:14px;color:var(--text-secondary)">Status</span>
+        ${prof.isVerified
+          ? '<span class="chip" style="background:#eafaf1;color:var(--success)"><i class="bi bi-patch-check-fill me-1"></i>Verified</span>'
+          : '<span class="chip chip-outline">Unverified</span>'}
+      </div>
+    </div>`;
+
+  // ── Course filter dropdown ────────────────────────────────
+  const courses = [...new Set(allReviews.map(r => r.course))].sort();
+  const courseFilterEl = document.getElementById('course-filter');
+  courses.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c; opt.textContent = c;
+    courseFilterEl.appendChild(opt);
+  });
+
+  // ── Reviews ───────────────────────────────────────────────
+  function renderReviews() {
+    let reviews = sortReviews(allReviews, document.getElementById('sort-reviews').value);
+    const course = document.getElementById('course-filter').value;
+    if (course) reviews = reviews.filter(r => r.course === course);
+
+    const start = (currentPage - 1) * REVIEWS_PER_PAGE;
+    const page  = reviews.slice(start, start + REVIEWS_PER_PAGE);
+    const container = document.getElementById('reviews-container');
+
+    if (!reviews.length) {
+      document.getElementById('no-reviews').classList.remove('d-none');
+      container.innerHTML = '';
+      document.getElementById('reviews-pagination').innerHTML = '';
+      return;
+    }
+    document.getElementById('no-reviews').classList.add('d-none');
+    container.innerHTML = page.map(renderProfessorReviewCard).join('');
+    renderPagination('reviews-pagination', reviews.length, REVIEWS_PER_PAGE, currentPage, p => {
+      currentPage = p; renderReviews();
+      container.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+  renderReviews();
+  document.getElementById('sort-reviews').addEventListener('change', () => { currentPage = 1; renderReviews(); });
+  document.getElementById('course-filter').addEventListener('change', () => { currentPage = 1; renderReviews(); });
+
+  // ── Review Modal ──────────────────────────────────────────
+  const reviewModal = document.getElementById('reviewModal');
+  reviewModal.addEventListener('show.bs.modal', () => {
+    const user = AUTH.get();
+    if (!user || user.role !== 'student') {
+      document.getElementById('modal-auth-msg').style.display = '';
+      document.getElementById('prof-review-form').style.display = 'none';
+      document.getElementById('modal-footer-content').innerHTML = '';
+    } else {
+      document.getElementById('modal-auth-msg').style.display = 'none';
+      document.getElementById('prof-review-form').style.display = '';
+      document.getElementById('modal-footer-content').innerHTML = `
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" id="submit-review-btn">
+          <span id="submit-text">Submit Rating</span>
+          <span id="submit-spinner" class="spinner-border spinner-border-sm ms-2 d-none" aria-label="Submitting"></span>
+        </button>`;
+
+      // Populate course dropdown in form
+      const reviewCourse = document.getElementById('review-course');
+      reviewCourse.innerHTML = '<option value="" selected disabled>Select a course…</option>';
+      prof.courses.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c; opt.textContent = c;
+        reviewCourse.appendChild(opt);
+      });
+
+      // Star inputs
+      starValues = {};
+      buildStarInput('star-difficulty',   'difficulty',   v => starValues.difficulty   = v);
+      buildStarInput('star-workload',     'workload',     v => starValues.workload     = v);
+      buildStarInput('star-friendliness', 'friendliness', v => starValues.friendliness = v);
+
+      // WTA buttons
+      wtaSelected = null;
+      document.querySelectorAll('.wta-btn').forEach(btn => {
+        btn.classList.remove('btn-success','btn-danger','active');
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.wta-btn').forEach(b => { b.classList.remove('btn-success','btn-danger'); b.classList.add(b.dataset.val === 'true' ? 'btn-outline-success' : 'btn-outline-danger'); });
+          wtaSelected = btn.dataset.val === 'true';
+          btn.classList.remove('btn-outline-success','btn-outline-danger');
+          btn.classList.add(wtaSelected ? 'btn-success' : 'btn-danger');
+        });
+      });
+
+      document.getElementById('submit-review-btn').addEventListener('click', handleSubmit);
+    }
+  });
+
+  function handleSubmit() {
+    const course = document.getElementById('review-course').value;
+    const text   = document.getElementById('review-text').value.trim();
+    let valid = true;
+
+    document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+    document.querySelectorAll('.invalid-feedback').forEach(el => el.textContent = '');
+
+    if (!course) { document.getElementById('review-course').classList.add('is-invalid'); document.getElementById('course-error').textContent = 'Please select a course.'; valid = false; }
+    if (wtaSelected === null) { document.getElementById('wta-error').textContent = 'Please indicate if you would take this professor again.'; document.getElementById('wta-error').style.display = 'block'; valid = false; }
+    if (!starValues.difficulty || !starValues.workload || !starValues.friendliness) { showToast('Please rate all three categories.', 'error'); valid = false; }
+    if (text.length < 50) { document.getElementById('review-text').classList.add('is-invalid'); document.getElementById('review-text-error').textContent = `Review must be at least 50 characters (currently ${text.length}).`; valid = false; }
+    if (!valid) return;
+
+    if (containsAbusiveLanguage(text)) { document.getElementById('abusive-warning').classList.remove('d-none'); return; }
+    document.getElementById('abusive-warning').classList.add('d-none');
+
+    document.getElementById('submit-review-btn').disabled = true;
+    document.getElementById('submit-spinner').classList.remove('d-none');
+    document.getElementById('submit-text').textContent = 'Submitting…';
+
+    setTimeout(() => {
+      bootstrap.Modal.getInstance(reviewModal).hide();
+      showToast('Rating submitted! It will appear after moderation.', 'success');
+    }, 1500);
+  }
+
+  document.getElementById('review-text').addEventListener('input', function() {
+    const len = this.value.trim().length;
+    const el = document.getElementById('char-count');
+    el.textContent = `${len} / 50`;
+    el.style.color = len >= 50 ? 'var(--success)' : 'var(--danger)';
+  });
+});
+</script>
+</body>
+</html>

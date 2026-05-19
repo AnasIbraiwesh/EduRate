@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recommendations — EduRate</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="navbar-placeholder"></div>
+
+<header class="page-hero" style="background:linear-gradient(135deg,#6c3483,#2E86C1)">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-8">
+        <span class="hero-eyebrow" style="font-size:12px"><i class="bi bi-stars me-1" aria-hidden="true"></i>Personalized For You</span>
+        <h1 class="mt-2 mb-2">Your Recommendations</h1>
+        <p class="mb-0">Based on your profile and ratings, here are the best matches for you</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container py-5" id="main-content">
+  <!-- Auth gate -->
+  <div id="auth-gate" class="d-none">
+    <div class="empty-state" style="background:var(--surface);border-radius:var(--radius-xl);padding:64px 40px;box-shadow:var(--shadow-card)">
+      <div style="font-size:64px;margin-bottom:16px" aria-hidden="true">🔒</div>
+      <h2>Login Required</h2>
+      <p style="max-width:400px;margin:0 auto 24px">You need to be logged in as a student to view personalized recommendations.</p>
+      <div class="d-flex gap-2 justify-content-center flex-wrap">
+        <a href="login.html" class="btn btn-primary btn-lg">Log In</a>
+        <a href="signup.html" class="btn btn-outline-primary btn-lg">Sign Up</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recommendations content -->
+  <div id="rec-content">
+    <!-- How It Works -->
+    <div class="profile-card mb-5" style="background:linear-gradient(135deg,#f5eef8,#eaf4fb)">
+      <div class="profile-card-body d-flex gap-4 align-items-center flex-wrap">
+        <div style="font-size:40px" aria-hidden="true">🤖</div>
+        <div>
+          <h3 style="color:#6c3483;margin-bottom:4px">How Recommendations Work</h3>
+          <p style="font-size:14px;color:var(--text-secondary);margin:0">
+            Our system analyzes your university, browsing history, and rating patterns to suggest the best matches.
+            The more reviews you write, the better your recommendations become.
+          </p>
+        </div>
+        <a href="universities.html" class="btn btn-outline-primary ms-auto btn-sm">Write Reviews</a>
+      </div>
+    </div>
+
+    <!-- University Recommendations -->
+    <div class="mb-5">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <span class="section-eyebrow">Top Picks</span>
+          <h2 class="section-title mb-0">Recommended Universities</h2>
+        </div>
+        <a href="universities.html" class="btn btn-outline-primary btn-sm">Browse All</a>
+      </div>
+      <div class="row g-4" id="uni-recs" aria-label="University recommendations"></div>
+    </div>
+
+    <!-- Professor Recommendations -->
+    <div class="mb-5">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <span class="section-eyebrow">Great Educators</span>
+          <h2 class="section-title mb-0">Recommended Professors</h2>
+        </div>
+        <a href="professors.html" class="btn btn-outline-secondary btn-sm">Browse All</a>
+      </div>
+      <div class="row g-4" id="prof-recs" aria-label="Professor recommendations"></div>
+    </div>
+
+    <!-- Preference Prompt -->
+    <div class="profile-card" style="background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff">
+      <div class="profile-card-body text-center py-4">
+        <div style="font-size:40px;margin-bottom:12px" aria-hidden="true">✨</div>
+        <h3 style="color:#fff;margin-bottom:8px">Improve Your Recommendations</h3>
+        <p style="color:rgba(255,255,255,.85);margin-bottom:24px">
+          Rate universities and professors to help us understand your preferences and find better matches.
+        </p>
+        <div class="d-flex gap-2 justify-content-center flex-wrap">
+          <a href="universities.html" class="btn" style="background:#fff;color:var(--primary);font-weight:600">
+            <i class="bi bi-building me-1" aria-hidden="true"></i>Rate a University
+          </a>
+          <a href="professors.html" class="btn" style="background:rgba(255,255,255,.2);color:#fff;border:1.5px solid rgba(255,255,255,.4);font-weight:600">
+            <i class="bi bi-mortarboard me-1" aria-hidden="true"></i>Rate a Professor
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+<script>
+// Match percentages — demo: generate pseudo-random but consistent values
+function matchPct(seed) {
+  return 70 + (seed * 7) % 28;
+}
+
+function recUniCardHTML(uni, match) {
+  return `
+    <div class="col-lg-4 col-md-6">
+      <div class="rec-card">
+        <div class="rec-card-top">
+          <span class="match-badge" aria-label="${match}% match">${match}% Match</span>
+          <div style="font-size:36px;margin-bottom:8px" aria-hidden="true">🏛</div>
+          <div style="font-size:16px;font-weight:700;color:#fff">${uni.name}</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.8)">${uni.city}, ${uni.country}</div>
+        </div>
+        <div class="rec-card-body">
+          <div class="rating-display mb-2">
+            ${starsHTML(uni.overallRating)}
+            <span class="rating-value">${uni.overallRating}</span>
+            <span class="rating-count">(${uni.totalReviews} reviews)</span>
+          </div>
+          <div style="margin:12px 0;font-size:13px;color:var(--text-secondary)">
+            Top strengths: ${Object.entries(uni.ratings).sort((a,b) => b[1]-a[1]).slice(0,2).map(([k]) => UNIVERSITY_CATEGORIES.find(c=>c.key===k)?.label).join(', ')}
+          </div>
+          <a href="university-profile.html?id=${uni.id}" class="btn btn-primary btn-sm w-100">View Profile</a>
+        </div>
+      </div>
+    </div>`;
+}
+
+function recProfCardHTML(prof, match) {
+  return `
+    <div class="col-lg-4 col-md-6">
+      <div class="rec-card" style="border-top:3px solid var(--success)">
+        <div class="rec-card-top" style="background:linear-gradient(135deg,#1a5276,var(--success))">
+          <span class="match-badge" aria-label="${match}% match">${match}% Match</span>
+          <div style="font-size:36px;margin-bottom:8px" aria-hidden="true">👨‍🏫</div>
+          <div style="font-size:16px;font-weight:700;color:#fff">
+            ${prof.name}
+            ${prof.isVerified ? '<i class="bi bi-patch-check-fill ms-1" style="font-size:14px" aria-label="Verified"></i>' : ''}
+          </div>
+          <div style="font-size:13px;color:rgba(255,255,255,.8)">${prof.department} · ${getUniversityById(prof.university)?.shortName}</div>
+        </div>
+        <div class="rec-card-body">
+          <div class="rating-display mb-2">
+            ${starsHTML(prof.overallRating)}
+            <span class="rating-value">${prof.overallRating}</span>
+            <span class="rating-count">(${prof.totalReviews} reviews)</span>
+          </div>
+          <div style="display:flex;gap:8px;margin:10px 0;flex-wrap:wrap">
+            <span class="chip" style="background:#eafaf1;color:var(--success);font-size:11px">
+              <i class="bi bi-check-circle me-1" aria-hidden="true"></i>${prof.wouldTakeAgain}% WTA
+            </span>
+            ${prof.courses.slice(0,2).map(c => `<span class="chip chip-outline" style="font-size:11px">${c}</span>`).join('')}
+          </div>
+          <a href="professor-profile.html?id=${prof.id}" class="btn btn-secondary btn-sm w-100">View Profile</a>
+        </div>
+      </div>
+    </div>`;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  buildNavbar('');
+  buildFooter();
+
+  const user = AUTH.get();
+  if (!user || user.role !== 'student') {
+    document.getElementById('auth-gate').classList.remove('d-none');
+    document.getElementById('rec-content').style.display = 'none';
+    return;
+  }
+
+  // Render recommendations
+  const topUnis  = getTopUniversities(6);
+  const topProfs = getTopProfessors(6);
+
+  document.getElementById('uni-recs').innerHTML = topUnis.map((u, i) => recUniCardHTML(u, matchPct(u.id + i))).join('');
+  document.getElementById('prof-recs').innerHTML = topProfs.map((p, i) => recProfCardHTML(p, matchPct(p.id + i + 3))).join('');
+});
+</script>
+</body>
+</html>
