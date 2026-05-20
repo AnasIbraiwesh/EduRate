@@ -90,6 +90,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script src="js/api.js"></script>
 <script src="js/data.js"></script>
 <script src="js/translations.js"></script>
 <script src="js/i18n.js"></script>
@@ -134,14 +135,11 @@ function renderComparison(p1, p2) {
   document.getElementById('compare-placeholder').classList.add('d-none');
   document.getElementById('compare-results').classList.remove('d-none');
 
-  const u1 = getUniversityById(p1.university);
-  const u2 = getUniversityById(p2.university);
-
   document.getElementById('compare-headers').innerHTML = `
     <div class="col-5">
       <div class="compare-col-header">
-        <h3>${p1.name}${p1.isVerified ? ' <i class="bi bi-patch-check-fill" style="font-size:16px" aria-label="Verified"></i>' : ''}</h3>
-        <p>${p1.department} · ${u1?.shortName || p1.universityName}</p>
+        <h3>${p1.name}</h3>
+        <p>${p1.department} · ${p1.universityName}</p>
         <div class="rating-display justify-content-center">
           ${starsHTML(p1.overallRating)}
           <span style="color:#fff;font-weight:700">${p1.overallRating}</span>
@@ -155,8 +153,8 @@ function renderComparison(p1, p2) {
     </div>
     <div class="col-5">
       <div class="compare-col-header" style="background:linear-gradient(135deg,var(--primary),var(--secondary))">
-        <h3>${p2.name}${p2.isVerified ? ' <i class="bi bi-patch-check-fill" style="font-size:16px" aria-label="Verified"></i>' : ''}</h3>
-        <p>${p2.department} · ${u2?.shortName || p2.universityName}</p>
+        <h3>${p2.name}</h3>
+        <p>${p2.department} · ${p2.universityName}</p>
         <div class="rating-display justify-content-center">
           ${starsHTML(p2.overallRating)}
           <span style="color:#fff;font-weight:700">${p2.overallRating}</span>
@@ -249,23 +247,26 @@ document.addEventListener('DOMContentLoaded', () => {
   buildFooter();
   I18N.init();
 
-  const sorted = [...PROFESSORS].sort((a,b) => a.name.localeCompare(b.name));
-  ['prof1-select','prof2-select'].forEach(id => {
-    const el = document.getElementById(id);
-    sorted.forEach(p => {
-      const opt = document.createElement('option');
-      opt.value = p.id;
-      opt.textContent = `${p.name} (${p.department} · ${getUniversityById(p.university)?.shortName || ''})`;
-      el.appendChild(opt);
+  API.getProfessors().then(profs => {
+    const sorted = profs.map(normalizeProfessor).sort((a,b) => a.name.localeCompare(b.name));
+    ['prof1-select','prof2-select'].forEach(id => {
+      const el = document.getElementById(id);
+      sorted.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = `${p.name} (${p.department} · ${p.universityName})`;
+        el.appendChild(opt);
+      });
     });
-  });
+  }).catch(() => {});
 
   const id1 = getParam('id1'), id2 = getParam('id2');
   if (id1) document.getElementById('prof1-select').value = id1;
   if (id2) document.getElementById('prof2-select').value = id2;
   if (id1 && id2) {
-    const p1 = getProfessorById(id1), p2 = getProfessorById(id2);
-    if (p1 && p2) renderComparison(p1, p2);
+    Promise.all([API.getProfessor(id1), API.getProfessor(id2)])
+      .then(([p1Raw, p2Raw]) => renderComparison(normalizeProfessor(p1Raw), normalizeProfessor(p2Raw)))
+      .catch(() => {});
   }
 
   document.getElementById('compare-btn').addEventListener('click', () => {
@@ -273,9 +274,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const id2 = document.getElementById('prof2-select').value;
     if (!id1 || !id2) { showToast('Please select both professors.', 'error'); return; }
     if (id1 === id2) { showToast('Please select two different professors.', 'error'); return; }
-    const p1 = getProfessorById(id1), p2 = getProfessorById(id2);
-    renderComparison(p1, p2);
-    history.replaceState(null, '', `?id1=${id1}&id2=${id2}`);
+    Promise.all([API.getProfessor(id1), API.getProfessor(id2)])
+      .then(([p1Raw, p2Raw]) => {
+        renderComparison(normalizeProfessor(p1Raw), normalizeProfessor(p2Raw));
+        history.replaceState(null, '', `?id1=${id1}&id2=${id2}`);
+      })
+      .catch(() => showToast('Failed to load professor data.', 'error'));
   });
 });
 </script>

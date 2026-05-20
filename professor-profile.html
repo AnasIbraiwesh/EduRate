@@ -216,6 +216,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script src="js/api.js"></script>
 <script src="js/data.js"></script>
 <script src="js/translations.js"></script>
 <script src="js/i18n.js"></script>
@@ -223,8 +224,7 @@
 <script>
 const REVIEWS_PER_PAGE = 5;
 let currentPage = 1;
-let allReviews = [];
-let prof = null;
+let _profReviews = [];
 let wtaSelected = null;
 let starValues = {};
 let gradeChart = null, wtaChart = null;
@@ -235,9 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
   I18N.init();
 
   const id = getParam('id');
-  prof = getProfessorById(id);
-
-  if (!prof) {
+  if (!id) {
     document.getElementById('main-content').innerHTML = `
       <div class="empty-state">
         <div class="empty-state-icon"><i class="bi bi-exclamation-circle"></i></div>
@@ -248,232 +246,216 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // ── Header ─────────────────────────────────────────────────
-  document.title = `${prof.name} — EduRate`;
-  document.getElementById('prof-name').innerHTML = `${prof.name}
-    ${prof.isVerified ? '<span class="badge-verified ms-2"><i class="bi bi-patch-check-fill me-1" aria-hidden="true"></i>Verified</span>' : ''}`;
-  document.getElementById('breadcrumb-name').textContent = prof.name;
-  document.getElementById('prof-meta').innerHTML = `
-    <span><i class="bi bi-mortarboard" aria-hidden="true"></i>${prof.department}</span>
-    <span><i class="bi bi-building" aria-hidden="true"></i><a href="university-profile.html?id=${prof.university}" style="color:rgba(255,255,255,.8)">${prof.universityName}</a></span>
-    <span><i class="bi bi-journal-text" aria-hidden="true"></i>${prof.courses.length} Courses</span>`;
-  document.getElementById('course-chips').innerHTML = prof.courses.map(c =>
-    `<span class="chip" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3)">${c}</span>`
-  ).join('');
-  document.getElementById('prof-rating-big').innerHTML = `
-    <div class="rating-num">${prof.overallRating.toFixed(1)}</div>
-    <div>
-      <div class="rating-stars">${starsHTML(prof.overallRating, 'lg')}</div>
-      <div style="color:rgba(255,255,255,.7);font-size:14px">${prof.totalReviews} reviews</div>
-    </div>`;
-  document.getElementById('compare-btn').href = `compare-professors.html?id1=${prof.id}`;
+  Promise.all([
+    API.getProfessor(id),
+    API.getProfessorReviews(id),
+  ]).then(([profRaw, reviewsRaw]) => {
+    const prof    = normalizeProfessor(profRaw);
+    _profReviews  = reviewsRaw.map(normalizeProfReview);
 
-  // WTA Donut
-  const wtaCtx = document.getElementById('wta-chart').getContext('2d');
-  wtaChart = new Chart(wtaCtx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Would Take Again', 'Would Not'],
-      datasets: [{ data: [prof.wouldTakeAgain, 100 - prof.wouldTakeAgain], backgroundColor: ['#27AE60','rgba(255,255,255,.2)'], borderWidth: 0, hoverBorderWidth: 0 }]
-    },
-    options: {
-      cutout: '70%', responsive: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: ctx => ` ${ctx.raw}%` } }
+    // ── Header ─────────────────────────────────────────────────
+    document.title = `${prof.name} — EduRate`;
+    document.getElementById('prof-name').textContent = prof.name;
+    document.getElementById('breadcrumb-name').textContent = prof.name;
+    document.getElementById('prof-meta').innerHTML = `
+      <span><i class="bi bi-mortarboard" aria-hidden="true"></i>${prof.department}</span>
+      <span><i class="bi bi-building" aria-hidden="true"></i><a href="university-profile.html?id=${prof.universityId}" style="color:rgba(255,255,255,.8)">${prof.universityName}</a></span>`;
+    document.getElementById('prof-rating-big').innerHTML = `
+      <div class="rating-num">${prof.overallRating.toFixed(1)}</div>
+      <div>
+        <div class="rating-stars">${starsHTML(prof.overallRating, 'lg')}</div>
+        <div style="color:rgba(255,255,255,.7);font-size:14px">${_profReviews.length} reviews</div>
+      </div>`;
+    document.getElementById('compare-btn').href = `compare-professors.html?id1=${prof.id}`;
+
+    // WTA Donut
+    const wtaCtx = document.getElementById('wta-chart').getContext('2d');
+    wtaChart = new Chart(wtaCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Would Take Again', 'Would Not'],
+        datasets: [{ data: [prof.wouldTakeAgain, 100 - prof.wouldTakeAgain], backgroundColor: ['#27AE60','rgba(255,255,255,.2)'], borderWidth: 0, hoverBorderWidth: 0 }]
+      },
+      options: {
+        cutout: '70%', responsive: false,
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.raw}%` } } }
       }
-    }
-  });
-  // Center text plugin
-  Chart.register({
-    id: 'wta-center-text',
-    afterDraw(chart) {
-      if (chart.canvas.id !== 'wta-chart') return;
-      const { ctx, chartArea: { left, right, top, bottom } } = chart;
-      ctx.save();
-      ctx.font = 'bold 20px Poppins,sans-serif';
-      ctx.fillStyle = '#fff';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(`${prof.wouldTakeAgain}%`, (left + right) / 2, (top + bottom) / 2);
-      ctx.restore();
-    }
-  });
-
-  // ── Rating Metrics ────────────────────────────────────────
-  document.getElementById('rating-metrics').innerHTML =
-    PROFESSOR_CATEGORIES.map(c => ratingBarHTML(c.label, prof.ratings[c.key])).join('') +
-    `<div class="mt-4 p-3" style="background:#eafaf1;border-radius:var(--radius-md);display:flex;align-items:center;gap:12px">
-       <div style="font-size:28px;font-weight:700;color:var(--success)">${prof.wouldTakeAgain}%</div>
-       <div>
-         <div style="font-weight:600;font-size:14px;color:var(--text-primary)">Would Take Again</div>
-         <div style="font-size:13px;color:var(--text-secondary)">Based on ${prof.totalReviews} reviews</div>
-       </div>
-     </div>`;
-
-  // ── Grade Distribution Chart ──────────────────────────────
-  allReviews = getProfessorReviews(prof.id);
-  const gradeMap = { A: 0, B: 0, C: 0, D: 0, F: 0 };
-  allReviews.forEach(r => { if (r.grade && gradeMap[r.grade] !== undefined) gradeMap[r.grade]++; });
-  const gradeCtx = document.getElementById('grade-chart').getContext('2d');
-  gradeChart = new Chart(gradeCtx, {
-    type: 'bar',
-    data: {
-      labels: Object.keys(gradeMap),
-      datasets: [{
-        label: 'Students',
-        data: Object.values(gradeMap),
-        backgroundColor: ['#27AE60','#2E86C1','#F39C12','#E67E22','#E74C3C'],
-        borderRadius: 6, borderSkipped: false
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
-    }
-  });
-
-  // ── Quick Info ─────────────────────────────────────────────
-  document.getElementById('quick-info').innerHTML = `
-    <div class="d-flex flex-column gap-2">
-      <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
-        <span style="font-size:14px;color:var(--text-secondary)">University</span>
-        <a href="university-profile.html?id=${prof.university}" style="font-size:14px;font-weight:600">${getUniversityById(prof.university)?.shortName}</a>
-      </div>
-      <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
-        <span style="font-size:14px;color:var(--text-secondary)">Department</span>
-        <span style="font-size:14px;font-weight:600">${prof.department}</span>
-      </div>
-      <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
-        <span style="font-size:14px;color:var(--text-secondary)">Total Reviews</span>
-        <span style="font-size:14px;font-weight:600">${prof.totalReviews}</span>
-      </div>
-      <div class="d-flex justify-content-between align-items-center py-2">
-        <span style="font-size:14px;color:var(--text-secondary)">Status</span>
-        ${prof.isVerified
-          ? '<span class="chip" style="background:#eafaf1;color:var(--success)"><i class="bi bi-patch-check-fill me-1"></i>Verified</span>'
-          : '<span class="chip chip-outline">Unverified</span>'}
-      </div>
-    </div>`;
-
-  // ── Course filter dropdown ────────────────────────────────
-  const courses = [...new Set(allReviews.map(r => r.course))].sort();
-  const courseFilterEl = document.getElementById('course-filter');
-  courses.forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = c; opt.textContent = c;
-    courseFilterEl.appendChild(opt);
-  });
-
-  // ── Reviews ───────────────────────────────────────────────
-  function renderReviews() {
-    let reviews = sortReviews(allReviews, document.getElementById('sort-reviews').value);
-    const course = document.getElementById('course-filter').value;
-    if (course) reviews = reviews.filter(r => r.course === course);
-
-    const start = (currentPage - 1) * REVIEWS_PER_PAGE;
-    const page  = reviews.slice(start, start + REVIEWS_PER_PAGE);
-    const container = document.getElementById('reviews-container');
-
-    if (!reviews.length) {
-      document.getElementById('no-reviews').classList.remove('d-none');
-      container.innerHTML = '';
-      document.getElementById('reviews-pagination').innerHTML = '';
-      return;
-    }
-    document.getElementById('no-reviews').classList.add('d-none');
-    container.innerHTML = page.map(renderProfessorReviewCard).join('');
-    renderPagination('reviews-pagination', reviews.length, REVIEWS_PER_PAGE, currentPage, p => {
-      currentPage = p; renderReviews();
-      container.scrollIntoView({ behavior: 'smooth' });
     });
-  }
-  renderReviews();
-  document.getElementById('sort-reviews').addEventListener('change', () => { currentPage = 1; renderReviews(); });
-  document.getElementById('course-filter').addEventListener('change', () => { currentPage = 1; renderReviews(); });
+    Chart.register({
+      id: 'wta-center-text',
+      afterDraw(chart) {
+        if (chart.canvas.id !== 'wta-chart') return;
+        const { ctx, chartArea: { left, right, top, bottom } } = chart;
+        ctx.save();
+        ctx.font = 'bold 20px Poppins,sans-serif';
+        ctx.fillStyle = '#fff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(`${prof.wouldTakeAgain}%`, (left + right) / 2, (top + bottom) / 2);
+        ctx.restore();
+      }
+    });
 
-  // ── Review Modal ──────────────────────────────────────────
-  const reviewModal = document.getElementById('reviewModal');
-  reviewModal.addEventListener('show.bs.modal', () => {
-    const user = AUTH.get();
-    if (!user || user.role !== 'student') {
-      document.getElementById('modal-auth-msg').style.display = '';
-      document.getElementById('prof-review-form').style.display = 'none';
-      document.getElementById('modal-footer-content').innerHTML = '';
-    } else {
-      document.getElementById('modal-auth-msg').style.display = 'none';
-      document.getElementById('prof-review-form').style.display = '';
-      document.getElementById('modal-footer-content').innerHTML = `
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-secondary" id="submit-review-btn">
-          <span id="submit-text">Submit Rating</span>
-          <span id="submit-spinner" class="spinner-border spinner-border-sm ms-2 d-none" aria-label="Submitting"></span>
-        </button>`;
+    // ── Rating Metrics ────────────────────────────────────────
+    document.getElementById('rating-metrics').innerHTML =
+      PROFESSOR_CATEGORIES.map(c => ratingBarHTML(c.label, prof.ratings[c.key] || 0)).join('') +
+      `<div class="mt-4 p-3" style="background:#eafaf1;border-radius:var(--radius-md);display:flex;align-items:center;gap:12px">
+         <div style="font-size:28px;font-weight:700;color:var(--success)">${prof.wouldTakeAgain}%</div>
+         <div>
+           <div style="font-weight:600;font-size:14px;color:var(--text-primary)">Would Take Again</div>
+           <div style="font-size:13px;color:var(--text-secondary)">Based on ${_profReviews.length} reviews</div>
+         </div>
+       </div>`;
 
-      // Populate course dropdown in form
-      const reviewCourse = document.getElementById('review-course');
-      reviewCourse.innerHTML = '<option value="" selected disabled>Select a course…</option>';
-      prof.courses.forEach(c => {
-        const opt = document.createElement('option');
-        opt.value = c; opt.textContent = c;
-        reviewCourse.appendChild(opt);
+    // ── Grade Distribution Chart ──────────────────────────────
+    const gradeMap = { A: 0, B: 0, C: 0, D: 0, F: 0 };
+    const gradeCtx = document.getElementById('grade-chart').getContext('2d');
+    gradeChart = new Chart(gradeCtx, {
+      type: 'bar',
+      data: {
+        labels: Object.keys(gradeMap),
+        datasets: [{ label: 'Students', data: Object.values(gradeMap), backgroundColor: ['#27AE60','#2E86C1','#F39C12','#E67E22','#E74C3C'], borderRadius: 6, borderSkipped: false }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+      }
+    });
+
+    // ── Quick Info ─────────────────────────────────────────────
+    document.getElementById('quick-info').innerHTML = `
+      <div class="d-flex flex-column gap-2">
+        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+          <span style="font-size:14px;color:var(--text-secondary)">University</span>
+          <a href="university-profile.html?id=${prof.universityId}" style="font-size:14px;font-weight:600">${prof.universityName || '—'}</a>
+        </div>
+        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+          <span style="font-size:14px;color:var(--text-secondary)">Department</span>
+          <span style="font-size:14px;font-weight:600">${prof.department}</span>
+        </div>
+        <div class="d-flex justify-content-between align-items-center py-2">
+          <span style="font-size:14px;color:var(--text-secondary)">Total Reviews</span>
+          <span style="font-size:14px;font-weight:600">${_profReviews.length}</span>
+        </div>
+      </div>`;
+
+    // ── Reviews ───────────────────────────────────────────────
+    function renderReviews() {
+      const reviews = sortReviews(_profReviews, document.getElementById('sort-reviews').value);
+      const start = (currentPage - 1) * REVIEWS_PER_PAGE;
+      const page  = reviews.slice(start, start + REVIEWS_PER_PAGE);
+      const container = document.getElementById('reviews-container');
+      if (!reviews.length) {
+        document.getElementById('no-reviews').classList.remove('d-none');
+        container.innerHTML = '';
+        document.getElementById('reviews-pagination').innerHTML = '';
+        return;
+      }
+      document.getElementById('no-reviews').classList.add('d-none');
+      container.innerHTML = page.map(renderProfessorReviewCard).join('');
+      renderPagination('reviews-pagination', reviews.length, REVIEWS_PER_PAGE, currentPage, p => {
+        currentPage = p; renderReviews();
+        container.scrollIntoView({ behavior: 'smooth' });
       });
-
-      // Star inputs
-      starValues = {};
-      buildStarInput('star-difficulty',   'difficulty',   v => starValues.difficulty   = v);
-      buildStarInput('star-workload',     'workload',     v => starValues.workload     = v);
-      buildStarInput('star-friendliness', 'friendliness', v => starValues.friendliness = v);
-
-      // WTA buttons
-      wtaSelected = null;
-      document.querySelectorAll('.wta-btn').forEach(btn => {
-        btn.classList.remove('btn-success','btn-danger','active');
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.wta-btn').forEach(b => { b.classList.remove('btn-success','btn-danger'); b.classList.add(b.dataset.val === 'true' ? 'btn-outline-success' : 'btn-outline-danger'); });
-          wtaSelected = btn.dataset.val === 'true';
-          btn.classList.remove('btn-outline-success','btn-outline-danger');
-          btn.classList.add(wtaSelected ? 'btn-success' : 'btn-danger');
-        });
-      });
-
-      document.getElementById('submit-review-btn').addEventListener('click', handleSubmit);
     }
-  });
+    renderReviews();
+    document.getElementById('sort-reviews').addEventListener('change', () => { currentPage = 1; renderReviews(); });
 
-  function handleSubmit() {
-    const course = document.getElementById('review-course').value;
-    const text   = document.getElementById('review-text').value.trim();
-    let valid = true;
+    // ── Review Modal ──────────────────────────────────────────
+    const reviewModal = document.getElementById('reviewModal');
+    reviewModal.addEventListener('show.bs.modal', () => {
+      const user = AUTH.get();
+      if (!user || user.role?.toLowerCase() !== 'student') {
+        document.getElementById('modal-auth-msg').style.display = '';
+        document.getElementById('prof-review-form').style.display = 'none';
+        document.getElementById('modal-footer-content').innerHTML = '';
+      } else {
+        document.getElementById('modal-auth-msg').style.display = 'none';
+        document.getElementById('prof-review-form').style.display = '';
+        document.getElementById('modal-footer-content').innerHTML = `
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-secondary" id="submit-review-btn">
+            <span id="submit-text">Submit Rating</span>
+            <span id="submit-spinner" class="spinner-border spinner-border-sm ms-2 d-none" aria-label="Submitting"></span>
+          </button>`;
 
-    document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-    document.querySelectorAll('.invalid-feedback').forEach(el => el.textContent = '');
+        starValues = {};
+        buildStarInput('star-difficulty',   'difficulty',   v => starValues.difficulty   = v);
+        buildStarInput('star-workload',     'workload',     v => starValues.workload     = v);
+        buildStarInput('star-friendliness', 'friendliness', v => starValues.friendliness = v);
 
-    if (!course) { document.getElementById('review-course').classList.add('is-invalid'); document.getElementById('course-error').textContent = 'Please select a course.'; valid = false; }
-    if (wtaSelected === null) { document.getElementById('wta-error').textContent = 'Please indicate if you would take this professor again.'; document.getElementById('wta-error').style.display = 'block'; valid = false; }
-    if (!starValues.difficulty || !starValues.workload || !starValues.friendliness) { showToast('Please rate all three categories.', 'error'); valid = false; }
-    if (text.length < 50) { document.getElementById('review-text').classList.add('is-invalid'); document.getElementById('review-text-error').textContent = `Review must be at least 50 characters (currently ${text.length}).`; valid = false; }
-    if (!valid) return;
+        wtaSelected = null;
+        document.querySelectorAll('.wta-btn').forEach(btn => {
+          btn.classList.remove('btn-success','btn-danger');
+          btn.classList.add(btn.dataset.val === 'true' ? 'btn-outline-success' : 'btn-outline-danger');
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.wta-btn').forEach(b => {
+              b.classList.remove('btn-success','btn-danger');
+              b.classList.add(b.dataset.val === 'true' ? 'btn-outline-success' : 'btn-outline-danger');
+            });
+            wtaSelected = btn.dataset.val === 'true';
+            btn.classList.remove('btn-outline-success','btn-outline-danger');
+            btn.classList.add(wtaSelected ? 'btn-success' : 'btn-danger');
+          });
+        });
 
-    if (containsAbusiveLanguage(text)) { document.getElementById('abusive-warning').classList.remove('d-none'); return; }
-    document.getElementById('abusive-warning').classList.add('d-none');
+        document.getElementById('submit-review-btn').addEventListener('click', handleSubmit);
+      }
+    });
 
-    document.getElementById('submit-review-btn').disabled = true;
-    document.getElementById('submit-spinner').classList.remove('d-none');
-    document.getElementById('submit-text').textContent = 'Submitting…';
+    function handleSubmit() {
+      const text = document.getElementById('review-text').value.trim();
+      let valid = true;
+      document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+      document.querySelectorAll('.invalid-feedback').forEach(el => el.textContent = '');
 
-    setTimeout(() => {
-      bootstrap.Modal.getInstance(reviewModal).hide();
-      showToast('Rating submitted! It will appear after moderation.', 'success');
-    }, 1500);
-  }
+      if (wtaSelected === null) { document.getElementById('wta-error').textContent = 'Please indicate if you would take this professor again.'; document.getElementById('wta-error').style.display = 'block'; valid = false; }
+      if (!starValues.difficulty || !starValues.workload || !starValues.friendliness) { showToast('Please rate all three categories.', 'error'); valid = false; }
+      if (text.length < 50) { document.getElementById('review-text').classList.add('is-invalid'); document.getElementById('review-text-error').textContent = `Review must be at least 50 characters (currently ${text.length}).`; valid = false; }
+      if (!valid) return;
 
-  document.getElementById('review-text').addEventListener('input', function() {
-    const len = this.value.trim().length;
-    const el = document.getElementById('char-count');
-    el.textContent = `${len} / 50`;
-    el.style.color = len >= 50 ? 'var(--success)' : 'var(--danger)';
+      if (containsAbusiveLanguage(text)) { document.getElementById('abusive-warning').classList.remove('d-none'); return; }
+      document.getElementById('abusive-warning').classList.add('d-none');
+
+      document.getElementById('submit-review-btn').disabled = true;
+      document.getElementById('submit-spinner').classList.remove('d-none');
+      document.getElementById('submit-text').textContent = 'Submitting…';
+
+      const avgRating = Math.round((starValues.difficulty + starValues.workload + starValues.friendliness) / 3);
+      API.postProfessorReview(prof.id, avgRating, text)
+        .then(() => {
+          bootstrap.Modal.getInstance(reviewModal).hide();
+          showToast('Rating submitted! It will appear after approval.', 'success');
+        })
+        .catch(err => {
+          const msg = err.status === 409 ? 'You already reviewed this professor.'
+            : err.status === 400 ? 'You need an approved proof submission first.'
+            : 'Submission failed. Please try again.';
+          showToast(msg, 'error');
+        })
+        .finally(() => {
+          document.getElementById('submit-review-btn').disabled = false;
+          document.getElementById('submit-spinner').classList.add('d-none');
+          document.getElementById('submit-text').textContent = 'Submit Rating';
+        });
+    }
+
+    document.getElementById('review-text').addEventListener('input', function() {
+      const len = this.value.trim().length;
+      const el = document.getElementById('char-count');
+      el.textContent = `${len} / 50`;
+      el.style.color = len >= 50 ? 'var(--success)' : 'var(--danger)';
+    });
+
+  }).catch(() => {
+    document.getElementById('main-content').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon"><i class="bi bi-exclamation-circle"></i></div>
+        <h3>Professor Not Found</h3>
+        <p>The professor you're looking for doesn't exist.</p>
+        <a href="professors.html" class="btn btn-secondary">Browse Professors</a>
+      </div>`;
   });
 });
 </script>

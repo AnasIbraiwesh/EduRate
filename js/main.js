@@ -26,13 +26,13 @@ function buildNavbar(activePage) {
   const authHTML = user
     ? `<div class="dropdown">
          <button class="user-avatar-btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" type="button">
-           <div class="avatar-circle">${user.name.charAt(0).toUpperCase()}</div>
-           <span class="d-none d-sm-inline">${user.name.split(' ')[0]}</span>
+           <div class="avatar-circle">${user.fullName.charAt(0).toUpperCase()}</div>
+           <span class="d-none d-sm-inline">${user.fullName.split(' ')[0]}</span>
          </button>
          <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-           <li><h6 class="dropdown-header">${user.name}</h6></li>
+           <li><h6 class="dropdown-header">${user.fullName}</h6></li>
            <li><hr class="dropdown-divider"></li>
-           ${user.role === 'professor'
+           ${user.role?.toLowerCase() === 'professor'
              ? '<li><a class="dropdown-item" href="dashboard.html"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>'
              : '<li><a class="dropdown-item" href="recommendations.html"><i class="bi bi-stars me-2"></i>Recommendations</a></li>'}
            <li><hr class="dropdown-divider"></li>
@@ -77,8 +77,10 @@ function buildNavbar(activePage) {
   document.addEventListener('click', e => {
     if (e.target.closest('#logout-btn')) {
       e.preventDefault();
-      AUTH.clear();
-      window.location.href = 'index.html';
+      API.logout().catch(() => {}).finally(() => {
+        AUTH.clear();
+        window.location.href = 'index.html';
+      });
     }
   });
 
@@ -189,7 +191,7 @@ function sentimentBadgeHTML(sentiment) {
 
 // ── 6. Render Review Card (University) ───────────────────────
 function renderUniversityReviewCard(review) {
-  const avg = +(Object.values(review.ratings).reduce((a, b) => a + b, 0) / 10).toFixed(1);
+  const avg = +(Object.values(review.ratings).reduce((a, b) => a + b, 0) / Object.values(review.ratings).length).toFixed(1);
   const catRows = UNIVERSITY_CATEGORIES.map(c =>
     `<div class="review-rating-item">
        <span>${c.label}</span>
@@ -226,10 +228,11 @@ function renderUniversityReviewCard(review) {
 
 // ── 7. Render Review Card (Professor) ────────────────────────
 function renderProfessorReviewCard(review) {
-  const avg = +(Object.values(review.ratings).reduce((a, b) => a + b, 0) / 3).toFixed(1);
-  const wta = review.wouldTakeAgain
-    ? `<span class="chip" style="background:#d5f5e3;color:#1e8449"><i class="bi bi-check-circle-fill me-1"></i>${t('common.would_take')}</span>`
-    : `<span class="chip" style="background:#fde8e6;color:#c0392b"><i class="bi bi-x-circle-fill me-1"></i>${t('common.would_not_take')}</span>`;
+  const avg = +(Object.values(review.ratings).reduce((a, b) => a + b, 0) / Object.values(review.ratings).length).toFixed(1);
+  const wta = review.wouldTakeAgain == null ? ''
+    : review.wouldTakeAgain
+      ? `<span class="chip" style="background:#d5f5e3;color:#1e8449"><i class="bi bi-check-circle-fill me-1"></i>${t('common.would_take')}</span>`
+      : `<span class="chip" style="background:#fde8e6;color:#c0392b"><i class="bi bi-x-circle-fill me-1"></i>${t('common.would_not_take')}</span>`;
 
   const replyHTML = review.profReply
     ? `<div class="prof-reply">

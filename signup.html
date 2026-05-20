@@ -38,6 +38,14 @@
         </div>
 
         <form id="signup-form" novalidate aria-label="Sign up form">
+          <!-- Full Name -->
+          <div class="mb-3">
+            <label for="fullname" class="form-label">Full Name</label>
+            <input type="text" id="fullname" name="fullname" class="form-control"
+              placeholder="Your full name" autocomplete="name" required>
+            <div class="invalid-feedback" id="fullname-error" role="alert"></div>
+          </div>
+
           <!-- University Email -->
           <div class="mb-3">
             <label for="email" class="form-label" data-i18n="signup.email_label">University Email</label>
@@ -129,16 +137,10 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/translations.js"></script>
 <script src="js/i18n.js"></script>
+<script src="js/api.js"></script>
 <script src="js/data.js"></script>
 <script src="js/main.js"></script>
 <script>
-const UNI_DOMAINS = ['ju.edu.jo','just.edu.jo','psut.edu.jo','gju.edu.jo','htu.edu.jo','bau.edu.jo'];
-
-function isUniEmail(email) {
-  const domain = email.split('@')[1] || '';
-  return UNI_DOMAINS.includes(domain.toLowerCase());
-}
-
 document.addEventListener('DOMContentLoaded', () => {
   buildNavbar('');
   buildFooter();
@@ -146,14 +148,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (AUTH.isLoggedIn()) window.location.href = 'index.html';
 
-  // Populate university dropdown
+  // Populate university dropdown from API
   const uniSelect = document.getElementById('university');
-  UNIVERSITIES.forEach(u => {
+  API.getUniversities().then(unis => unis.forEach(u => {
     const opt = document.createElement('option');
-    opt.value = u.id;
+    opt.value = u.universityId;
     opt.textContent = u.name;
     uniSelect.appendChild(opt);
-  });
+  })).catch(() => {});
 
   // Password toggle
   document.getElementById('toggle-pw').addEventListener('click', function() {
@@ -190,37 +192,27 @@ document.addEventListener('DOMContentLoaded', () => {
   // Form submit
   document.getElementById('signup-form').addEventListener('submit', e => {
     e.preventDefault();
-    const email  = document.getElementById('email').value.trim();
-    const pw     = document.getElementById('password').value;
-    const uniId  = document.getElementById('university').value;
-    const major  = document.getElementById('major').value;
+    const fullName = document.getElementById('fullname').value.trim();
+    const email    = document.getElementById('email').value.trim();
+    const pw       = document.getElementById('password').value;
     let valid = true;
 
     document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
     document.querySelectorAll('.invalid-feedback').forEach(el => { el.textContent = ''; });
 
+    if (!fullName) {
+      document.getElementById('fullname').classList.add('is-invalid');
+      document.getElementById('fullname-error').textContent = 'Full name is required.';
+      valid = false;
+    }
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       document.getElementById('email').classList.add('is-invalid');
       document.getElementById('email-error').textContent = 'Enter a valid email address.';
-      valid = false;
-    } else if (!isUniEmail(email)) {
-      document.getElementById('email').classList.add('is-invalid');
-      document.getElementById('email-error').textContent = 'Please use your university email (e.g. name@ju.edu.jo).';
       valid = false;
     }
     if (!pw || pw.length < 8 || !/[A-Z]/.test(pw) || !/[0-9]/.test(pw)) {
       document.getElementById('password').classList.add('is-invalid');
       document.getElementById('pw-error').textContent = 'Password must be at least 8 characters with 1 uppercase letter and 1 number.';
-      valid = false;
-    }
-    if (!uniId) {
-      document.getElementById('university').classList.add('is-invalid');
-      document.getElementById('uni-error').textContent = 'Please select your university.';
-      valid = false;
-    }
-    if (!major) {
-      document.getElementById('major').classList.add('is-invalid');
-      document.getElementById('major-error').textContent = 'Please select your major.';
       valid = false;
     }
     if (!valid) return;
@@ -232,11 +224,17 @@ document.addEventListener('DOMContentLoaded', () => {
     signupText.removeAttribute('data-i18n');
     signupText.textContent = '…';
 
-    setTimeout(() => {
-      document.getElementById('register-form-wrap').style.display = 'none';
-      document.getElementById('verify-screen').style.display = 'block';
-      document.getElementById('verify-email').textContent = email;
-    }, 1500);
+    API.register(fullName, email, pw)
+      .then(user => {
+        AUTH.set(user);
+        window.location.href = 'index.html';
+      })
+      .catch(err => {
+        btn.disabled = false;
+        document.getElementById('signup-spinner').classList.add('d-none');
+        signupText.textContent = 'Create Account';
+        showToast(err.status === 409 ? 'Email already registered.' : 'Registration failed.', 'error');
+      });
   });
 });
 </script>

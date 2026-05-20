@@ -96,6 +96,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script src="js/api.js"></script>
 <script src="js/data.js"></script>
 <script src="js/translations.js"></script>
 <script src="js/i18n.js"></script>
@@ -120,15 +121,17 @@ function createRadarChart(canvasId, label, data, borderColor, bgColor) {
 }
 
 function populateSelects() {
-  const sorted = [...UNIVERSITIES].sort((a,b) => a.name.localeCompare(b.name));
-  ['uni1-select','uni2-select'].forEach(id => {
-    const el = document.getElementById(id);
-    sorted.forEach(u => {
-      const opt = document.createElement('option');
-      opt.value = u.id; opt.textContent = u.name;
-      el.appendChild(opt);
+  API.getUniversities().then(unis => {
+    const sorted = unis.map(normalizeUniversity).sort((a,b) => a.name.localeCompare(b.name));
+    ['uni1-select','uni2-select'].forEach(id => {
+      const el = document.getElementById(id);
+      sorted.forEach(u => {
+        const opt = document.createElement('option');
+        opt.value = u.id; opt.textContent = u.name;
+        el.appendChild(opt);
+      });
     });
-  });
+  }).catch(() => {});
 }
 
 function renderComparison(u1, u2) {
@@ -140,7 +143,7 @@ function renderComparison(u1, u2) {
     <div class="col-5">
       <div class="compare-col-header">
         <h3>${u1.name}</h3>
-        <p>${u1.city}, ${u1.country}</p>
+        <p>${u1.city || ''}</p>
         <div class="rating-display justify-content-center">
           ${starsHTML(u1.overallRating)}
           <span style="color:#fff;font-weight:700">${u1.overallRating}</span>
@@ -156,7 +159,7 @@ function renderComparison(u1, u2) {
     <div class="col-5">
       <div class="compare-col-header" style="background:linear-gradient(135deg,#1a5276,var(--success))">
         <h3>${u2.name}</h3>
-        <p>${u2.city}, ${u2.country}</p>
+        <p>${u2.city || ''}</p>
         <div class="rating-display justify-content-center">
           ${starsHTML(u2.overallRating)}
           <span style="color:#fff;font-weight:700">${u2.overallRating}</span>
@@ -168,7 +171,7 @@ function renderComparison(u1, u2) {
   // Category rows
   let u1Wins = 0, u2Wins = 0;
   const rows = UNIVERSITY_CATEGORIES.map(c => {
-    const v1 = u1.ratings[c.key], v2 = u2.ratings[c.key];
+    const v1 = u1.ratings[c.key] || 0, v2 = u2.ratings[c.key] || 0;
     const w1 = v1 > v2, w2 = v2 > v1;
     if (w1) u1Wins++;
     if (w2) u2Wins++;
@@ -220,8 +223,8 @@ function renderComparison(u1, u2) {
     data: {
       labels: UNIVERSITY_CATEGORIES.map(c => c.label),
       datasets: [
-        { label: u1.shortName, data: UNIVERSITY_CATEGORIES.map(c => u1.ratings[c.key]), borderColor: '#1B4F72', backgroundColor: 'rgba(27,79,114,.2)', borderWidth: 2, pointBackgroundColor: '#1B4F72' },
-        { label: u2.shortName, data: UNIVERSITY_CATEGORIES.map(c => u2.ratings[c.key]), borderColor: '#27AE60', backgroundColor: 'rgba(39,174,96,.15)', borderWidth: 2, pointBackgroundColor: '#27AE60' }
+        { label: u1.name, data: UNIVERSITY_CATEGORIES.map(c => u1.ratings[c.key] || 0), borderColor: '#1B4F72', backgroundColor: 'rgba(27,79,114,.2)', borderWidth: 2, pointBackgroundColor: '#1B4F72' },
+        { label: u2.name, data: UNIVERSITY_CATEGORIES.map(c => u2.ratings[c.key] || 0), borderColor: '#27AE60', backgroundColor: 'rgba(39,174,96,.15)', borderWidth: 2, pointBackgroundColor: '#27AE60' }
       ]
     },
     options: {
@@ -232,10 +235,10 @@ function renderComparison(u1, u2) {
   });
   if (chartU1) chartU1.destroy();
   if (chartU2) chartU2.destroy();
-  document.getElementById('chart-u1-title').textContent = u1.shortName;
-  document.getElementById('chart-u2-title').textContent = u2.shortName;
-  chartU1 = createRadarChart('chart-u1', u1.shortName, UNIVERSITY_CATEGORIES.map(c => u1.ratings[c.key]), '#1B4F72', 'rgba(27,79,114,.2)');
-  chartU2 = createRadarChart('chart-u2', u2.shortName, UNIVERSITY_CATEGORIES.map(c => u2.ratings[c.key]), '#27AE60', 'rgba(39,174,96,.15)');
+  document.getElementById('chart-u1-title').textContent = u1.name;
+  document.getElementById('chart-u2-title').textContent = u2.name;
+  chartU1 = createRadarChart('chart-u1', u1.name, UNIVERSITY_CATEGORIES.map(c => u1.ratings[c.key] || 0), '#1B4F72', 'rgba(27,79,114,.2)');
+  chartU2 = createRadarChart('chart-u2', u2.name, UNIVERSITY_CATEGORIES.map(c => u2.ratings[c.key] || 0), '#27AE60', 'rgba(39,174,96,.15)');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -249,8 +252,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (id1) document.getElementById('uni1-select').value = id1;
   if (id2) document.getElementById('uni2-select').value = id2;
   if (id1 && id2) {
-    const u1 = getUniversityById(id1), u2 = getUniversityById(id2);
-    if (u1 && u2) renderComparison(u1, u2);
+    Promise.all([API.getUniversity(id1), API.getUniversity(id2)])
+      .then(([u1Raw, u2Raw]) => renderComparison(normalizeUniversity(u1Raw), normalizeUniversity(u2Raw)))
+      .catch(() => {});
   }
 
   document.getElementById('compare-btn').addEventListener('click', () => {
@@ -258,9 +262,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const id2 = document.getElementById('uni2-select').value;
     if (!id1 || !id2) { showToast('Please select both universities.', 'error'); return; }
     if (id1 === id2) { showToast('Please select two different universities.', 'error'); return; }
-    const u1 = getUniversityById(id1), u2 = getUniversityById(id2);
-    renderComparison(u1, u2);
-    history.replaceState(null, '', `?id1=${id1}&id2=${id2}`);
+    Promise.all([API.getUniversity(id1), API.getUniversity(id2)])
+      .then(([u1Raw, u2Raw]) => {
+        renderComparison(normalizeUniversity(u1Raw), normalizeUniversity(u2Raw));
+        history.replaceState(null, '', `?id1=${id1}&id2=${id2}`);
+      })
+      .catch(() => showToast('Failed to load university data.', 'error'));
   });
 });
 </script>

@@ -517,6 +517,7 @@ const AUTH = {
   set(user) { sessionStorage.setItem('edurate_user', JSON.stringify(user)); },
   clear()   { sessionStorage.removeItem('edurate_user'); },
   isLoggedIn() { return !!this.get(); },
-  isStudent()  { return this.get()?.role === 'student'; },
-  isProfessor(){ return this.get()?.role === 'professor'; }
+  isStudent()  { return this.get()?.role?.toLowerCase() === 'student'; },
+  isProfessor(){ return this.get()?.role?.toLowerCase() === 'professor'; },
+  isAdmin()    { return this.get()?.role?.toLowerCase() === 'admin'; }
 };

@@ -142,6 +142,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/translations.js"></script>
 <script src="js/i18n.js"></script>
+<script src="js/api.js"></script>
 <script src="js/data.js"></script>
 <script src="js/main.js"></script>
 <script>
@@ -150,13 +151,11 @@ document.addEventListener('DOMContentLoaded', () => {
   buildFooter();
   I18N.init();
 
-  // Render top universities
-  const topUnis = getTopUniversities(4);
-  document.getElementById('top-unis-grid').innerHTML = topUnis.map(uniCardHTML).join('');
-
-  // Render top professors
-  const topProfs = getTopProfessors(4);
-  document.getElementById('top-profs-grid').innerHTML = topProfs.map(profCardHTML).join('');
+  // Render top universities and professors from API
+  Promise.all([API.getUniversities(), API.getProfessors()]).then(([unis, profs]) => {
+    document.getElementById('top-unis-grid').innerHTML  = unis.slice(0,4).map(u => uniCardHTML(normalizeUniversity(u))).join('');
+    document.getElementById('top-profs-grid').innerHTML = profs.slice(0,4).map(p => profCardHTML(normalizeProfessor(p))).join('');
+  }).catch(() => {});
 
   // Animate stats
   const stats = getStats();
