@@ -36,7 +36,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("FrontendPolicy", policy =>
     {
-        policy.WithOrigins("http://localhost:3000")
+        policy.WithOrigins(
+            "http://localhost:3000",
+            "https://steady-douhua-9753e7.netlify.app"
+        )
               .AllowCredentials()
               .AllowAnyMethod()
               .AllowAnyHeader();
