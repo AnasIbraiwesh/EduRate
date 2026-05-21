@@ -1,4 +1,4 @@
-const BASE_URL = 'https://net-backend-logic-eduratesystem-2.onrender.com';
+const BASE_URL = 'https://edurate-vd6d.onrender.com';
 
 async function apiFetch(path, options = {}) {
   const res = await fetch(BASE_URL + path, {
