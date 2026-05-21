@@ -61,6 +61,7 @@ body {
   font-weight: 400;
   line-height: 1.6;
   color: var(--text-primary);
+  overflow-x: hidden;
   background: var(--bg);
 }
 
@@ -245,8 +246,8 @@ a:hover { color: var(--secondary-dark); text-decoration: underline; }
 .site-footer {
   background: var(--primary);
   color: rgba(255,255,255,.8);
-  padding: 56px 0 32px;
-  margin-top: 80px;
+  padding: 36px 0 20px;
+  margin-top: 48px;
 }
 .site-footer h5 {
   color: #fff;
@@ -279,8 +280,8 @@ a:hover { color: var(--secondary-dark); text-decoration: underline; }
 .footer-social a:hover { background: var(--secondary); color: #fff; text-decoration: none; }
 .footer-bottom {
   border-top: 1px solid rgba(255,255,255,.12);
-  padding-top: 24px;
-  margin-top: 40px;
+  padding-top: 16px;
+  margin-top: 24px;
   text-align: center;
   font-size: 13px;
   color: rgba(255,255,255,.5);
