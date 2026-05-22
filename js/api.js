@@ -25,6 +25,11 @@ const API = {
   getProfessorReviews:     (profId) => apiFetch('/api/professorreviews'  + (profId ? '?professorId='  + profId : '')),
   getProfessorsByUniversity: (uniId) => apiFetch('/api/professors?universityId=' + uniId),
 
+  createUniversity: (data) => apiFetch('/api/universities', { method: 'POST', body: JSON.stringify(data) }),
+  deleteUniversity: (id)   => apiFetch(`/api/universities/${id}`, { method: 'DELETE' }),
+  createProfessor:  (data) => apiFetch('/api/professors',  { method: 'POST', body: JSON.stringify(data) }),
+  deleteProfessor:  (id)   => apiFetch(`/api/professors/${id}`,  { method: 'DELETE' }),
+
   postUniversityReview: (uniId, rating, comment) =>
     apiFetch('/api/universityreviews', { method: 'POST', body: JSON.stringify({ universityId: uniId, rating, comment }) }),
   postProfessorReview: (profId, rating, comment) =>

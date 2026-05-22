@@ -32,9 +32,11 @@ function buildNavbar(activePage) {
          <ul class="dropdown-menu dropdown-menu-end shadow-sm">
            <li><h6 class="dropdown-header">${user.fullName}</h6></li>
            <li><hr class="dropdown-divider"></li>
-           ${user.role?.toLowerCase() === 'professor'
-             ? '<li><a class="dropdown-item" href="dashboard.html"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>'
-             : '<li><a class="dropdown-item" href="recommendations.html"><i class="bi bi-stars me-2"></i>Recommendations</a></li>'}
+           ${user.role?.toLowerCase() === 'admin'
+             ? '<li><a class="dropdown-item" href="admin.html"><i class="bi bi-shield-lock me-2"></i>Admin Dashboard</a></li>'
+             : user.role?.toLowerCase() === 'professor'
+               ? '<li><a class="dropdown-item" href="dashboard.html"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>'
+               : '<li><a class="dropdown-item" href="recommendations.html"><i class="bi bi-stars me-2"></i>Recommendations</a></li>'}
            <li><hr class="dropdown-divider"></li>
            <li><a class="dropdown-item text-danger" href="#" id="logout-btn"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
          </ul>
