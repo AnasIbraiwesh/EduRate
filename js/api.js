@@ -1,11 +1,10 @@
 const BASE_URL = 'https://edurate-vd6d.onrender.com';
 
 async function apiFetch(path, options = {}) {
-  const res = await fetch(BASE_URL + path, {
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
-    ...options,
-  });
+  const token = (typeof AUTH !== 'undefined') ? AUTH.get()?.token : null;
+  const headers = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const res = await fetch(BASE_URL + path, { ...options, headers });
   if (!res.ok) throw { status: res.status };
   return res.status === 204 ? null : res.json();
 }
