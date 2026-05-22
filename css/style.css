@@ -88,7 +88,7 @@ a:hover { color: var(--secondary-dark); text-decoration: underline; }
 .navbar {
   background: var(--primary) !important;
   box-shadow: 0 2px 12px rgba(0,0,0,.15);
-  padding: 12px 0;
+  padding: 2px 0;
   position: sticky;
   top: 0;
   z-index: 1030;
