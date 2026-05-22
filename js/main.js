@@ -50,7 +50,7 @@ function buildNavbar(activePage) {
     <nav class="navbar navbar-expand-lg" aria-label="Main navigation">
       <div class="container">
         <a class="navbar-brand" href="index.html">
-          <img src="images/universities/logo/edu_rate__1_-removebg.png" alt="EduRate logo" style="height:36px;width:auto;margin-right:8px;">
+          <img src="images/universities/logo/edu_rate__1_-removebg.png" alt="EduRate logo" style="height:56px;width:auto;margin-right:8px;">
           Edu<span style="color:#2E86C1">Rate</span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"

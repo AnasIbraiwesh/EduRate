@@ -135,9 +135,9 @@
       <div class="modal-body" id="modal-body-content">
         <!-- Auth required message -->
         <div id="modal-auth-msg" class="text-center py-4">
-          <div style="font-size:48px;margin-bottom:16px" aria-hidden="true">🔒</div>
-          <h3>Login Required</h3>
-          <p class="text-muted mb-4">You must be logged in as a student to write a review.</p>
+          <div style="font-size:48px;margin-bottom:16px" aria-hidden="true">🎓</div>
+          <h3>University Students Only</h3>
+          <p class="text-muted mb-4">Only verified students can write reviews. Sign in or sign up using your university email (.edu.jo) to share your experience.</p>
           <a href="login.html" class="btn btn-primary">Log In</a>
           <a href="signup.html" class="btn btn-outline-primary ms-2">Sign Up</a>
         </div>
@@ -312,7 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('uni-review-form').style.display = 'none';
         document.getElementById('modal-footer-content').innerHTML = '';
       } else if (!user.isVerifiedStudent) {
-        document.getElementById('modal-auth-msg').innerHTML = '<div style="font-size:48px;margin-bottom:16px">🎓</div><h3>University Email Required</h3><p class="text-muted mb-4">Sign up with your university email (.edu.jo) to write reviews.</p><a href="signup.html" class="btn btn-primary">Sign Up</a>';
+        document.getElementById('modal-auth-msg').innerHTML = '<div style="font-size:48px;margin-bottom:16px">🎓</div><h3>University Students Only</h3><p class="text-muted mb-4">Only verified students can write reviews. Sign in or sign up using your university email (.edu.jo) to share your experience.</p><a href="login.html" class="btn btn-primary">Log In</a><a href="signup.html" class="btn btn-outline-primary ms-2">Sign Up</a>';
         document.getElementById('modal-auth-msg').style.display = '';
         document.getElementById('uni-review-form').style.display = 'none';
         document.getElementById('modal-footer-content').innerHTML = '';
