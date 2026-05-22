@@ -15,5 +15,7 @@ namespace eduRateSystem.DTOs.University
 
         [Required]
         public string WebsiteUrl {  get; set; } = string.Empty;
+
+        public string? ImageUrl { get; set; }
     }
 }

@@ -109,6 +109,7 @@ try
 
         await IdentitySeeder.SeedRolesAsync(roleManager);
         await IdentitySeeder.SeedAdminUserAsync(userManager, roleManager);
+        await DataSeeder.SeedAsync(services);
     }
 }
 catch (Exception ex)

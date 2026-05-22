@@ -126,19 +126,9 @@ namespace eduRateSystem.Controllers.Api
                 return BadRequest(new { message = "The selected professor does not exist." });
             }
 
-            var hasApprovedProof = await _context.ProofSubmissions.AnyAsync(p =>
-                p.UserId == userId &&
-                p.TargetType == "Professor" &&
-                p.TargetId == dto.ProfessorId &&
-                p.Status == "Approved");
-
-            if (!hasApprovedProof)
-            {
-                return BadRequest(new
-                {
-                    message = "You need an approved proof submission before reviewing this professor."
-                });
-            }
+            var reviewer = await _userManager.FindByIdAsync(userId!);
+            if (reviewer == null || !reviewer.IsVerifiedStudent)
+                return StatusCode(403, new { message = "You must sign up with a university email (.edu.jo) to write reviews." });
 
             var alreadyReviewed = await _context.ProfessorReviews.AnyAsync(r =>
                 r.UserId == userId &&

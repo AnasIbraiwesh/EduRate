@@ -123,19 +123,9 @@ namespace eduRateSystem.Controllers.Api
                 return BadRequest(new { message = "The Selected University Does Not Exist." });
             }
 
-            var hasApprovedProof = await _context.ProofSubmissions.AnyAsync(p =>
-                p.UserId == userId &&
-                p.TargetType == "University" &&
-                p.TargetId == dto.UniversityId &&
-                p.Status == "Approved");
-
-            if (!hasApprovedProof)
-            {
-                return BadRequest(new
-                {
-                    message = "You Need An Approved Proof Submission Before Reviewing This University."
-                });
-            }
+            var reviewer = await _userManager.FindByIdAsync(userId!);
+            if (reviewer == null || !reviewer.IsVerifiedStudent)
+                return StatusCode(403, new { message = "You must sign up with a university email (.edu.jo) to write reviews." });
 
             var alreadyReviewed = await _context.UniversityReviews.AnyAsync(r =>
                 r.UserId == userId &&

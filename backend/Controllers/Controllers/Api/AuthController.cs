@@ -46,7 +46,7 @@ namespace eduRateSystem.Controllers.Api
                 UserName = dto.Email,
                 Email = dto.Email,
                 IsActive = true,
-                IsVerifiedStudent = false,
+                IsVerifiedStudent = dto.Email.EndsWith(".edu.jo", StringComparison.OrdinalIgnoreCase),
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -76,6 +76,7 @@ namespace eduRateSystem.Controllers.Api
                 fullName = user.FullName,
                 email = user.Email,
                 role = "Student",
+                isVerifiedStudent = user.IsVerifiedStudent,
                 token = new JwtSecurityTokenHandler().WriteToken(token)
             });
         }
@@ -118,6 +119,7 @@ namespace eduRateSystem.Controllers.Api
                 fullName = user.FullName,
                 email = user.Email,
                 role,
+                isVerifiedStudent = user.IsVerifiedStudent,
                 token = new JwtSecurityTokenHandler().WriteToken(token)
             });
         }
@@ -143,7 +145,8 @@ namespace eduRateSystem.Controllers.Api
                 id = user.Id,
                 fullName = user.FullName,
                 email = user.Email,
-                role = roles.FirstOrDefault() ?? string.Empty
+                role = roles.FirstOrDefault() ?? string.Empty,
+                isVerifiedStudent = user.IsVerifiedStudent
             });
         }
     }

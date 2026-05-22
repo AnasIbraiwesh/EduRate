@@ -37,6 +37,12 @@
           <p class="auth-subtitle" data-i18n="signup.subtitle">Join thousands of students sharing honest reviews</p>
         </div>
 
+        <!-- Account type toggle -->
+        <div class="d-flex gap-2 mb-4">
+          <button type="button" class="btn btn-primary flex-fill" id="toggle-student">🎓 Student</button>
+          <button type="button" class="btn btn-outline-secondary flex-fill" id="toggle-visitor">👤 Visitor</button>
+        </div>
+
         <form id="signup-form" novalidate aria-label="Sign up form">
           <!-- Full Name -->
           <div class="mb-3">
@@ -48,13 +54,12 @@
 
           <!-- University Email -->
           <div class="mb-3">
-            <label for="email" class="form-label" data-i18n="signup.email_label">University Email</label>
+            <label for="email" class="form-label" id="email-label">University Email</label>
             <input type="email" id="email" name="email"
               class="form-control"
-              data-i18n-placeholder="signup.email_ph"
               placeholder="yourname@university.edu.jo"
               autocomplete="email" required>
-            <div class="form-text" data-i18n="signup.email_hint">Must be a valid university email address</div>
+            <div class="form-text" id="email-hint">Must be a valid university email address</div>
             <div class="invalid-feedback" id="email-error" role="alert"></div>
           </div>
 
@@ -76,10 +81,12 @@
             <div class="invalid-feedback" id="pw-error" role="alert"></div>
           </div>
 
+          <!-- Student-only fields -->
+          <div id="student-fields">
           <!-- University -->
           <div class="mb-3">
             <label for="university" class="form-label" data-i18n="signup.uni_label">University</label>
-            <select id="university" name="university" class="form-select" required aria-label="Select your university">
+            <select id="university" name="university" class="form-select" aria-label="Select your university">
               <option value="" selected disabled data-i18n="signup.uni_default">Select your university…</option>
             </select>
             <div class="invalid-feedback" id="uni-error" role="alert"></div>
@@ -88,7 +95,7 @@
           <!-- Major -->
           <div class="mb-4">
             <label for="major" class="form-label" data-i18n="signup.major_label">Major</label>
-            <select id="major" name="major" class="form-select" required aria-label="Select your major">
+            <select id="major" name="major" class="form-select" aria-label="Select your major">
               <option value="" selected disabled data-i18n="signup.major_default">Select your major…</option>
               <option value="Engineering" data-i18n="signup.major_engineering">Engineering</option>
               <option value="Technology & IT" data-i18n="signup.major_tech">Technology & IT</option>
@@ -97,6 +104,7 @@
               <option value="Arts & Humanities" data-i18n="signup.major_arts">Arts & Humanities</option>
             </select>
             <div class="invalid-feedback" id="major-error" role="alert"></div>
+          </div>
           </div>
 
           <button type="submit" class="btn btn-primary w-100 btn-lg" id="signup-btn">
@@ -147,6 +155,28 @@ document.addEventListener('DOMContentLoaded', () => {
   I18N.init();
 
   if (AUTH.isLoggedIn()) window.location.href = 'index.html';
+
+  // Student / Visitor toggle
+  const studentFields = document.getElementById('student-fields');
+  const emailLabel = document.getElementById('email-label');
+  const emailHint  = document.getElementById('email-hint');
+  const emailInput = document.getElementById('email');
+  document.getElementById('toggle-student').addEventListener('click', function() {
+    studentFields.style.display = '';
+    emailLabel.textContent = 'University Email';
+    emailInput.placeholder = 'yourname@university.edu.jo';
+    emailHint.style.display = '';
+    this.className = 'btn btn-primary flex-fill';
+    document.getElementById('toggle-visitor').className = 'btn btn-outline-secondary flex-fill';
+  });
+  document.getElementById('toggle-visitor').addEventListener('click', function() {
+    studentFields.style.display = 'none';
+    emailLabel.textContent = 'Email';
+    emailInput.placeholder = 'your@email.com';
+    emailHint.style.display = 'none';
+    this.className = 'btn btn-primary flex-fill';
+    document.getElementById('toggle-student').className = 'btn btn-outline-secondary flex-fill';
+  });
 
   // Populate university dropdown from API
   const uniSelect = document.getElementById('university');

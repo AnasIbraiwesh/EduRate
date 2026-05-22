@@ -43,7 +43,7 @@ function normalizeUniversity(u) {
     country: '',
     description: u.description,
     website: u.websiteUrl,
-    image: null,
+    image: u.imageUrl || null,
     overallRating: u.overallRating || 0,
     totalReviews: u.totalReviews || 0,
     ratings: {

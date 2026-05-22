@@ -32,6 +32,8 @@ namespace eduRateSystem.Models
         [Required] 
         public string WebsiteUrl { get; set; } = string.Empty;
 
+        public string? ImageUrl { get; set; }
+
         public bool IsDeleted { get; set; } = false;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

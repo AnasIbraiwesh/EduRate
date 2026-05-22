@@ -12,5 +12,6 @@ namespace eduRateSystem.DTOs.University
         public DateTime CreatedAt { get; set; }
         public double OverallRating { get; set; }
         public int TotalReviews { get; set; }
+        public string? ImageUrl { get; set; }
     }
 }

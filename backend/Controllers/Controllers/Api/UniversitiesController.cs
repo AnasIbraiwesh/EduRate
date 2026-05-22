@@ -29,6 +29,7 @@ namespace eduRateSystem.Controllers.Api
                  Location = u.Location,
                  Description = u.Description,
                  WebsiteUrl = u.WebsiteUrl,
+                 ImageUrl = u.ImageUrl,
                  CreatedAt = u.CreatedAt,
                  OverallRating = u.UniversityReviews.Any(r => !r.IsDeleted)
                      ? u.UniversityReviews.Where(r => !r.IsDeleted).Average(r => (double)r.Rating)
@@ -52,6 +53,7 @@ namespace eduRateSystem.Controllers.Api
                     Location = u.Location,
                     Description = u.Description,
                     WebsiteUrl = u.WebsiteUrl,
+                    ImageUrl = u.ImageUrl,
                     CreatedAt = u.CreatedAt,
                     OverallRating = u.UniversityReviews.Any(r => !r.IsDeleted)
                         ? u.UniversityReviews.Where(r => !r.IsDeleted).Average(r => (double)r.Rating)
@@ -78,6 +80,7 @@ namespace eduRateSystem.Controllers.Api
                 Location = dto.Location,
                 Description = dto.Description,
                 WebsiteUrl = dto.WebsiteUrl,
+                ImageUrl = dto.ImageUrl,
                 IsDeleted = false,
                 CreatedAt = DateTime.UtcNow
             };
@@ -92,6 +95,7 @@ namespace eduRateSystem.Controllers.Api
                 Location = dto.Location,
                 Description = dto.Description,
                 WebsiteUrl = dto.WebsiteUrl,
+                ImageUrl = dto.ImageUrl,
                 CreatedAt = university.CreatedAt
             };
 

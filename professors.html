@@ -58,8 +58,8 @@
         </div>
 
         <div class="filter-group">
-          <label for="rating-min"><span data-i18n="profs.rating_label">Minimum Rating:</span> <strong id="rating-min-val">1.0</strong></label>
-          <input type="range" id="rating-min" min="1" max="5" step="0.5" value="1"
+          <label for="rating-min"><span data-i18n="profs.rating_label">Minimum Rating:</span> <strong id="rating-min-val">0.0</strong></label>
+          <input type="range" id="rating-min" min="0" max="5" step="0.5" value="0"
             aria-label="Minimum rating filter">
         </div>
 
@@ -243,8 +243,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('prof-search').value = '';
     document.getElementById('dept-filter').value = '';
     document.getElementById('uni-filter').value = '';
-    document.getElementById('rating-min').value = 1;
-    document.getElementById('rating-min-val').textContent = '1.0';
+    document.getElementById('rating-min').value = 0;
+    document.getElementById('rating-min-val').textContent = '0.0';
     document.getElementById('wta-filter').value = '0';
     document.getElementById('sort-by').value = 'rating';
     document.getElementById('verified-only').checked = false;

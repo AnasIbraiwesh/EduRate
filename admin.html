@@ -104,6 +104,7 @@
         <div class="mb-3"><label class="form-label">Location *</label><input type="text" class="form-control" id="uni-location" required></div>
         <div class="mb-3"><label class="form-label">Description</label><textarea class="form-control" id="uni-desc" rows="3"></textarea></div>
         <div class="mb-3"><label class="form-label">Website URL</label><input type="url" class="form-control" id="uni-website"></div>
+        <div class="mb-3"><label class="form-label">Image URL (optional)</label><input type="url" class="form-control" id="uni-image" placeholder="https://..."></div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -177,10 +178,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const location = document.getElementById('uni-location').value.trim();
     if (!name || !location) return showToast('Name and Location are required.', 'danger');
     try {
-      await API.createUniversity({ name, location, description: document.getElementById('uni-desc').value.trim(), websiteUrl: document.getElementById('uni-website').value.trim() });
+      await API.createUniversity({ name, location, description: document.getElementById('uni-desc').value.trim(), websiteUrl: document.getElementById('uni-website').value.trim(), imageUrl: document.getElementById('uni-image').value.trim() || null });
       bootstrap.Modal.getInstance(document.getElementById('addUniModal')).hide();
       document.getElementById('uni-name').value = ''; document.getElementById('uni-location').value = '';
       document.getElementById('uni-desc').value = ''; document.getElementById('uni-website').value = '';
+      document.getElementById('uni-image').value = '';
       await loadData();
       showToast('University added.', 'success');
     } catch { showToast('Failed to add university.', 'danger'); }
