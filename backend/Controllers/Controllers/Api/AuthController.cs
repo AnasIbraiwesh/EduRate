@@ -56,7 +56,7 @@ namespace eduRateSystem.Controllers.Api
 
             await _userManager.AddToRoleAsync(user, "Student");
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT__Secret"]!));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:Secret"]!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var claims = new[]
             {
@@ -98,7 +98,7 @@ namespace eduRateSystem.Controllers.Api
             var roles = await _userManager.GetRolesAsync(user);
             var role = roles.FirstOrDefault() ?? string.Empty;
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT__Secret"]!));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:Secret"]!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var claims = new[]
             {

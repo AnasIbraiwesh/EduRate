@@ -50,7 +50,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-var jwtSecret = builder.Configuration["JWT__Secret"];
+var jwtSecret = builder.Configuration["JWT:Secret"];
 if (string.IsNullOrEmpty(jwtSecret))
     throw new InvalidOperationException("JWT__Secret environment variable is not set.");
 
@@ -64,7 +64,7 @@ builder.Services.AddAuthentication()
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret!)),
             ValidateIssuer = false,
             ValidateAudience = false,
             ClockSkew = TimeSpan.Zero
