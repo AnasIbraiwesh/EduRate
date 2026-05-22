@@ -9,6 +9,8 @@ namespace eduRateSystem.DTOs.University
         public string Description { get; set; } = string.Empty;
         public string Location {  get; set; } = string.Empty;
         public string WebsiteUrl { get; set; } = string.Empty;
-        public DateTime CreatedAt { get; set; } 
+        public DateTime CreatedAt { get; set; }
+        public double OverallRating { get; set; }
+        public int TotalReviews { get; set; }
     }
 }

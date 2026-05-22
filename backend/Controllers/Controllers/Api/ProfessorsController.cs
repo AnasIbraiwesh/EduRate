@@ -33,14 +33,20 @@ namespace eduRateSystem.Controllers.Api
             }
 
             var professors = await query
+                .Include(p => p.University)
                 .Select(p => new ProfessorResponseDto
                 {
                     ProfessorId = p.ProfessorId,
                     FullName = p.FullName,
                     UniversityId = p.UniversityId,
+                    UniversityName = p.University != null ? p.University.Name : string.Empty,
                     Department = p.Department,
                     Specialization = p.Specialization,
-                    CreatedAt = p.CreatedAt
+                    CreatedAt = p.CreatedAt,
+                    OverallRating = p.ProfessorReviews.Any(r => !r.IsDeleted)
+                        ? p.ProfessorReviews.Where(r => !r.IsDeleted).Average(r => (double)r.Rating)
+                        : 0,
+                    TotalReviews = p.ProfessorReviews.Count(r => !r.IsDeleted)
                 })
                 .ToListAsync();
 
@@ -53,15 +59,21 @@ namespace eduRateSystem.Controllers.Api
         public async Task<ActionResult<ProfessorResponseDto>> GetById(int id)
         {
             var professor = await _context.Professors
+                .Include(p => p.University)
                 .Where(p => p.ProfessorId == id && !p.IsDeleted)
                 .Select(p => new ProfessorResponseDto
                 {
                     ProfessorId = p.ProfessorId,
                     FullName = p.FullName,
                     UniversityId = p.UniversityId,
+                    UniversityName = p.University != null ? p.University.Name : string.Empty,
                     Department = p.Department,
                     Specialization = p.Specialization,
-                    CreatedAt = p.CreatedAt
+                    CreatedAt = p.CreatedAt,
+                    OverallRating = p.ProfessorReviews.Any(r => !r.IsDeleted)
+                        ? p.ProfessorReviews.Where(r => !r.IsDeleted).Average(r => (double)r.Rating)
+                        : 0,
+                    TotalReviews = p.ProfessorReviews.Count(r => !r.IsDeleted)
                 })
                 .FirstOrDefaultAsync();
 

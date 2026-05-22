@@ -29,7 +29,11 @@ namespace eduRateSystem.Controllers.Api
                  Location = u.Location,
                  Description = u.Description,
                  WebsiteUrl = u.WebsiteUrl,
-                 CreatedAt = u.CreatedAt
+                 CreatedAt = u.CreatedAt,
+                 OverallRating = u.UniversityReviews.Any(r => !r.IsDeleted)
+                     ? u.UniversityReviews.Where(r => !r.IsDeleted).Average(r => (double)r.Rating)
+                     : 0,
+                 TotalReviews = u.UniversityReviews.Count(r => !r.IsDeleted)
              })
              .ToListAsync();
 
@@ -48,7 +52,11 @@ namespace eduRateSystem.Controllers.Api
                     Location = u.Location,
                     Description = u.Description,
                     WebsiteUrl = u.WebsiteUrl,
-                    CreatedAt = u.CreatedAt
+                    CreatedAt = u.CreatedAt,
+                    OverallRating = u.UniversityReviews.Any(r => !r.IsDeleted)
+                        ? u.UniversityReviews.Where(r => !r.IsDeleted).Average(r => (double)r.Rating)
+                        : 0,
+                    TotalReviews = u.UniversityReviews.Count(r => !r.IsDeleted)
                 })
                 .FirstOrDefaultAsync();
 

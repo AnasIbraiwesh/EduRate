@@ -10,5 +10,8 @@ namespace eduRateSystem.DTOs.Professor
         public string Department { get; set; } = string.Empty;
         public string Specialization { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
+        public string UniversityName { get; set; } = string.Empty;
+        public double OverallRating { get; set; }
+        public int TotalReviews { get; set; }
     }
 }

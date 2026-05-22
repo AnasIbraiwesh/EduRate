@@ -44,9 +44,13 @@ function normalizeUniversity(u) {
     description: u.description,
     website: u.websiteUrl,
     image: null,
-    overallRating: 0,
-    totalReviews: 0,
-    ratings: {},
+    overallRating: u.overallRating || 0,
+    totalReviews: u.totalReviews || 0,
+    ratings: {
+      location: 0, reputation: 0, opportunities: 0, happiness: 0,
+      internetQuality: 0, facilities: 0, clubsActivities: 0,
+      socialLife: 0, foodCafeteria: 0, safety: 0
+    },
   };
 }
 
@@ -56,10 +60,11 @@ function normalizeProfessor(p) {
     name: p.fullName,
     department: p.department,
     universityId: p.universityId,
-    universityName: p.university?.name || '',
-    overallRating: p.rating || 0,
-    totalReviews: 0,
+    universityName: p.universityName || '',
+    overallRating: p.overallRating || 0,
+    totalReviews: p.totalReviews || 0,
     wouldTakeAgain: 0,
+    isVerified: false,
     ratings: { difficulty: 0, workload: 0, friendliness: 0 },
   };
 }
