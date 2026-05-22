@@ -1222,6 +1222,8 @@ input[type="range"] {
 }
 .rec-card-body { padding: 18px 20px; }
 
+.modal .form-control, .modal .form-select { border-color: #888; }
+
 /* ── 25. Empty States ─────────────────────────────────────── */
 .empty-state {
   text-align: center;
