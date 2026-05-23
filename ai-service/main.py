@@ -8,9 +8,9 @@ import json
 
 app = FastAPI()
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SENTIMENT_PATH = os.path.join(BASE_DIR, "sentiment_bert_model")
-FILTER_PATH = os.path.join(BASE_DIR, "filtering_bert_model")
+MODEL_DIR = os.environ.get("MODEL_DIR", os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+SENTIMENT_PATH = os.path.join(MODEL_DIR, "sentiment_bert_model")
+FILTER_PATH = os.path.join(MODEL_DIR, "filtering_bert_model")
 
 sentiment_pipe = pipeline("text-classification", model=SENTIMENT_PATH)
 filter_pipe = pipeline("text-classification", model=FILTER_PATH)
@@ -60,8 +60,13 @@ def filter_review(body: TextInput):
 
 # --- University recommendation helpers (from notebook) ---
 
+MAJOR_ALIASES = {
+    "technology & it": ["computer science", "it", "information technology", "computing sciences", "data science", "software engineering", "cybersecurity", "technology & it"],
+    "arts & humanities": ["arts", "humanities", "languages", "arts & humanities", "english language and literature"],
+}
+
 def location_match_score(user_city, university_location, distance_sensitivity):
-    same_location = user_city.lower() == university_location.lower()
+    same_location = user_city.lower() in university_location.lower()
     if distance_sensitivity == "Low":
         return 10 if same_location else 7
     elif distance_sensitivity == "Medium":
@@ -71,9 +76,10 @@ def location_match_score(user_city, university_location, distance_sensitivity):
     return 0
 
 def major_match_score(preferred_major, university_majors):
-    preferred_major = preferred_major.lower()
+    preferred = preferred_major.lower()
+    check_values = MAJOR_ALIASES.get(preferred, [preferred])
     for major in university_majors:
-        if preferred_major == major.lower():
+        if major.strip().lower() in check_values:
             return 10
     return 0
 
@@ -231,18 +237,18 @@ def recommend_universities(body: UniRecommendInput):
         final_score = fuzzy_university_score(major_score, level_score, location_score, budget_score, ranking_score)
 
         results.append({
-            "UniversityId": uni["UniversityId"],
-            "UniversityName": uni["Name"],
-            "Location": uni.get("Location", ""),
-            "Description": uni.get("Description", ""),
-            "WebsiteUrl": uni.get("WebsiteUrl", ""),
-            "ImageUrl": uni.get("ImageUrl"),
-            "OverallRating": uni.get("OverallRating", 0),
-            "TotalReviews": uni.get("TotalReviews", 0),
-            "RecommendationScore": final_score,
+            "universityId": uni["UniversityId"],
+            "name": uni["Name"],
+            "location": uni.get("Location", ""),
+            "description": uni.get("Description", ""),
+            "websiteUrl": uni.get("WebsiteUrl", ""),
+            "imageUrl": uni.get("ImageUrl"),
+            "overallRating": uni.get("OverallRating", 0),
+            "totalReviews": uni.get("TotalReviews", 0),
+            "recommendationScore": final_score,
         })
 
-    results.sort(key=lambda x: x["RecommendationScore"], reverse=True)
+    results.sort(key=lambda x: x["recommendationScore"], reverse=True)
     return results
 
 
@@ -266,17 +272,17 @@ def recommend_professors(body: ProfRecommendInput):
         final_score = fuzzy_professor_score(dept_score, course_score, style_score, rat_score)
 
         results.append({
-            "ProfessorId": prof["ProfessorId"],
-            "ProfessorName": prof.get("FullName", ""),
-            "UniversityId": prof.get("UniversityId"),
-            "Department": prof.get("Department", ""),
-            "Specialization": prof.get("Specialization", ""),
-            "TeachingStyle": prof.get("TeachingStyle", ""),
-            "Rating": prof.get("Rating", 0),
-            "OverallRating": prof.get("OverallRating", 0),
-            "TotalReviews": prof.get("TotalReviews", 0),
-            "RecommendationScore": final_score,
+            "professorId": prof["ProfessorId"],
+            "fullName": prof.get("FullName", ""),
+            "universityId": prof.get("UniversityId"),
+            "department": prof.get("Department", ""),
+            "specialization": prof.get("Specialization", ""),
+            "teachingStyle": prof.get("TeachingStyle", ""),
+            "rating": prof.get("Rating", 0),
+            "overallRating": prof.get("OverallRating", 0),
+            "totalReviews": prof.get("TotalReviews", 0),
+            "recommendationScore": final_score,
         })
 
-    results.sort(key=lambda x: x["RecommendationScore"], reverse=True)
+    results.sort(key=lambda x: x["recommendationScore"], reverse=True)
     return results

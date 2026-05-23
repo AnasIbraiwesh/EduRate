@@ -436,7 +436,9 @@ document.addEventListener('DOMContentLoaded', () => {
           showToast('Rating submitted! It will appear after approval.', 'success');
         })
         .catch(err => {
-          const msg = err.status === 409 ? 'You already reviewed this professor.'
+          const msg = err.status === 422 ? 'Your review was flagged as inappropriate and could not be submitted.'
+            : err.status === 403 ? 'You must sign up with a university email (.edu.jo) to write reviews.'
+            : err.status === 409 ? 'You already reviewed this professor.'
             : err.status === 400 ? 'You need an approved proof submission first.'
             : 'Submission failed. Please try again.';
           showToast(msg, 'error');

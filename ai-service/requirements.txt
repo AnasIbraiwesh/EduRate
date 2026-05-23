@@ -3,4 +3,5 @@ uvicorn
 transformers
 torch
 scikit-fuzzy
+scipy
 numpy
