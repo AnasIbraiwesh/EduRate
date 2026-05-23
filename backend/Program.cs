@@ -33,6 +33,7 @@ else
 }
 
 builder.Services.AddControllers();
+builder.Services.AddHttpClient();
 
 builder.Services.AddCors(options =>
 {

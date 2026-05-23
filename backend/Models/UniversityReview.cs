@@ -21,6 +21,8 @@ namespace eduRateSystem.Models
         [Required]
         public string Comment { get; set; } = string.Empty;
 
+        public string? Sentiment { get; set; }
+
         public bool IsDeleted { get; set; } = false;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

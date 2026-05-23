@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
+using System.Text.Json;
 
 namespace eduRateSystem.Controllers.Api
 {
@@ -14,11 +16,15 @@ namespace eduRateSystem.Controllers.Api
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IConfiguration _configuration;
 
-        public UniversityReviewsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public UniversityReviewsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
+            _httpClientFactory = httpClientFactory;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -38,10 +44,11 @@ namespace eduRateSystem.Controllers.Api
                 .OrderByDescending(r => r.CreatedAt)
                 .Select(r => new UniversityReviewResponseDto
                 {
-                    UniversityReviewId = r.UniversityReviewId,  
+                    UniversityReviewId = r.UniversityReviewId,
                     UniversityId = r.UniversityId,
                     Rating = r.Rating,
                     Comment = r.Comment,
+                    Sentiment = r.Sentiment,
                     CreatedAt = r.CreatedAt
                 })
                 .ToListAsync();
@@ -60,6 +67,7 @@ namespace eduRateSystem.Controllers.Api
                     UniversityId = r.UniversityId,
                     Rating = r.Rating,
                     Comment = r.Comment,
+                    Sentiment = r.Sentiment,
                     CreatedAt = r.CreatedAt
                 })
                 .FirstOrDefaultAsync();
@@ -92,6 +100,7 @@ namespace eduRateSystem.Controllers.Api
                     UniversityId = r.UniversityId,
                     Rating = r.Rating,
                     Comment = r.Comment,
+                    Sentiment = r.Sentiment,
                     CreatedAt = r.CreatedAt
                 })
                 .ToListAsync();
@@ -147,6 +156,34 @@ namespace eduRateSystem.Controllers.Api
                 CreatedAt = DateTime.UtcNow
             };
 
+            var aiUrl = _configuration["AI_SERVICE_URL"];
+            if (!string.IsNullOrEmpty(aiUrl))
+            {
+                try
+                {
+                    var client = _httpClientFactory.CreateClient();
+                    var payload = JsonSerializer.Serialize(new { text = dto.Comment });
+
+                    var filterContent = new StringContent(payload, Encoding.UTF8, "application/json");
+                    var filterRes = await client.PostAsync($"{aiUrl}/filter", filterContent);
+                    if (filterRes.IsSuccessStatusCode)
+                    {
+                        var filterData = JsonSerializer.Deserialize<JsonElement>(await filterRes.Content.ReadAsStringAsync());
+                        if (!filterData.GetProperty("approved").GetBoolean())
+                            return StatusCode(422, new { message = "Your review was flagged as inappropriate and could not be submitted." });
+                    }
+
+                    var sentimentContent = new StringContent(payload, Encoding.UTF8, "application/json");
+                    var sentimentRes = await client.PostAsync($"{aiUrl}/sentiment", sentimentContent);
+                    if (sentimentRes.IsSuccessStatusCode)
+                    {
+                        var sentimentData = JsonSerializer.Deserialize<JsonElement>(await sentimentRes.Content.ReadAsStringAsync());
+                        review.Sentiment = sentimentData.GetProperty("label").GetString();
+                    }
+                }
+                catch { /* AI service unavailable — skip silently */ }
+            }
+
             _context.UniversityReviews.Add(review);
             await _context.SaveChangesAsync();
 
@@ -156,6 +193,7 @@ namespace eduRateSystem.Controllers.Api
                 UniversityId = review.UniversityId,
                 Rating = review.Rating,
                 Comment = review.Comment,
+                Sentiment = review.Sentiment,
                 CreatedAt = review.CreatedAt
             };
 
@@ -202,6 +240,7 @@ namespace eduRateSystem.Controllers.Api
                 UniversityId = review.UniversityId,
                 Rating = review.Rating,
                 Comment = review.Comment,
+                Sentiment = review.Sentiment,
                 CreatedAt = review.CreatedAt
             };
 

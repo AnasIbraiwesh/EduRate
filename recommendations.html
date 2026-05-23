@@ -53,6 +53,22 @@
         <label class="form-label fw-semibold" data-i18n="recs.grade_label">Your Grade (%)</label>
         <input type="number" id="rec-grade" class="form-control" data-i18n-placeholder="recs.grade_ph" placeholder="e.g. 85" min="0" max="100">
       </div>
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">Budget</label>
+        <select id="rec-budget" class="form-select">
+          <option value="Low">Low</option>
+          <option value="Medium" selected>Medium</option>
+          <option value="High">High</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">Distance Sensitivity</label>
+        <select id="rec-distance" class="form-select">
+          <option value="Low">Low (any city fine)</option>
+          <option value="Medium" selected>Medium</option>
+          <option value="High">High (same city only)</option>
+        </select>
+      </div>
       <div class="col-12">
         <button class="btn btn-primary w-100" onclick="recommend()">
           <i class="bi bi-search me-2"></i><span data-i18n="recs.find_btn">Find Universities</span>
@@ -72,31 +88,26 @@
 <script src="js/i18n.js"></script>
 <script src="js/main.js"></script>
 <script>
-const MAJOR_MAP = {
-  'Engineering':       [2, 4],
-  'Technology & IT':   [3, 5],
-  'Medicine':          [2],
-  'Business':          [1, 4],
-  'Arts & Humanities': [1, 5]
-};
-
-function recommend() {
-  const city  = document.getElementById('rec-city').value;
-  const major = document.getElementById('rec-major').value;
-  const grade = parseFloat(document.getElementById('rec-grade').value) || 0;
-
-  let results = [...UNIVERSITIES];
-
-  if (city)  results = results.filter(u => u.city === city);
-  if (major) results = results.filter(u => MAJOR_MAP[major]?.includes(u.id));
-  if (grade) results = results.filter(u => u.overallRating >= grade / 25);
-
-  results.sort((a, b) => b.overallRating - a.overallRating);
+async function recommend() {
+  const city     = document.getElementById('rec-city').value;
+  const major    = document.getElementById('rec-major').value;
+  const budget   = document.getElementById('rec-budget').value;
+  const distance = document.getElementById('rec-distance').value;
+  const grade    = parseFloat(document.getElementById('rec-grade').value) || 0;
+  const ranking  = Math.round((grade / 100) * 5) || 3;
 
   const container = document.getElementById('rec-results');
-  container.innerHTML = results.length
-    ? results.map(uniCardHTML).join('')
-    : `<p class="text-muted" data-i18n="recs.no_match">${t('recs.no_match')}</p>`;
+  container.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary"></div></div>';
+
+  try {
+    const results = await API.getUniRecommendations(city, major, 'Bachelor', distance, budget, ranking);
+    const unis = results.map(r => normalizeUniversity(r));
+    container.innerHTML = unis.length
+      ? unis.map(u => uniCardHTML(u)).join('')
+      : `<p class="text-muted">${t('recs.no_match')}</p>`;
+  } catch (e) {
+    container.innerHTML = '<p class="text-danger">Could not load recommendations. Please try again.</p>';
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => { buildNavbar('recommendations'); buildFooter(); I18N.init(); });

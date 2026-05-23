@@ -33,6 +33,11 @@ const API = {
     apiFetch('/api/universityreviews', { method: 'POST', body: JSON.stringify({ universityId: uniId, rating, comment }) }),
   postProfessorReview: (profId, rating, comment) =>
     apiFetch('/api/professorreviews',  { method: 'POST', body: JSON.stringify({ professorId: profId, rating, comment }) }),
+
+  getUniRecommendations: (city, major, level, distanceSensitivity, budgetSensitivity, ranking) =>
+    apiFetch(`/api/recommendations/universities?city=${encodeURIComponent(city)}&major=${encodeURIComponent(major)}&level=${encodeURIComponent(level)}&distanceSensitivity=${encodeURIComponent(distanceSensitivity)}&budgetSensitivity=${encodeURIComponent(budgetSensitivity)}&ranking=${ranking}`),
+  getProfRecommendations: (department, course, teachingStyle, rating) =>
+    apiFetch(`/api/recommendations/professors?department=${encodeURIComponent(department)}&course=${encodeURIComponent(course)}&teachingStyle=${encodeURIComponent(teachingStyle)}&rating=${rating}`),
 };
 
 function normalizeUniversity(u) {
@@ -76,7 +81,7 @@ function normalizeUniReview(r) {
     date: r.createdAt,
     comment: r.comment,
     ratings: { overall: r.rating },
-    sentiment: 'neutral',
+    sentiment: r.sentiment || 'neutral',
   };
 }
 
@@ -87,6 +92,7 @@ function normalizeProfReview(r) {
     date: r.createdAt,
     comment: r.comment,
     ratings: { overall: r.rating },
+    sentiment: r.sentiment || null,
     wouldTakeAgain: null,
     course: '',
     grade: null,

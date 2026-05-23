@@ -48,3 +48,7 @@ desktop.ini
 # Logs
 *.log
 logs/
+
+# AI model weights (too large for git — keep configs/tokenizers, exclude weights)
+*.safetensors
+training_args.bin
