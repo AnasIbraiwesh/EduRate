@@ -10,7 +10,7 @@ namespace eduRateSystem.Seed
         {
             var db = services.GetRequiredService<ApplicationDbContext>();
 
-            if (await db.Universities.AnyAsync()) return;
+            if (await db.Universities.AnyAsync(u => !u.IsDeleted)) return;
 
             // ── Universities ────────────────────────────────────────────────────────────
 
