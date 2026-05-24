@@ -34,7 +34,8 @@ namespace eduRateSystem.Controllers.Api
                  OverallRating = u.UniversityReviews.Any(r => !r.IsDeleted)
                      ? u.UniversityReviews.Where(r => !r.IsDeleted).Average(r => (double)r.Rating)
                      : 0,
-                 TotalReviews = u.UniversityReviews.Count(r => !r.IsDeleted)
+                 TotalReviews = u.UniversityReviews.Count(r => !r.IsDeleted),
+                 Ranking = u.Ranking
              })
              .ToListAsync();
 
@@ -58,7 +59,8 @@ namespace eduRateSystem.Controllers.Api
                     OverallRating = u.UniversityReviews.Any(r => !r.IsDeleted)
                         ? u.UniversityReviews.Where(r => !r.IsDeleted).Average(r => (double)r.Rating)
                         : 0,
-                    TotalReviews = u.UniversityReviews.Count(r => !r.IsDeleted)
+                    TotalReviews = u.UniversityReviews.Count(r => !r.IsDeleted),
+                    Ranking = u.Ranking
                 })
                 .FirstOrDefaultAsync();
 

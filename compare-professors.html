@@ -16,8 +16,8 @@
 
 <header class="page-hero" style="background:linear-gradient(135deg,#1a5276,var(--success))">
   <div class="container">
-    <h1><i class="bi bi-layout-split me-2" aria-hidden="true"></i>Compare Professors</h1>
-    <p class="mb-0">Select two professors to compare them side-by-side</p>
+    <h1><i class="bi bi-layout-split me-2" aria-hidden="true"></i><span data-i18n="compare.mode_profs">Compare Professors</span></h1>
+    <p class="mb-0" data-i18n="compare.mode_profs_desc">Select two professors to compare them side-by-side</p>
   </div>
 </header>
 
@@ -26,25 +26,25 @@
   <div class="compare-selector">
     <div class="row align-items-end g-3">
       <div class="col-md-5">
-        <label for="prof1-select" class="form-label fw-600">Professor A</label>
+        <label for="prof1-select" class="form-label fw-600" data-i18n="compare.prof_a">Professor A</label>
         <select id="prof1-select" class="form-select" aria-label="Select first professor">
-          <option value="" selected disabled>Choose a professor…</option>
+          <option value="" selected disabled data-i18n="compare.choose_prof">Choose a professor…</option>
         </select>
-        <div class="form-text">Optional: filter by course for focused comparison</div>
+        <div class="form-text" data-i18n="compare.prof_course_note">Optional: filter by course for focused comparison</div>
       </div>
       <div class="col-md-2 d-flex justify-content-center">
         <div class="compare-vs" aria-hidden="true">VS</div>
       </div>
       <div class="col-md-5">
-        <label for="prof2-select" class="form-label fw-600">Professor B</label>
+        <label for="prof2-select" class="form-label fw-600" data-i18n="compare.prof_b">Professor B</label>
         <select id="prof2-select" class="form-select" aria-label="Select second professor">
-          <option value="" selected disabled>Choose a professor…</option>
+          <option value="" selected disabled data-i18n="compare.choose_prof">Choose a professor…</option>
         </select>
       </div>
     </div>
     <div class="text-center mt-4">
       <button class="btn btn-secondary btn-lg" id="compare-btn">
-        <i class="bi bi-bar-chart me-2" aria-hidden="true"></i>Compare Now
+        <i class="bi bi-bar-chart me-2" aria-hidden="true"></i><span data-i18n="compare.compare_now">Compare Now</span>
       </button>
     </div>
   </div>
@@ -61,7 +61,7 @@
     <!-- Bar Chart -->
     <div class="profile-card mt-4">
       <div class="profile-card-header">
-        <h2><i class="bi bi-bar-chart-fill me-2" style="color:var(--success)" aria-hidden="true"></i>Side-by-Side Chart</h2>
+        <h2><i class="bi bi-bar-chart-fill me-2" style="color:var(--success)" aria-hidden="true"></i><span data-i18n="compare.sidebyside_chart">Side-by-Side Chart</span></h2>
       </div>
       <div class="profile-card-body">
         <canvas id="compare-chart" style="max-height:350px" aria-label="Bar chart comparing two professors" role="img"></canvas>
@@ -81,8 +81,8 @@
 
   <div id="compare-placeholder" class="empty-state mt-4">
     <div class="empty-state-icon" aria-hidden="true"><i class="bi bi-mortarboard"></i></div>
-    <h3>Select Two Professors</h3>
-    <p>Choose two professors from the dropdowns above for a detailed comparison.</p>
+    <h3 data-i18n="compare.select_profs">Select Two Professors</h3>
+    <p data-i18n="compare.select_2_profs_desc">Choose two professors from the dropdowns above for a detailed comparison.</p>
   </div>
 </main>
 
@@ -103,7 +103,7 @@ function createBarChart(canvasId, label, data, color) {
   return new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: PROF_METRICS.map(m => m.label),
+      labels: getProfMetrics().map(m => m.label),
       datasets: [{ label, data, backgroundColor: color, borderRadius: 6, borderSkipped: false }]
     },
     options: {
@@ -115,13 +115,15 @@ function createBarChart(canvasId, label, data, color) {
 }
 
 // All metrics to compare
-const PROF_METRICS = [
-  { key: 'overallRating',  label: 'Overall Rating',     max: 5 },
-  { key: 'diff',           label: 'Difficulty',         max: 5 },
-  { key: 'workload',       label: 'Workload',            max: 5 },
-  { key: 'friendliness',   label: 'Friendliness',       max: 5 },
-  { key: 'wouldTakeAgain', label: 'Would Take Again (%)', max: 100 }
-];
+function getProfMetrics() {
+  return [
+    { key: 'overallRating',  label: t('compare.metric_overall'),       max: 5 },
+    { key: 'diff',           label: t('prof_profile.difficulty'),       max: 5 },
+    { key: 'workload',       label: t('prof_profile.workload'),         max: 5 },
+    { key: 'friendliness',   label: t('prof_profile.friendliness'),     max: 5 },
+    { key: 'wouldTakeAgain', label: t('compare.metric_wta'),            max: 100 }
+  ];
+}
 
 function getMetricVal(p, key) {
   if (key === 'diff') return p.ratings.difficulty;
@@ -148,7 +150,7 @@ function renderComparison(p1, p2) {
     </div>
     <div class="col-2 d-flex align-items-stretch">
       <div class="compare-cell-label d-flex align-items-center justify-content-center" style="width:100%;border-radius:0;background:linear-gradient(135deg,#1a5276,var(--success));color:#fff;font-size:13px;font-weight:700">
-        METRIC
+        ${t('compare.col_metric')}
       </div>
     </div>
     <div class="col-5">
@@ -163,6 +165,7 @@ function renderComparison(p1, p2) {
     </div>`;
 
   let p1Wins = 0, p2Wins = 0;
+  const PROF_METRICS = getProfMetrics();
   const rows = PROF_METRICS.map(m => {
     const v1 = getMetricVal(p1, m.key);
     const v2 = getMetricVal(p2, m.key);
@@ -183,19 +186,19 @@ function renderComparison(p1, p2) {
           <div style="width:100%">
             <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
               <strong>${displayV1}</strong>
-              ${realW1 ? '<span class="winner-badge">Winner</span>' : ''}
+              ${realW1 ? `<span class="winner-badge">${t('compare.winner_badge')}</span>` : ''}
             </div>
             <div class="rating-bar-track" style="height:8px">
               <div class="rating-bar-fill ${ratingColorClass(v1 * (m.max === 100 ? 0.05 : 1))}" style="width:${pct1}%"></div>
             </div>
           </div>
         </div>
-        <div class="compare-cell-label">${m.label}${lowIsBetter ? '<br><small style="color:#999;font-size:10px">lower=better</small>' : ''}</div>
+        <div class="compare-cell-label">${m.label}${lowIsBetter ? `<br><small style="color:#999;font-size:10px">${t('compare.lower_better')}</small>` : ''}</div>
         <div class="compare-cell${realW2 ? ' winner' : ''}" style="flex:1">
           <div style="width:100%">
             <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
               <strong>${displayV2}</strong>
-              ${realW2 ? '<span class="winner-badge">Winner</span>' : ''}
+              ${realW2 ? `<span class="winner-badge">${t('compare.winner_badge')}</span>` : ''}
             </div>
             <div class="rating-bar-track" style="height:8px">
               <div class="rating-bar-fill ${ratingColorClass(v2 * (m.max === 100 ? 0.05 : 1))}" style="width:${pct2}%"></div>
@@ -209,9 +212,9 @@ function renderComparison(p1, p2) {
   const winner = p1Wins > p2Wins ? p1 : p2Wins > p1Wins ? p2 : null;
   document.getElementById('overall-winner').innerHTML = winner
     ? `<div style="font-size:32px;margin-bottom:8px" aria-hidden="true">🏆</div>
-       <h3 style="color:var(--success);margin-bottom:4px">Overall: ${winner.name}</h3>
-       <p style="color:var(--text-secondary);margin:0">Won ${winner === p1 ? p1Wins : p2Wins} out of ${PROF_METRICS.length} metrics</p>`
-    : `<h3 style="color:var(--text-secondary)">It's a Tie!</h3>`;
+       <h3 style="color:var(--success);margin-bottom:4px">${t('compare.overall_winner')}: ${winner.name}</h3>
+       <p style="color:var(--text-secondary);margin:0">${t('compare.won_metrics').replace('{n1}', winner === p1 ? p1Wins : p2Wins).replace('{n2}', PROF_METRICS.length)}</p>`
+    : `<h3 style="color:var(--text-secondary)">${t('compare.tie')}</h3>`;
 
   // Bar chart
   if (compareChart) compareChart.destroy();
@@ -272,14 +275,14 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('compare-btn').addEventListener('click', () => {
     const id1 = document.getElementById('prof1-select').value;
     const id2 = document.getElementById('prof2-select').value;
-    if (!id1 || !id2) { showToast('Please select both professors.', 'error'); return; }
-    if (id1 === id2) { showToast('Please select two different professors.', 'error'); return; }
+    if (!id1 || !id2) { showToast(t('compare.select_both_prof'), 'error'); return; }
+    if (id1 === id2) { showToast(t('compare.select_diff_prof'), 'error'); return; }
     Promise.all([API.getProfessor(id1), API.getProfessor(id2)])
       .then(([p1Raw, p2Raw]) => {
         renderComparison(normalizeProfessor(p1Raw), normalizeProfessor(p2Raw));
         history.replaceState(null, '', `?id1=${id1}&id2=${id2}`);
       })
-      .catch(() => showToast('Failed to load professor data.', 'error'));
+      .catch(() => showToast(t('compare.failed_uni'), 'error'));
   });
 });
 </script>

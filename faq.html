@@ -72,26 +72,34 @@ const CATEGORY_ICONS = {
 };
 
 function renderFAQ(filter = '') {
-  const container  = document.getElementById('faq-container');
-  const noResults  = document.getElementById('faq-no-results');
+  const container = document.getElementById('faq-container');
+  const noResults = document.getElementById('faq-no-results');
+  const isAr = I18N.current === 'ar';
   const q = filter.trim().toLowerCase();
   let totalVisible = 0;
 
   const html = FAQ_DATA.map((group, gi) => {
-    const items = group.items.filter(item =>
-      !q || item.q.toLowerCase().includes(q) || item.a.toLowerCase().includes(q)
-    );
+    const items = group.items.filter(item => {
+      if (!q) return true;
+      const displayQ = (isAr ? (item.q_ar || item.q) : item.q).toLowerCase();
+      const displayA = (isAr ? (item.a_ar || item.a) : item.a).toLowerCase();
+      return displayQ.includes(q) || displayA.includes(q);
+    });
     if (!items.length) return '';
     totalVisible += items.length;
 
     const accordionId = `faq-group-${gi}`;
     const icon = CATEGORY_ICONS[group.category] || 'bi-chevron-right';
+    const categoryLabel = isAr ? (group.category_ar || group.category) : group.category;
+
     const itemsHTML = items.map((item, ii) => {
-      const itemId = `${accordionId}-item${ii}`;
+      const itemId    = `${accordionId}-item${ii}`;
       const collapseId = `collapse-${gi}-${ii}`;
-      // Highlight matching text
-      const qText = q ? item.q.replace(new RegExp(`(${q})`, 'gi'), '<mark>$1</mark>') : item.q;
-      const aText = q ? item.a.replace(new RegExp(`(${q})`, 'gi'), '<mark>$1</mark>') : item.a;
+      const displayQ  = isAr ? (item.q_ar || item.q) : item.q;
+      const displayA  = isAr ? (item.a_ar || item.a) : item.a;
+      const safeQ = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const qText = safeQ ? displayQ.replace(new RegExp(`(${safeQ})`, 'gi'), '<mark>$1</mark>') : displayQ;
+      const aText = safeQ ? displayA.replace(new RegExp(`(${safeQ})`, 'gi'), '<mark>$1</mark>') : displayA;
       return `
         <div class="accordion-item" id="${itemId}">
           <h3 class="accordion-header">
@@ -110,7 +118,7 @@ function renderFAQ(filter = '') {
     return `
       <div class="faq-group" role="region" aria-labelledby="faq-cat-${gi}">
         <div class="faq-group-title" id="faq-cat-${gi}">
-          <i class="bi ${icon} me-2" aria-hidden="true"></i>${group.category}
+          <i class="bi ${icon} me-2" aria-hidden="true"></i>${categoryLabel}
         </div>
         <div class="accordion" id="${accordionId}">${itemsHTML}</div>
       </div>`;
@@ -122,10 +130,17 @@ function renderFAQ(filter = '') {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  buildNavbar('');
+  buildNavbar('faq');
   buildFooter();
   I18N.init();
   renderFAQ();
+
+  // Re-render FAQ content when language is toggled
+  const _origSetLang = I18N.setLanguage.bind(I18N);
+  I18N.setLanguage = function(lang) {
+    _origSetLang(lang);
+    renderFAQ(document.getElementById('faq-search').value);
+  };
 
   document.getElementById('faq-search').addEventListener('input', function() {
     renderFAQ(this.value);

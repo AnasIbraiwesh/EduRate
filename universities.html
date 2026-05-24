@@ -47,10 +47,10 @@
           <label for="city-filter" data-i18n="unis.city_label">City / Location</label>
           <select id="city-filter" class="form-select" aria-label="Filter by city">
             <option value="" data-i18n="unis.all_cities">All Cities</option>
-            <option value="Amman">Amman</option>
-            <option value="Irbid">Irbid</option>
-            <option value="Madaba">Madaba</option>
-            <option value="Salt">Salt</option>
+            <option value="Amman" data-i18n="unis.city_amman">Amman</option>
+            <option value="Irbid" data-i18n="unis.city_irbid">Irbid</option>
+            <option value="Madaba" data-i18n="unis.city_madaba">Madaba</option>
+            <option value="Salt" data-i18n="unis.city_salt">Salt</option>
           </select>
         </div>
 
@@ -108,9 +108,9 @@
       <!-- Empty state -->
       <div id="empty-state" class="empty-state d-none" role="status">
         <div class="empty-state-icon" aria-hidden="true"><i class="bi bi-search"></i></div>
-        <h3>No universities found</h3>
-        <p>Try adjusting your search or filters to find what you're looking for.</p>
-        <button class="btn btn-outline-primary" id="clear-search">Clear Search</button>
+        <h3 data-i18n="unis.empty_title">No universities found</h3>
+        <p data-i18n="unis.empty_desc">Try adjusting your search or filters to find what you're looking for.</p>
+        <button class="btn btn-outline-primary" id="clear-search" data-i18n="unis.clear">Clear Search</button>
       </div>
 
       <!-- Pagination -->

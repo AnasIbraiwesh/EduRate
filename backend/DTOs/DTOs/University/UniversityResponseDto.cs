@@ -13,5 +13,6 @@ namespace eduRateSystem.DTOs.University
         public double OverallRating { get; set; }
         public int TotalReviews { get; set; }
         public string? ImageUrl { get; set; }
+        public int Ranking { get; set; }
     }
 }

@@ -14,6 +14,7 @@ function buildNavbar(activePage) {
     { id: 'professors',      href: 'professors.html',      label: tFn('nav.professors') },
     { id: 'compare',         href: 'compare.html',         label: tFn('nav.compare') },
     { id: 'recommendations', href: 'recommendations.html', label: tFn('nav.recommendations') },
+    { id: 'ranking',         href: 'ranking.html',         label: tFn('nav.ranking') },
     { id: 'faq',             href: 'faq.html',             label: tFn('nav.faq') }
   ];
 
@@ -33,12 +34,12 @@ function buildNavbar(activePage) {
            <li><h6 class="dropdown-header">${user.fullName}</h6></li>
            <li><hr class="dropdown-divider"></li>
            ${user.role?.toLowerCase() === 'admin'
-             ? '<li><a class="dropdown-item" href="admin.html"><i class="bi bi-shield-lock me-2"></i>Admin Dashboard</a></li>'
+             ? `<li><a class="dropdown-item" href="admin.html"><i class="bi bi-shield-lock me-2"></i>${tFn('nav.admin_dashboard')}</a></li>`
              : user.role?.toLowerCase() === 'professor'
-               ? '<li><a class="dropdown-item" href="dashboard.html"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>'
-               : '<li><a class="dropdown-item" href="recommendations.html"><i class="bi bi-stars me-2"></i>Recommendations</a></li>'}
+               ? `<li><a class="dropdown-item" href="dashboard.html"><i class="bi bi-speedometer2 me-2"></i>${tFn('nav.dashboard')}</a></li>`
+               : `<li><a class="dropdown-item" href="recommendations.html"><i class="bi bi-stars me-2"></i>${tFn('nav.my_recs')}</a></li>`}
            <li><hr class="dropdown-divider"></li>
-           <li><a class="dropdown-item text-danger" href="#" id="logout-btn"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+           <li><a class="dropdown-item text-danger" href="#" id="logout-btn"><i class="bi bi-box-arrow-right me-2"></i>${tFn('nav.logout')}</a></li>
          </ul>
        </div>`
     : `<div class="d-flex gap-2">
@@ -51,7 +52,7 @@ function buildNavbar(activePage) {
       <div class="container">
         <a class="navbar-brand" href="index.html">
           <img src="images/universities/logo/ChatGPT Image May 23, 2026, 12_15_01 AM.png" alt="EduRate logo" style="height:100px;width:auto;margin-right:0px;">
-          Edu<span style="color:#2E86C1">Rate</span>
+          <span dir="ltr" style="unicode-bidi:isolate">Edu<span style="color:#2E86C1">Rate</span></span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
           aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
@@ -99,7 +100,7 @@ function buildFooter() {
           <div class="col-lg-3 col-md-6">
             <div class="d-flex align-items-center gap-2 mb-12" style="margin-bottom:12px">
               <span style="font-size:22px">🎓</span>
-              <span style="font-family:var(--font-heading);font-size:20px;font-weight:700;color:#fff">Edu<span style="color:#2E86C1">Rate</span></span>
+              <span dir="ltr" style="font-family:var(--font-heading);font-size:20px;font-weight:700;color:#fff;unicode-bidi:isolate">Edu<span style="color:#2E86C1">Rate</span></span>
             </div>
             <h5>${tFn('footer.about_title')}</h5>
             <p>${tFn('footer.about_text')}</p>
@@ -117,6 +118,7 @@ function buildFooter() {
               <li><a href="universities.html">${tFn('nav.universities')}</a></li>
               <li><a href="professors.html">${tFn('nav.professors')}</a></li>
               <li><a href="compare.html">${tFn('nav.compare')}</a></li>
+              <li><a href="ranking.html">${tFn('nav.ranking')}</a></li>
               <li><a href="faq.html">${tFn('nav.faq')}</a></li>
             </ul>
           </div>

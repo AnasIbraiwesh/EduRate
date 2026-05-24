@@ -51,6 +51,7 @@ function normalizeUniversity(u) {
     image: u.imageUrl || null,
     overallRating: u.overallRating || 0,
     totalReviews: u.totalReviews || 0,
+    ranking: u.ranking || 0,
     ratings: {
       location: 0, reputation: 0, opportunities: 0, happiness: 0,
       internetQuality: 0, facilities: 0, clubsActivities: 0,

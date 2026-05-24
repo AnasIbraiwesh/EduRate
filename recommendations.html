@@ -18,7 +18,7 @@
   <div class="container">
     <span class="hero-eyebrow"><i class="bi bi-stars me-1"></i><span data-i18n="recs.eyebrow">Personalized For You</span></span>
     <h1 class="mt-2 mb-2" data-i18n="recs.hero_title">Find the University That Fits You Like a Glove</h1>
-    <p class="mb-0" data-i18n="recs.hero_subtitle">Not every university is for everyone — answer 3 quick questions and we'll match you with the best fit.</p>
+    <p class="mb-0" data-i18n="recs.hero_subtitle">Not every university is for everyone — answer 6 quick questions and we'll match you with the best fit.</p>
   </div>
 </header>
 
@@ -32,21 +32,39 @@
         <label class="form-label fw-semibold" data-i18n="recs.city_label">City</label>
         <select id="rec-city" class="form-select">
           <option value="" data-i18n="recs.city_any">Any City</option>
-          <option>Amman</option>
-          <option>Irbid</option>
-          <option>Madaba</option>
-          <option>Salt</option>
+          <option value="Amman" data-i18n="unis.city_amman">Amman</option>
+          <option value="Irbid" data-i18n="unis.city_irbid">Irbid</option>
+          <option value="Madaba" data-i18n="unis.city_madaba">Madaba</option>
+          <option value="Salt" data-i18n="unis.city_salt">Salt</option>
         </select>
       </div>
       <div class="col-md-4">
         <label class="form-label fw-semibold" data-i18n="recs.major_label">Major</label>
         <select id="rec-major" class="form-select">
           <option value="" data-i18n="recs.major_any">Any Major</option>
+          <option value="AI" data-i18n="signup.major_ai">AI &amp; Machine Learning</option>
           <option value="Engineering" data-i18n="signup.major_engineering">Engineering</option>
-          <option value="Technology & IT" data-i18n="signup.major_tech">Technology & IT</option>
+          <option value="Technology & IT" data-i18n="signup.major_tech">Technology &amp; IT</option>
+          <option value="Computer Science" data-i18n="signup.major_cs">Computer Science</option>
           <option value="Medicine" data-i18n="signup.major_medicine">Medicine</option>
+          <option value="Pharmacy" data-i18n="signup.major_pharmacy">Pharmacy</option>
+          <option value="Nursing" data-i18n="signup.major_nursing">Nursing</option>
           <option value="Business" data-i18n="signup.major_business">Business</option>
-          <option value="Arts & Humanities" data-i18n="signup.major_arts">Arts & Humanities</option>
+          <option value="Law" data-i18n="signup.major_law">Law</option>
+          <option value="Architecture" data-i18n="signup.major_arch">Architecture</option>
+          <option value="Education" data-i18n="signup.major_edu_field">Education</option>
+          <option value="Science" data-i18n="signup.major_science">Science</option>
+          <option value="Arts & Humanities" data-i18n="signup.major_arts">Arts &amp; Humanities</option>
+          <option value="Social Sciences" data-i18n="signup.major_social">Social Sciences</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label fw-semibold" data-i18n="recs.level_label">Level of Study</label>
+        <select id="rec-level" class="form-select">
+          <option value="Bachelor" selected data-i18n="recs.level_bachelor">Bachelor</option>
+          <option value="Master" data-i18n="recs.level_master">Master</option>
+          <option value="PhD" data-i18n="recs.level_phd">PhD</option>
+          <option value="Diploma" data-i18n="recs.level_diploma">Diploma</option>
         </select>
       </div>
       <div class="col-md-4">
@@ -54,19 +72,19 @@
         <input type="number" id="rec-grade" class="form-control" data-i18n-placeholder="recs.grade_ph" placeholder="e.g. 85" min="0" max="100">
       </div>
       <div class="col-md-4">
-        <label class="form-label fw-semibold">Budget</label>
+        <label class="form-label fw-semibold" data-i18n="recs.budget_label">Budget</label>
         <select id="rec-budget" class="form-select">
-          <option value="Low">Low</option>
-          <option value="Medium" selected>Medium</option>
-          <option value="High">High</option>
+          <option value="Low" data-i18n="recs.budget_low">Low</option>
+          <option value="Medium" selected data-i18n="recs.budget_medium">Medium</option>
+          <option value="High" data-i18n="recs.budget_high">High</option>
         </select>
       </div>
       <div class="col-md-4">
-        <label class="form-label fw-semibold">Distance Sensitivity</label>
+        <label class="form-label fw-semibold" data-i18n="recs.distance_label">Distance Sensitivity</label>
         <select id="rec-distance" class="form-select">
-          <option value="Low">Low (any city fine)</option>
-          <option value="Medium" selected>Medium</option>
-          <option value="High">High (same city only)</option>
+          <option value="Low" data-i18n="recs.distance_low">Low (any city fine)</option>
+          <option value="Medium" selected data-i18n="recs.distance_medium">Medium</option>
+          <option value="High" data-i18n="recs.distance_high">High (same city only)</option>
         </select>
       </div>
       <div class="col-12">
@@ -91,6 +109,7 @@
 async function recommend() {
   const city     = document.getElementById('rec-city').value;
   const major    = document.getElementById('rec-major').value;
+  const level    = document.getElementById('rec-level').value;
   const budget   = document.getElementById('rec-budget').value;
   const distance = document.getElementById('rec-distance').value;
   const grade    = parseFloat(document.getElementById('rec-grade').value) || 0;
@@ -100,13 +119,13 @@ async function recommend() {
   container.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary"></div></div>';
 
   try {
-    const results = await API.getUniRecommendations(city, major, 'Bachelor', distance, budget, ranking);
+    const results = await API.getUniRecommendations(city, major, level, distance, budget, ranking);
     const unis = results.map(r => normalizeUniversity(r));
     container.innerHTML = unis.length
       ? unis.map(u => uniCardHTML(u)).join('')
       : `<p class="text-muted">${t('recs.no_match')}</p>`;
   } catch (e) {
-    container.innerHTML = '<p class="text-danger">Could not load recommendations. Please try again.</p>';
+    container.innerHTML = `<p class="text-danger">${t('recs.error')}</p>`;
   }
 }
 

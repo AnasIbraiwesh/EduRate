@@ -12,8 +12,6 @@
   "hidden_act": "gelu",
   "hidden_dropout_prob": 0.1,
   "hidden_size": 768,
-  "id2label": {"0": "appropriate", "1": "inappropriate"},
-  "label2id": {"appropriate": 0, "inappropriate": 1},
   "initializer_range": 0.02,
   "intermediate_size": 3072,
   "is_decoder": false,

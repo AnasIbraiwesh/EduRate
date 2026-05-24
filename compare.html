@@ -38,8 +38,8 @@
 
 <header class="page-hero">
   <div class="container text-center">
-    <h1><i class="bi bi-layout-split me-2" aria-hidden="true"></i>Comparison Hub</h1>
-    <p class="mb-0">Compare universities and professors side-by-side to make the best decision</p>
+    <h1><i class="bi bi-layout-split me-2" aria-hidden="true"></i><span data-i18n="compare.title">Comparison Hub</span></h1>
+    <p class="mb-0" data-i18n="compare.subtitle">Compare universities and professors side-by-side to make the best decision</p>
   </div>
 </header>
 
@@ -50,16 +50,16 @@
       <div class="mode-card active" id="mode-uni" role="button" tabindex="0" aria-pressed="true"
         aria-label="Compare universities mode">
         <div class="mode-icon" aria-hidden="true">🏛</div>
-        <h3>Compare Universities</h3>
-        <p>Compare 10 rating categories across two universities with radar charts and detailed breakdowns</p>
+        <h3 data-i18n="compare.mode_unis">Compare Universities</h3>
+        <p data-i18n="compare.mode_unis_desc">Compare 10 rating categories across two universities with radar charts and detailed breakdowns</p>
       </div>
     </div>
     <div class="col-md-5">
       <div class="mode-card" id="mode-prof" role="button" tabindex="0" aria-pressed="false"
         aria-label="Compare professors mode">
         <div class="mode-icon" aria-hidden="true">👨‍🏫</div>
-        <h3>Compare Professors</h3>
-        <p>Compare difficulty, workload, friendliness, and "Would Take Again" across two professors</p>
+        <h3 data-i18n="compare.mode_profs">Compare Professors</h3>
+        <p data-i18n="compare.mode_profs_desc">Compare difficulty, workload, friendliness, and "Would Take Again" across two professors</p>
       </div>
     </div>
   </div>
@@ -67,28 +67,28 @@
   <!-- ── University Compare Form ────────────────────────── -->
   <div class="compare-selector compare-form-section show" id="uni-form">
     <h2 class="mb-4 text-center" style="font-size:22px">
-      <i class="bi bi-building text-primary me-2" aria-hidden="true"></i>Select Two Universities
+      <i class="bi bi-building text-primary me-2" aria-hidden="true"></i><span data-i18n="compare.select_unis">Select Two Universities</span>
     </h2>
     <div class="row align-items-end g-3">
       <div class="col-md-5">
-        <label for="uni1" class="form-label fw-600">University A</label>
+        <label for="uni1" class="form-label fw-600" data-i18n="compare.uni_a">University A</label>
         <select id="uni1" class="form-select" aria-label="Select first university">
-          <option value="" selected disabled>Choose a university…</option>
+          <option value="" selected disabled data-i18n="compare.choose_uni">Choose a university…</option>
         </select>
       </div>
       <div class="col-md-2 d-flex justify-content-center">
         <div class="compare-vs" aria-hidden="true">VS</div>
       </div>
       <div class="col-md-5">
-        <label for="uni2" class="form-label fw-600">University B</label>
+        <label for="uni2" class="form-label fw-600" data-i18n="compare.uni_b">University B</label>
         <select id="uni2" class="form-select" aria-label="Select second university">
-          <option value="" selected disabled>Choose a university…</option>
+          <option value="" selected disabled data-i18n="compare.choose_uni">Choose a university…</option>
         </select>
       </div>
     </div>
     <div class="text-center mt-4">
       <button class="btn btn-primary btn-lg" id="go-uni-compare">
-        <i class="bi bi-bar-chart me-2" aria-hidden="true"></i>Compare Universities
+        <i class="bi bi-bar-chart me-2" aria-hidden="true"></i><span data-i18n="compare.btn_unis">Compare Universities</span>
       </button>
     </div>
   </div>
@@ -96,28 +96,28 @@
   <!-- ── Professor Compare Form ──────────────────────────── -->
   <div class="compare-selector compare-form-section" id="prof-form">
     <h2 class="mb-4 text-center" style="font-size:22px">
-      <i class="bi bi-mortarboard me-2" style="color:var(--success)" aria-hidden="true"></i>Select Two Professors
+      <i class="bi bi-mortarboard me-2" style="color:var(--success)" aria-hidden="true"></i><span data-i18n="compare.select_profs">Select Two Professors</span>
     </h2>
     <div class="row align-items-end g-3">
       <div class="col-md-5">
-        <label for="prof1" class="form-label fw-600">Professor A</label>
+        <label for="prof1" class="form-label fw-600" data-i18n="compare.prof_a">Professor A</label>
         <select id="prof1" class="form-select" aria-label="Select first professor">
-          <option value="" selected disabled>Choose a professor…</option>
+          <option value="" selected disabled data-i18n="compare.choose_prof">Choose a professor…</option>
         </select>
       </div>
       <div class="col-md-2 d-flex justify-content-center">
         <div class="compare-vs" aria-hidden="true">VS</div>
       </div>
       <div class="col-md-5">
-        <label for="prof2" class="form-label fw-600">Professor B</label>
+        <label for="prof2" class="form-label fw-600" data-i18n="compare.prof_b">Professor B</label>
         <select id="prof2" class="form-select" aria-label="Select second professor">
-          <option value="" selected disabled>Choose a professor…</option>
+          <option value="" selected disabled data-i18n="compare.choose_prof">Choose a professor…</option>
         </select>
       </div>
     </div>
     <div class="text-center mt-4">
       <button class="btn btn-secondary btn-lg" id="go-prof-compare">
-        <i class="bi bi-bar-chart me-2" aria-hidden="true"></i>Compare Professors
+        <i class="bi bi-bar-chart me-2" aria-hidden="true"></i><span data-i18n="compare.btn_profs">Compare Professors</span>
       </button>
     </div>
   </div>
@@ -127,22 +127,22 @@
     <div class="col-md-4">
       <div class="step-card">
         <div class="step-icon blue" aria-hidden="true"><i class="bi bi-list-check"></i></div>
-        <h3 class="step-title">10 Categories</h3>
-        <p class="step-desc">University comparisons cover Location, Reputation, Opportunities, Internet, Facilities, and 5 more.</p>
+        <h3 class="step-title" data-i18n="compare.info1_title">10 Categories</h3>
+        <p class="step-desc" data-i18n="compare.info1_desc">University comparisons cover Location, Reputation, Opportunities, Internet, Facilities, and 5 more.</p>
       </div>
     </div>
     <div class="col-md-4">
       <div class="step-card">
         <div class="step-icon green" aria-hidden="true"><i class="bi bi-trophy"></i></div>
-        <h3 class="step-title">Winner Highlights</h3>
-        <p class="step-desc">Each winning category is highlighted in green, with an overall winner declared at the bottom.</p>
+        <h3 class="step-title" data-i18n="compare.info2_title">Winner Highlights</h3>
+        <p class="step-desc" data-i18n="compare.info2_desc">Each winning category is highlighted in green, with an overall winner declared at the bottom.</p>
       </div>
     </div>
     <div class="col-md-4">
       <div class="step-card">
         <div class="step-icon amber" aria-hidden="true"><i class="bi bi-graph-up"></i></div>
-        <h3 class="step-title">Visual Charts</h3>
-        <p class="step-desc">Interactive radar and bar charts give you an instant visual overview of the comparison.</p>
+        <h3 class="step-title" data-i18n="compare.info3_title">Visual Charts</h3>
+        <p class="step-desc" data-i18n="compare.info3_desc">Interactive radar and bar charts give you an instant visual overview of the comparison.</p>
       </div>
     </div>
   </div>

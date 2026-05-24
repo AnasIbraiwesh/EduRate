@@ -38,9 +38,9 @@
 <div id="auth-gate" class="container py-5 d-none">
   <div class="empty-state" style="background:var(--surface);border-radius:var(--radius-xl);padding:64px 40px;box-shadow:var(--shadow-card)">
     <div style="font-size:64px;margin-bottom:16px" aria-hidden="true">🔒</div>
-    <h2>Professor Access Only</h2>
-    <p style="max-width:400px;margin:0 auto 24px">The dashboard is only accessible to users with the Professor role.</p>
-    <a href="login.html" class="btn btn-primary btn-lg">Log In as Professor</a>
+    <h2 data-i18n="dash.access_only_title">Professor Access Only</h2>
+    <p style="max-width:400px;margin:0 auto 24px" data-i18n="dash.access_only_desc">The dashboard is only accessible to users with the Professor role.</p>
+    <a href="login.html" class="btn btn-primary btn-lg" data-i18n="dash.login_as_prof">Log In as Professor</a>
   </div>
 </div>
 
@@ -55,22 +55,22 @@
     </div>
     <nav class="dashboard-nav" aria-label="Dashboard sections">
       <a href="#" class="nav-link active" data-tab="overview">
-        <i class="bi bi-speedometer2" aria-hidden="true"></i> Overview
+        <i class="bi bi-speedometer2" aria-hidden="true"></i> <span data-i18n="dash.tab_overview">Overview</span>
       </a>
       <a href="#" class="nav-link" data-tab="reviews">
-        <i class="bi bi-chat-quote" aria-hidden="true"></i> Reviews
+        <i class="bi bi-chat-quote" aria-hidden="true"></i> <span data-i18n="dash.tab_reviews">Reviews</span>
       </a>
       <a href="#" class="nav-link" data-tab="trends">
-        <i class="bi bi-graph-up-arrow" aria-hidden="true"></i> Trends
+        <i class="bi bi-graph-up-arrow" aria-hidden="true"></i> <span data-i18n="dash.tab_trends">Trends</span>
       </a>
       <a href="#" class="nav-link" data-tab="premium">
-        <i class="bi bi-star-fill" aria-hidden="true"></i> Premium
+        <i class="bi bi-star-fill" aria-hidden="true"></i> <span data-i18n="dash.tab_premium">Premium</span>
         <span class="badge ms-1" style="background:var(--warning);font-size:10px;vertical-align:middle">PRO</span>
       </a>
     </nav>
     <div class="px-4 mt-4 pt-4" style="border-top:1px solid var(--border)">
       <a href="#" id="dash-view-profile" class="btn btn-outline-primary btn-sm w-100">
-        <i class="bi bi-person-circle me-1" aria-hidden="true"></i>View Public Profile
+        <i class="bi bi-person-circle me-1" aria-hidden="true"></i><span data-i18n="dash.view_profile">View Public Profile</span>
       </a>
     </div>
   </aside>
@@ -79,7 +79,7 @@
   <main class="dash-content" aria-live="polite">
     <!-- ── Overview Tab ─────────────────────────────────── -->
     <div id="tab-overview" class="tab-pane active">
-      <h2 class="mb-4">Overview</h2>
+      <h2 class="mb-4" data-i18n="dash.tab_overview">Overview</h2>
 
       <!-- Metrics row -->
       <div class="row g-4 mb-4" id="metrics-row"></div>
@@ -89,7 +89,7 @@
         <div class="col-lg-6">
           <div class="profile-card h-100">
             <div class="profile-card-header">
-              <h2 style="font-size:16px"><i class="bi bi-pie-chart me-2" aria-hidden="true"></i>Sentiment Breakdown</h2>
+              <h2 style="font-size:16px"><i class="bi bi-pie-chart me-2" aria-hidden="true"></i><span data-i18n="dash.sentiment_breakdown">Sentiment Breakdown</span></h2>
             </div>
             <div class="profile-card-body d-flex justify-content-center">
               <canvas id="sentiment-chart" style="max-height:280px;max-width:280px" aria-label="Sentiment breakdown pie chart" role="img"></canvas>
@@ -99,7 +99,7 @@
         <div class="col-lg-6">
           <div class="profile-card h-100">
             <div class="profile-card-header">
-              <h2 style="font-size:16px"><i class="bi bi-bar-chart me-2" aria-hidden="true"></i>Category Averages</h2>
+              <h2 style="font-size:16px"><i class="bi bi-bar-chart me-2" aria-hidden="true"></i><span data-i18n="dash.cat_averages">Category Averages</span></h2>
             </div>
             <div class="profile-card-body">
               <canvas id="cat-chart" style="max-height:260px" aria-label="Category averages bar chart" role="img"></canvas>
@@ -112,16 +112,16 @@
     <!-- ── Reviews Tab ──────────────────────────────────── -->
     <div id="tab-reviews" class="tab-pane">
       <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-        <h2 class="mb-0">All Reviews</h2>
+        <h2 class="mb-0" data-i18n="dash.all_reviews">All Reviews</h2>
         <div class="d-flex gap-2 flex-wrap">
           <select id="dash-course-filter" class="form-select form-select-sm" style="width:180px" aria-label="Filter by course">
-            <option value="">All Courses</option>
+            <option value="" data-i18n="dash.all_courses">All Courses</option>
           </select>
           <select id="dash-sentiment-filter" class="form-select form-select-sm" style="width:140px" aria-label="Filter by sentiment">
-            <option value="">All Sentiments</option>
-            <option value="positive">Positive</option>
-            <option value="neutral">Neutral</option>
-            <option value="negative">Negative</option>
+            <option value="" data-i18n="dash.all_sentiments">All Sentiments</option>
+            <option value="positive" data-i18n="dash.sentiment_positive">Positive</option>
+            <option value="neutral" data-i18n="dash.sentiment_neutral">Neutral</option>
+            <option value="negative" data-i18n="dash.sentiment_negative">Negative</option>
           </select>
         </div>
       </div>
@@ -131,10 +131,10 @@
 
     <!-- ── Trends Tab ───────────────────────────────────── -->
     <div id="tab-trends" class="tab-pane">
-      <h2 class="mb-4">Rating Trends</h2>
+      <h2 class="mb-4" data-i18n="dash.trends_title">Rating Trends</h2>
       <div class="profile-card">
         <div class="profile-card-header">
-          <h2 style="font-size:16px"><i class="bi bi-graph-up-arrow me-2" aria-hidden="true"></i>Overall Rating Over Time</h2>
+          <h2 style="font-size:16px"><i class="bi bi-graph-up-arrow me-2" aria-hidden="true"></i><span data-i18n="dash.trends_over_time">Overall Rating Over Time</span></h2>
         </div>
         <div class="profile-card-body">
           <canvas id="trends-chart" style="max-height:350px" aria-label="Rating trends line chart" role="img"></canvas>
@@ -144,19 +144,19 @@
         <div class="col-md-4">
           <div class="metric-card text-center">
             <div class="metric-value" style="color:var(--success)" id="trend-best">—</div>
-            <div class="metric-label">Best Semester</div>
+            <div class="metric-label" data-i18n="dash.best_semester">Best Semester</div>
           </div>
         </div>
         <div class="col-md-4">
           <div class="metric-card text-center">
             <div class="metric-value" id="trend-avg">—</div>
-            <div class="metric-label">Average Rating</div>
+            <div class="metric-label" data-i18n="dash.avg_rating">Average Rating</div>
           </div>
         </div>
         <div class="col-md-4">
           <div class="metric-card text-center">
             <div class="metric-value" id="trend-total">—</div>
-            <div class="metric-label">Total Reviews</div>
+            <div class="metric-label" data-i18n="dash.metric_total">Total Reviews</div>
           </div>
         </div>
       </div>
@@ -164,20 +164,20 @@
 
     <!-- ── Premium Tab ──────────────────────────────────── -->
     <div id="tab-premium" class="tab-pane">
-      <h2 class="mb-4">Premium Features</h2>
+      <h2 class="mb-4" data-i18n="dash.premium_title">Premium Features</h2>
       <div class="row g-4">
         <!-- Reply feature -->
         <div class="col-lg-6">
           <div class="profile-card h-100">
             <div class="profile-card-body text-center py-4">
               <div style="font-size:48px;margin-bottom:16px" aria-hidden="true">💬</div>
-              <h3>Reply to Reviews</h3>
-              <p style="font-size:14px;color:var(--text-secondary);margin-bottom:24px">
+              <h3 data-i18n="dash.premium_reply_title">Reply to Reviews</h3>
+              <p style="font-size:14px;color:var(--text-secondary);margin-bottom:24px" data-i18n="dash.premium_reply_desc">
                 Verified professors can respond directly to student reviews. Your replies appear below the original review with a "Professor Response" badge.
               </p>
               <div id="premium-reply-section">
                 <button class="btn btn-primary w-100" id="demo-reply-btn">
-                  <i class="bi bi-reply me-1" aria-hidden="true"></i>Demo: Reply to a Review
+                  <i class="bi bi-reply me-1" aria-hidden="true"></i><span data-i18n="dash.premium_reply_btn">Demo: Reply to a Review</span>
                 </button>
               </div>
             </div>
@@ -189,12 +189,12 @@
           <div class="profile-card h-100">
             <div class="profile-card-body text-center py-4">
               <div style="font-size:48px;margin-bottom:16px" aria-hidden="true">📄</div>
-              <h3>CV & Teaching Philosophy</h3>
-              <p style="font-size:14px;color:var(--text-secondary);margin-bottom:24px">
+              <h3 data-i18n="dash.premium_cv_title">CV & Teaching Philosophy</h3>
+              <p style="font-size:14px;color:var(--text-secondary);margin-bottom:24px" data-i18n="dash.premium_cv_desc">
                 Upload your CV and teaching philosophy to help students understand your teaching approach before enrolling.
               </p>
               <label class="btn btn-outline-primary w-100" for="cv-upload">
-                <i class="bi bi-upload me-1" aria-hidden="true"></i>Upload CV (PDF)
+                <i class="bi bi-upload me-1" aria-hidden="true"></i><span data-i18n="dash.premium_cv_btn">Upload CV (PDF)</span>
                 <input type="file" id="cv-upload" accept=".pdf" class="d-none" aria-label="Upload CV PDF">
               </label>
               <div id="cv-preview" class="mt-3"></div>
@@ -207,12 +207,12 @@
       <div class="profile-card mt-4" style="background:linear-gradient(135deg,var(--primary),#6c3483);color:#fff" id="verify-upsell">
         <div class="profile-card-body text-center py-4">
           <div style="font-size:40px;margin-bottom:12px" aria-hidden="true">⭐</div>
-          <h3 style="color:#fff">Verify Your Profile</h3>
-          <p style="color:rgba(255,255,255,.85);margin-bottom:20px">
+          <h3 style="color:#fff" data-i18n="dash.premium_verify_title">Verify Your Profile</h3>
+          <p style="color:rgba(255,255,255,.85);margin-bottom:20px" data-i18n="dash.premium_verify_desc">
             Verified professors get a special badge on their profile, full access to all premium features, and higher visibility in search results.
           </p>
           <button class="btn btn-lg" style="background:#fff;color:var(--primary);font-weight:700">
-            <i class="bi bi-patch-check me-2" aria-hidden="true"></i>Request Verification
+            <i class="bi bi-patch-check me-2" aria-hidden="true"></i><span data-i18n="dash.premium_verify_btn">Request Verification</span>
           </button>
         </div>
       </div>
@@ -285,10 +285,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const negatives = dashReviews.filter(r => r.sentiment === 'negative').length;
 
   const metrics = [
-    { val: dashProf.overallRating, label: 'Overall Rating', icon: 'bi-star-fill', color: 'var(--warning)', bg: '#fef9e7' },
-    { val: dashProf.totalReviews, label: 'Total Reviews', icon: 'bi-chat-quote', color: 'var(--secondary)', bg: '#ebf5fb' },
-    { val: `${dashProf.wouldTakeAgain}%`, label: 'Would Take Again', icon: 'bi-hand-thumbs-up', color: 'var(--success)', bg: '#eafaf1' },
-    { val: positives, label: 'Positive Reviews', icon: 'bi-emoji-smile', color: 'var(--success)', bg: '#eafaf1' }
+    { val: dashProf.overallRating, label: t('dash.metric_overall'), icon: 'bi-star-fill', color: 'var(--warning)', bg: '#fef9e7' },
+    { val: dashProf.totalReviews, label: t('dash.metric_total'), icon: 'bi-chat-quote', color: 'var(--secondary)', bg: '#ebf5fb' },
+    { val: `${dashProf.wouldTakeAgain}%`, label: t('dash.metric_wta'), icon: 'bi-hand-thumbs-up', color: 'var(--success)', bg: '#eafaf1' },
+    { val: positives, label: t('dash.metric_positive'), icon: 'bi-emoji-smile', color: 'var(--success)', bg: '#eafaf1' }
   ];
   document.getElementById('metrics-row').innerHTML = metrics.map(m => `
     <div class="col-md-6 col-xl-3">
@@ -308,7 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
   sentimentChart = new Chart(sCtx, {
     type: 'doughnut',
     data: {
-      labels: ['Positive', 'Neutral', 'Negative'],
+      labels: [t('dash.sentiment_positive'), t('dash.sentiment_neutral'), t('dash.sentiment_negative')],
       datasets: [{
         data: [positives, neutrals, negatives],
         backgroundColor: ['#27AE60','#F39C12','#E74C3C'],
@@ -332,7 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
     data: {
       labels: PROFESSOR_CATEGORIES.map(c => c.label),
       datasets: [{
-        label: 'Your Rating',
+        label: t('dash.metric_overall'),
         data: PROFESSOR_CATEGORIES.map(c => dashProf.ratings[c.key]),
         backgroundColor: ['rgba(27,79,114,.8)','rgba(46,134,193,.8)','rgba(39,174,96,.8)'],
         borderRadius: 8, borderSkipped: false
@@ -365,7 +365,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const page  = filtered.slice(start, start + DASH_REVIEWS_PER_PAGE);
     const container = document.getElementById('dash-reviews-container');
     if (!filtered.length) {
-      container.innerHTML = `<div class="empty-state"><div class="empty-state-icon"><i class="bi bi-chat-right-text"></i></div><h3>No Reviews Match</h3><p>Try different filters.</p></div>`;
+      container.innerHTML = `<div class="empty-state"><div class="empty-state-icon"><i class="bi bi-chat-right-text"></i></div><h3>${t('dash.no_match')}</h3><p>${t('dash.no_match_desc')}</p></div>`;
       document.getElementById('dash-reviews-pagination').innerHTML = '';
       return;
     }
@@ -376,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return card.replace('</article>', `
           <div class="mt-2 text-end">
             <button class="btn btn-outline-secondary btn-sm reply-btn" data-review-id="${r.id}" aria-label="Reply to this review">
-              <i class="bi bi-reply me-1" aria-hidden="true"></i>Reply
+              <i class="bi bi-reply me-1" aria-hidden="true"></i>${t('dash.reply_btn')}
             </button>
           </div>
         </article>`);
@@ -389,7 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Attach reply handlers
     document.querySelectorAll('.reply-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        showToast('Reply feature requires premium verification. See the Premium tab.', 'info');
+        showToast(t('dash.reply_premium_msg'), 'info');
       });
     });
   }
@@ -405,7 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
       data: {
         labels: TREND_DATA.labels,
         datasets: [{
-          label: 'Overall Rating',
+          label: t('dash.metric_overall'),
           data: TREND_DATA.datasets,
           borderColor: 'var(--secondary)',
           backgroundColor: 'rgba(46,134,193,.1)',
@@ -450,13 +450,13 @@ document.addEventListener('DOMContentLoaded', () => {
           <div style="font-weight:600;font-size:14px">${escapeHTML(file.name)}</div>
           <div style="font-size:12px;color:var(--text-secondary)">${(file.size/1024).toFixed(0)} KB</div>
         </div>
-        <button class="btn btn-sm btn-outline-danger ms-auto" onclick="document.getElementById('cv-preview').innerHTML='';document.getElementById('cv-upload').value=''">Remove</button>
+        <button class="btn btn-sm btn-outline-danger ms-auto" onclick="document.getElementById('cv-preview').innerHTML='';document.getElementById('cv-upload').value=''">${t('dash.cv_remove')}</button>
       </div>`;
-    showToast('CV uploaded successfully (demo mode).', 'success');
+    showToast(t('dash.cv_uploaded'), 'success');
   });
 
   document.getElementById('demo-reply-btn').addEventListener('click', () => {
-    showToast('Reply feature demo: in the full version, replies appear under the review card.', 'info');
+    showToast(t('dash.reply_demo_msg'), 'info');
   });
 });
 </script>

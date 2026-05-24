@@ -388,42 +388,122 @@ const REVIEWS_PROFESSOR = {
 const FAQ_DATA = [
   {
     category: "General",
+    category_ar: "عام",
     items: [
-      { q: "What is EduRate?", a: "EduRate is a student-driven platform for rating and reviewing universities and professors in Jordan. Our goal is to help students make informed decisions about their education." },
-      { q: "Is EduRate free to use?", a: "Yes! EduRate is completely free for students. You can browse all university and professor profiles, read reviews, and use the comparison tool without any subscription." },
-      { q: "Is EduRate affiliated with any university?", a: "No. EduRate is an independent platform and is not affiliated with or endorsed by any university. All ratings and reviews are submitted by students." }
+      {
+        q: "What is EduRate?",
+        a: "EduRate is a student-driven platform for rating and reviewing universities and professors in Jordan. Our goal is to help students make informed decisions about their education.",
+        q_ar: "ما هو EduRate؟",
+        a_ar: "EduRate منصة طلابية لتقييم ومراجعة الجامعات والأساتذة في الأردن. هدفنا مساعدة الطلاب على اتخاذ قرارات تعليمية مدروسة."
+      },
+      {
+        q: "Is EduRate free to use?",
+        a: "Yes! EduRate is completely free for students. You can browse all university and professor profiles, read reviews, and use the comparison tool without any subscription.",
+        q_ar: "هل EduRate مجاني؟",
+        a_ar: "نعم! EduRate مجاني تماماً للطلاب. يمكنك تصفح ملفات الجامعات والأساتذة وقراءة التقييمات واستخدام أداة المقارنة دون أي اشتراك."
+      },
+      {
+        q: "Is EduRate affiliated with any university?",
+        a: "No. EduRate is an independent platform and is not affiliated with or endorsed by any university. All ratings and reviews are submitted by students.",
+        q_ar: "هل EduRate تابع لأي جامعة؟",
+        a_ar: "لا. EduRate منصة مستقلة وغير تابعة لأي جامعة ولا معتمدة منها. جميع التقييمات مقدَّمة من الطلاب."
+      }
     ]
   },
   {
     category: "Ratings",
+    category_ar: "التقييمات",
     items: [
-      { q: "How are the overall ratings calculated?", a: "Overall ratings are calculated as the average of all individual category ratings across all submitted reviews. For universities, 10 categories are averaged. For professors, 3 categories are averaged." },
-      { q: "What does the 'Would Take Again' percentage mean?", a: "The 'Would Take Again' percentage shows what proportion of students who reviewed a professor said they would enroll in another course taught by that professor." },
-      { q: "How is sentiment analysis determined?", a: "Sentiment analysis is performed on the written review text using natural language processing. Reviews are classified as Positive, Neutral, or Negative based on the overall tone and language used." }
+      {
+        q: "How are the overall ratings calculated?",
+        a: "Overall ratings are calculated as the average of all individual category ratings across all submitted reviews. For universities, 10 categories are averaged. For professors, 3 categories are averaged.",
+        q_ar: "كيف تُحسب التقييمات الإجمالية؟",
+        a_ar: "يُحسب التقييم الإجمالي بأخذ متوسط جميع تقييمات الفئات الفردية لجميع المراجعات المقدَّمة. للجامعات يُؤخذ متوسط 10 فئات، وللأساتذة 3 فئات."
+      },
+      {
+        q: "What does the 'Would Take Again' percentage mean?",
+        a: "The 'Would Take Again' percentage shows what proportion of students who reviewed a professor said they would enroll in another course taught by that professor.",
+        q_ar: "ماذا تعني نسبة 'سيأخذ المادة مجدداً'؟",
+        a_ar: "تُظهر هذه النسبة حصة الطلاب الذين قيّموا الأستاذ وأفادوا بأنهم سيلتحقون بمادة أخرى يدرّسها."
+      },
+      {
+        q: "How is sentiment analysis determined?",
+        a: "Sentiment analysis is performed on the written review text using natural language processing. Reviews are classified as Positive, Neutral, or Negative based on the overall tone and language used.",
+        q_ar: "كيف يتم تحديد تحليل المشاعر؟",
+        a_ar: "يُجرى تحليل المشاعر على نص التقييم المكتوب باستخدام معالجة اللغة الطبيعية. تُصنَّف التقييمات إيجابية أو محايدة أو سلبية بناءً على الأسلوب واللغة المستخدمَين."
+      }
     ]
   },
   {
     category: "Reviews",
+    category_ar: "المراجعات",
     items: [
-      { q: "Who can submit reviews?", a: "Only verified students with a valid university email address can submit reviews. This ensures all reviews come from real students with genuine experience." },
-      { q: "Can I edit or delete my review after submitting?", a: "Once a review is submitted it cannot be edited. You may contact our support team to request removal of a review if it contains incorrect information." },
-      { q: "Are reviews anonymous?", a: "Yes. Your real name is never shown on the platform. Reviews are displayed under a random anonymous student identifier." },
-      { q: "How does the abusive language filter work?", a: "Our system automatically scans review text for offensive, discriminatory, or abusive language. Flagged content is held for manual review before being published." }
+      {
+        q: "Who can submit reviews?",
+        a: "Only verified students with a valid university email address can submit reviews. This ensures all reviews come from real students with genuine experience.",
+        q_ar: "من يمكنه تقديم التقييمات؟",
+        a_ar: "الطلاب الموثّقون الذين لديهم بريد إلكتروني جامعي صالح فقط. يضمن ذلك أن تأتي جميع التقييمات من طلاب حقيقيين ذوي تجربة فعلية."
+      },
+      {
+        q: "Can I edit or delete my review after submitting?",
+        a: "Once a review is submitted it cannot be edited. You may contact our support team to request removal of a review if it contains incorrect information.",
+        q_ar: "هل يمكنني تعديل تقييمي أو حذفه بعد تقديمه؟",
+        a_ar: "لا يمكن تعديل التقييم بعد تقديمه. يمكنك التواصل مع فريق الدعم لطلب حذف تقييم يحتوي على معلومات غير صحيحة."
+      },
+      {
+        q: "Are reviews anonymous?",
+        a: "Yes. Your real name is never shown on the platform. Reviews are displayed under a random anonymous student identifier.",
+        q_ar: "هل التقييمات مجهولة الهوية؟",
+        a_ar: "نعم. لا يُعرض اسمك الحقيقي على المنصة. تُعرض التقييمات تحت معرّف طالب مجهول عشوائي."
+      },
+      {
+        q: "How does the abusive language filter work?",
+        a: "Our system automatically scans review text for offensive, discriminatory, or abusive language. Flagged content is held for manual review before being published.",
+        q_ar: "كيف يعمل فلتر اللغة المسيئة؟",
+        a_ar: "يفحص نظامنا تلقائياً نص التقييم بحثاً عن لغة مسيئة أو تمييزية. يُحتجز المحتوى المُبلَّغ عنه للمراجعة اليدوية قبل النشر."
+      }
     ]
   },
   {
     category: "Comparison",
+    category_ar: "المقارنة",
     items: [
-      { q: "How many items can I compare at once?", a: "Currently EduRate supports side-by-side comparison of two universities or two professors at a time. Multi-item comparison is planned for a future update." },
-      { q: "Can I compare a professor from one university with one from another?", a: "Yes! You can compare any two professors regardless of which university they teach at." }
+      {
+        q: "How many items can I compare at once?",
+        a: "Currently EduRate supports side-by-side comparison of two universities or two professors at a time. Multi-item comparison is planned for a future update.",
+        q_ar: "كم عنصراً يمكنني مقارنته في آنٍ واحد؟",
+        a_ar: "تدعم EduRate حالياً المقارنة الجانبية بين جامعتين أو أستاذين في المرة الواحدة. المقارنة متعددة العناصر مخططة لتحديث مستقبلي."
+      },
+      {
+        q: "Can I compare a professor from one university with one from another?",
+        a: "Yes! You can compare any two professors regardless of which university they teach at.",
+        q_ar: "هل يمكنني مقارنة أستاذ من جامعة بأستاذ من جامعة أخرى؟",
+        a_ar: "نعم! يمكنك مقارنة أي أستاذين بصرف النظر عن جامعتيهما."
+      }
     ]
   },
   {
     category: "Account",
+    category_ar: "الحساب",
     items: [
-      { q: "How do I create an account?", a: "Click 'Sign Up' and fill in your details. You must use a valid university email address. After submission, check your email for a verification link." },
-      { q: "I forgot my password. What should I do?", a: "Click the 'Forgot Password?' link on the login page and enter your email address. You'll receive a password reset link within a few minutes." },
-      { q: "How can professors claim their profiles?", a: "Professors can sign up with their institutional email and select the 'Professor' role. Verified profiles display a special badge and unlock additional features like replying to reviews." }
+      {
+        q: "How do I create an account?",
+        a: "Click 'Sign Up' and fill in your details. You must use a valid university email address. After submission, check your email for a verification link.",
+        q_ar: "كيف أُنشئ حساباً؟",
+        a_ar: "انقر على 'إنشاء حساب' وأدخل بياناتك. يجب استخدام بريد إلكتروني جامعي صالح. بعد التسجيل تحقق من بريدك الإلكتروني للحصول على رابط التحقق."
+      },
+      {
+        q: "I forgot my password. What should I do?",
+        a: "Click the 'Forgot Password?' link on the login page and enter your email address. You'll receive a password reset link within a few minutes.",
+        q_ar: "نسيت كلمة المرور. ماذا أفعل؟",
+        a_ar: "انقر على رابط 'نسيت كلمة المرور؟' في صفحة تسجيل الدخول وأدخل بريدك الإلكتروني. ستصلك رسالة بالبريد تحتوي رابط إعادة تعيين كلمة المرور خلال دقائق."
+      },
+      {
+        q: "How can professors claim their profiles?",
+        a: "Professors can sign up with their institutional email and select the 'Professor' role. Verified profiles display a special badge and unlock additional features like replying to reviews.",
+        q_ar: "كيف يمكن للأساتذة المطالبة بملفاتهم الشخصية؟",
+        a_ar: "يمكن للأساتذة التسجيل بالبريد المؤسسي واختيار دور 'أستاذ'. تعرض الملفات الموثّقة شارة خاصة وتتيح ميزات إضافية كالرد على التقييمات."
+      }
     ]
   }
 ];

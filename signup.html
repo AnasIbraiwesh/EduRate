@@ -32,34 +32,36 @@
     <div id="register-form-wrap">
       <div class="auth-card">
         <div class="auth-header">
-          <div class="auth-logo">Edu<span>Rate</span></div>
+          <div class="auth-logo"><span dir="ltr" style="unicode-bidi:isolate">Edu<span>Rate</span></span></div>
           <h1 class="auth-title" data-i18n="signup.title">Create Your Account</h1>
           <p class="auth-subtitle" data-i18n="signup.subtitle">Join thousands of students sharing honest reviews</p>
         </div>
 
         <!-- Account type toggle -->
         <div class="d-flex gap-2 mb-4">
-          <button type="button" class="btn btn-primary flex-fill" id="toggle-student">🎓 Student</button>
-          <button type="button" class="btn btn-outline-secondary flex-fill" id="toggle-visitor">👤 Visitor</button>
+          <button type="button" class="btn btn-primary flex-fill" id="toggle-student" data-i18n="signup.student_label">🎓 Student</button>
+          <button type="button" class="btn btn-outline-secondary flex-fill" id="toggle-visitor" data-i18n="signup.visitor_label">👤 Visitor</button>
         </div>
 
         <form id="signup-form" novalidate aria-label="Sign up form">
           <!-- Full Name -->
           <div class="mb-3">
-            <label for="fullname" class="form-label">Full Name</label>
+            <label for="fullname" class="form-label" data-i18n="signup.name_label">Full Name</label>
             <input type="text" id="fullname" name="fullname" class="form-control"
+              data-i18n-placeholder="signup.name_ph"
               placeholder="Your full name" autocomplete="name" required>
             <div class="invalid-feedback" id="fullname-error" role="alert"></div>
           </div>
 
           <!-- University Email -->
           <div class="mb-3">
-            <label for="email" class="form-label" id="email-label">University Email</label>
+            <label for="email" class="form-label" id="email-label" data-i18n="signup.email_label">University Email</label>
             <input type="email" id="email" name="email"
               class="form-control"
+              data-i18n-placeholder="signup.email_ph"
               placeholder="yourname@university.edu.jo"
               autocomplete="email" required>
-            <div class="form-text" id="email-hint">Must be a valid university email address</div>
+            <div class="form-text" id="email-hint" data-i18n="signup.email_hint">Must be a valid university email address</div>
             <div class="invalid-feedback" id="email-error" role="alert"></div>
           </div>
 
@@ -132,7 +134,7 @@
           <a href="login.html" class="btn btn-primary btn-lg w-100" data-i18n="signup.go_login">Go to Login</a>
         </div>
         <p class="mt-3 text-center" style="font-size:13px;color:var(--text-secondary)">
-          Didn't receive the email? <a href="#" data-i18n="signup.resend">Resend</a>
+          <span data-i18n="signup.resend_prompt">Didn't receive the email?</span> <a href="#" data-i18n="signup.resend">Resend</a>
         </p>
       </div>
     </div>
@@ -161,22 +163,51 @@ document.addEventListener('DOMContentLoaded', () => {
   const emailLabel = document.getElementById('email-label');
   const emailHint  = document.getElementById('email-hint');
   const emailInput = document.getElementById('email');
+  let currentMode = 'student';
+
+  function applyMode(mode) {
+    currentMode = mode;
+    if (mode === 'student') {
+      studentFields.style.display = '';
+      emailLabel.removeAttribute('data-i18n');
+      emailLabel.textContent = t('signup.email_label');
+      emailLabel.setAttribute('data-i18n', 'signup.email_label');
+      emailInput.removeAttribute('data-i18n-placeholder');
+      emailInput.placeholder = t('signup.email_ph');
+      emailInput.setAttribute('data-i18n-placeholder', 'signup.email_ph');
+      emailHint.style.display = '';
+    } else {
+      studentFields.style.display = 'none';
+      emailLabel.removeAttribute('data-i18n');
+      emailLabel.textContent = t('signup.email_label_visitor');
+      emailLabel.setAttribute('data-i18n', 'signup.email_label_visitor');
+      emailInput.removeAttribute('data-i18n-placeholder');
+      emailInput.placeholder = t('signup.email_ph_visitor');
+      emailInput.setAttribute('data-i18n-placeholder', 'signup.email_ph_visitor');
+      emailHint.style.display = 'none';
+    }
+  }
+
   document.getElementById('toggle-student').addEventListener('click', function() {
-    studentFields.style.display = '';
-    emailLabel.textContent = 'University Email';
-    emailInput.placeholder = 'yourname@university.edu.jo';
-    emailHint.style.display = '';
+    applyMode('student');
     this.className = 'btn btn-primary flex-fill';
     document.getElementById('toggle-visitor').className = 'btn btn-outline-secondary flex-fill';
   });
   document.getElementById('toggle-visitor').addEventListener('click', function() {
-    studentFields.style.display = 'none';
-    emailLabel.textContent = 'Email';
-    emailInput.placeholder = 'your@email.com';
-    emailHint.style.display = 'none';
+    applyMode('visitor');
     this.className = 'btn btn-primary flex-fill';
     document.getElementById('toggle-student').className = 'btn btn-outline-secondary flex-fill';
   });
+
+  const _origSetLang = I18N.setLanguage.bind(I18N);
+  I18N.setLanguage = function(lang) {
+    _origSetLang(lang);
+    applyMode(currentMode);
+    const pwInput = document.getElementById('password');
+    if (pwInput.value.length > 0) pwInput.dispatchEvent(new Event('input'));
+    document.querySelectorAll('#signup-form .invalid-feedback').forEach(el => { el.textContent = ''; });
+    document.querySelectorAll('#signup-form .is-invalid').forEach(el => el.classList.remove('is-invalid'));
+  };
 
   // Populate university dropdown from API
   const uniSelect = document.getElementById('university');
@@ -206,11 +237,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (/[0-9]/.test(val)) score++;
     if (/[^A-Za-z0-9]/.test(val)) score++;
     const levels = [
-      { w: '25%',  bg: 'var(--danger)',  txt: 'Too short' },
-      { w: '40%',  bg: 'var(--danger)',  txt: 'Weak' },
-      { w: '65%',  bg: 'var(--warning)', txt: 'Fair' },
-      { w: '85%',  bg: 'var(--warning)', txt: 'Good' },
-      { w: '100%', bg: 'var(--success)', txt: 'Strong' }
+      { w: '25%',  bg: 'var(--danger)',  txt: t('signup.pw_too_short') },
+      { w: '40%',  bg: 'var(--danger)',  txt: t('signup.pw_weak') },
+      { w: '65%',  bg: 'var(--warning)', txt: t('signup.pw_fair') },
+      { w: '85%',  bg: 'var(--warning)', txt: t('signup.pw_good') },
+      { w: '100%', bg: 'var(--success)', txt: t('signup.pw_strong') }
     ];
     const lvl = levels[score] || levels[0];
     bar.style.width = val.length === 0 ? '0' : lvl.w;
@@ -232,17 +263,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!fullName) {
       document.getElementById('fullname').classList.add('is-invalid');
-      document.getElementById('fullname-error').textContent = 'Full name is required.';
+      document.getElementById('fullname-error').textContent = t('signup.err_name_required');
       valid = false;
     }
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       document.getElementById('email').classList.add('is-invalid');
-      document.getElementById('email-error').textContent = 'Enter a valid email address.';
+      document.getElementById('email-error').textContent = t('signup.err_email_invalid');
       valid = false;
     }
     if (!pw || pw.length < 8 || !/[A-Z]/.test(pw) || !/[0-9]/.test(pw)) {
       document.getElementById('password').classList.add('is-invalid');
-      document.getElementById('pw-error').textContent = 'Password must be at least 8 characters with 1 uppercase letter and 1 number.';
+      document.getElementById('pw-error').textContent = t('signup.err_pw_weak');
       valid = false;
     }
     if (!valid) return;
@@ -262,8 +293,9 @@ document.addEventListener('DOMContentLoaded', () => {
       .catch(err => {
         btn.disabled = false;
         document.getElementById('signup-spinner').classList.add('d-none');
-        signupText.textContent = 'Create Account';
-        showToast(err.status === 409 ? 'Email already registered.' : 'Registration failed.', 'error');
+        signupText.setAttribute('data-i18n', 'signup.btn');
+        signupText.textContent = t('signup.btn');
+        showToast(err.status === 409 ? t('signup.err_email_taken') : t('signup.err_failed'), 'error');
       });
   });
 });

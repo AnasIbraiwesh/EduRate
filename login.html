@@ -27,7 +27,7 @@
   <div class="auth-page-inner">
     <div class="auth-card">
       <div class="auth-header">
-        <div class="auth-logo">Edu<span>Rate</span></div>
+        <div class="auth-logo"><span dir="ltr" style="unicode-bidi:isolate">Edu<span>Rate</span></span></div>
         <h1 class="auth-title" data-i18n="login.title">Welcome Back</h1>
         <p class="auth-subtitle" data-i18n="login.subtitle">Log in to write reviews and get recommendations</p>
       </div>
@@ -95,6 +95,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (AUTH.isLoggedIn()) window.location.href = 'index.html';
 
+  const _origSetLang = I18N.setLanguage.bind(I18N);
+  I18N.setLanguage = function(lang) {
+    _origSetLang(lang);
+    document.querySelectorAll('#login-form .invalid-feedback').forEach(el => { el.textContent = ''; });
+    document.querySelectorAll('#login-form .is-invalid').forEach(el => el.classList.remove('is-invalid'));
+  };
+
   document.getElementById('toggle-pw').addEventListener('click', function() {
     const pw = document.getElementById('password');
     const icon = this.querySelector('i');
@@ -113,16 +120,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!email) {
       document.getElementById('email').classList.add('is-invalid');
-      document.getElementById('email-error').textContent = 'Email is required.';
+      document.getElementById('email-error').textContent = t('login.err_email_required');
       valid = false;
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       document.getElementById('email').classList.add('is-invalid');
-      document.getElementById('email-error').textContent = 'Please enter a valid email address.';
+      document.getElementById('email-error').textContent = t('login.err_email_invalid');
       valid = false;
     }
     if (!password) {
       document.getElementById('password').classList.add('is-invalid');
-      document.getElementById('pw-error').textContent = 'Password is required.';
+      document.getElementById('pw-error').textContent = t('login.err_pw_required');
       valid = false;
     }
     if (!valid) return;
@@ -142,8 +149,9 @@ document.addEventListener('DOMContentLoaded', () => {
       .catch(err => {
         btn.disabled = false;
         document.getElementById('login-spinner').classList.add('d-none');
-        loginText.textContent = 'Log In';
-        showToast(err.status === 401 ? 'Invalid email or password.' : 'Login failed. Try again.', 'error');
+        loginText.setAttribute('data-i18n', 'login.btn');
+        loginText.textContent = t('login.btn');
+        showToast(err.status === 401 ? t('login.err_invalid') : t('login.err_failed'), 'error');
       });
   });
 });
