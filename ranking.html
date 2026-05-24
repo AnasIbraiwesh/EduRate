@@ -10,11 +10,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <style>
-    .rank-wrap { position: relative; }
-    .rank-num  { position:absolute;top:12px;right:12px;z-index:10;border-radius:999px;padding:2px 10px;font-weight:700;font-size:13px;background:var(--primary);color:#fff; }
-    .rank-num.gold   { background:#F1C40F;color:#1B4F72; }
-    .rank-num.silver { background:#95A5A6;color:#fff; }
-    .rank-num.bronze { background:#BA6A2B;color:#fff; }
+    .leaderboard{list-style:none;padding:0;margin:0;}
+    .lb-row{display:flex;align-items:center;gap:16px;padding:14px 20px;background:#fff;border-radius:10px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);transition:box-shadow .2s;}
+    .lb-row:hover{box-shadow:0 4px 12px rgba(0,0,0,.12);}
+    .lb-rank{font-size:22px;font-weight:700;min-width:48px;text-align:center;}
+    .lb-rank.gold{color:#F1C40F;text-shadow:0 0 6px rgba(241,196,15,.4);}
+    .lb-rank.silver{color:#95A5A6;}
+    .lb-rank.bronze{color:#BA6A2B;}
+    .lb-name{flex:1;font-weight:600;font-size:15px;}
+    .lb-city{color:#6c757d;font-size:13px;min-width:90px;}
+    .lb-score{font-size:13px;color:#6c757d;min-width:80px;}
+    .lb-rating{font-size:14px;font-weight:600;color:#e67e22;min-width:60px;text-align:right;}
+    @media(max-width:576px){.lb-city,.lb-score{display:none;}.lb-row{padding:12px 14px;}}
   </style>
 </head>
 <body>
@@ -30,7 +37,7 @@
 </header>
 
 <main class="container py-5">
-  <div id="uni-grid" class="row g-4" aria-live="polite"></div>
+  <ul id="uni-grid" class="leaderboard" aria-live="polite"></ul>
 </main>
 
 <div id="footer-placeholder"></div>
@@ -48,21 +55,24 @@ document.addEventListener('DOMContentLoaded', async () => {
   I18N.init();
 
   const medalClass = i => i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+  const rankIcon   = i => i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`;
 
   try {
     const raw  = await API.getUniversities();
     const unis = raw.map(normalizeUniversity)
                     .sort((a, b) => b.ranking - a.ranking || b.overallRating - a.overallRating);
 
-    document.getElementById('uni-grid').innerHTML = unis.map((u, i) =>
-      uniCardHTML(u)
-        .replace('col-lg-4 col-md-6"', 'col-lg-4 col-md-6 rank-wrap"')
-        .replace('<div class="uni-card card-hover h-100">',
-                 `<div class="uni-card card-hover h-100"><span class="rank-num ${medalClass(i)}">#${i + 1}</span>`)
-    ).join('');
+    document.getElementById('uni-grid').innerHTML = unis.map((u, i) => `
+      <li class="lb-row">
+        <span class="lb-rank ${medalClass(i)}">${rankIcon(i)}</span>
+        <span class="lb-name">${u.name}</span>
+        <span class="lb-city"><i class="bi bi-geo-alt-fill me-1"></i>${u.city || '—'}</span>
+        <span class="lb-score">Rank ${u.ranking || '—'}</span>
+        <span class="lb-rating">★ ${u.overallRating ? u.overallRating.toFixed(1) : '—'}</span>
+      </li>`).join('');
   } catch {
     document.getElementById('uni-grid').innerHTML =
-      `<p class="text-muted text-center py-5">${t('ranking.error')}</p>`;
+      `<li style="list-style:none" class="text-muted text-center py-5">${t('ranking.error')}</li>`;
   }
 });
 </script>
