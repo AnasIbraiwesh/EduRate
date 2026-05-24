@@ -121,12 +121,26 @@ async function recommend() {
   try {
     const results = await API.getUniRecommendations(city, major, level, distance, budget, ranking);
     const unis = results.map(r => normalizeUniversity(r));
+
+    // Score each university by how well it matches the user's input
+    const distWeight = distance === 'High' ? 5 : distance === 'Medium' ? 3 : 1;
+    const scored = unis.map(u => {
+      let score = 0;
+      const cityMatch = city && u.city && u.city.toLowerCase() === city.toLowerCase();
+      if (cityMatch) score += distWeight;
+      else if (distance === 'High' && city) score -= 4;
+      if (u.ranking >= ranking) score += 2;
+      score += (u.overallRating || 0) * 0.4;
+      return { u, score };
+    }).sort((a, b) => b.score - a.score);
+
+    const top = scored.slice(0, 3).map(s => s.u);
     const labels = ['🥇 Best Match', '🥈 Good Match', '🥉 Consider'];
-    container.innerHTML = unis.length
-      ? unis.slice(0, 3).map((u, i) =>
+    container.innerHTML = top.length
+      ? top.map((u, i) =>
           uniCardHTML(u).replace(
             '<div class="uni-card card-hover h-100">',
-            `<div class="uni-card card-hover h-100" style="position:relative"><span style="position:absolute;top:10px;right:10px;z-index:10;background:#1a3c5e;color:#fff;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:700">${labels[i]||''}</span>`
+            `<div class="uni-card card-hover h-100" style="position:relative"><span style="position:absolute;top:10px;right:10px;z-index:10;background:#1a3c5e;color:#fff;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:700">${labels[i]}</span>`
           )
         ).join('')
       : `<p class="text-muted">${t('recs.no_match')}</p>`;
