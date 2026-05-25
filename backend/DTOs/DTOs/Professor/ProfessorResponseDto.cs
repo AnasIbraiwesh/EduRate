@@ -13,5 +13,6 @@ namespace eduRateSystem.DTOs.Professor
         public string UniversityName { get; set; } = string.Empty;
         public double OverallRating { get; set; }
         public int TotalReviews { get; set; }
+        public string CoursesJson { get; set; } = string.Empty;
     }
 }

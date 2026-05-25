@@ -388,6 +388,10 @@ document.addEventListener('DOMContentLoaded', () => {
             <span id="submit-spinner" class="spinner-border spinner-border-sm ms-2 d-none" aria-label="Submitting"></span>
           </button>`;
 
+        const sel = document.getElementById('review-course');
+        sel.innerHTML = '<option value="" disabled selected>Select a course…</option>' +
+          (prof.courses || []).map(name => `<option value="${escapeHTML(name)}">${escapeHTML(name)}</option>`).join('');
+
         starValues = {};
         buildStarInput('star-difficulty',   'difficulty',   v => starValues.difficulty   = v);
         buildStarInput('star-workload',     'workload',     v => starValues.workload     = v);
@@ -435,6 +439,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(() => {
           bootstrap.Modal.getInstance(reviewModal).hide();
           showToast(t('review.success_prof'), 'success');
+          setTimeout(() => location.reload(), 1200);
         })
         .catch(err => {
           const msg = err.status === 422 ? t('review.err_flagged')

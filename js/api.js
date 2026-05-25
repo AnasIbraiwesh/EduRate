@@ -22,6 +22,7 @@ const API = {
 
   getUniversityReviews:    (uniId)  => apiFetch('/api/universityreviews' + (uniId  ? '?universityId=' + uniId  : '')),
   getProfessorReviews:     (profId) => apiFetch('/api/professorreviews'  + (profId ? '?professorId='  + profId : '')),
+  getCourses:              (profId) => apiFetch('/api/courses?professorId=' + profId),
   getProfessorsByUniversity: (uniId) => apiFetch('/api/professors?universityId=' + uniId),
 
   createUniversity: (data) => apiFetch('/api/universities', { method: 'POST', body: JSON.stringify(data) }),
@@ -41,18 +42,23 @@ const API = {
 };
 
 function normalizeUniversity(u) {
+  const locParts = (u.location || '').split(',');
+  const normName = s => s.toLowerCase().replace(/^the\s+/, '').replace(/[-\s]+/g, ' ').trim();
+  const local = (typeof UNIVERSITIES !== 'undefined')
+    ? UNIVERSITIES.find(lu => normName(lu.name) === normName(u.name))
+    : null;
   return {
     id: u.universityId,
     name: u.name,
-    city: u.location,
-    country: '',
+    city: locParts[0].trim(),
+    country: locParts[1] ? locParts[1].trim() : 'Jordan',
     description: u.description,
     website: u.websiteUrl,
-    image: u.imageUrl || null,
-    overallRating: u.overallRating || 0,
-    totalReviews: u.totalReviews || 0,
+    image: u.imageUrl || (local ? local.image : null),
+    overallRating: u.overallRating ? +u.overallRating.toFixed(2) : (local ? local.overallRating : 0),
+    totalReviews: u.totalReviews || (local ? local.totalReviews : 0),
     ranking: u.ranking || 0,
-    ratings: {
+    ratings: local ? local.ratings : {
       location: 0, reputation: 0, opportunities: 0, happiness: 0,
       internetQuality: 0, facilities: 0, clubsActivities: 0,
       socialLife: 0, foodCafeteria: 0, safety: 0
@@ -61,6 +67,8 @@ function normalizeUniversity(u) {
 }
 
 function normalizeProfessor(p) {
+  let courses = [];
+  try { courses = JSON.parse(p.coursesJson || '[]'); } catch (_) {}
   return {
     id: p.professorId,
     name: p.fullName,
@@ -71,7 +79,8 @@ function normalizeProfessor(p) {
     totalReviews: p.totalReviews || 0,
     wouldTakeAgain: 0,
     isVerified: false,
-    ratings: { difficulty: 0, workload: 0, friendliness: 0 },
+    courses,
+    ratings: { difficulty: p.overallRating || 0, workload: p.overallRating || 0, friendliness: p.overallRating || 0 },
   };
 }
 
