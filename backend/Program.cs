@@ -41,7 +41,8 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(
             "http://localhost:3000",
-            "https://steady-douhua-9753e7.netlify.app"
+            "https://steady-douhua-9753e7.netlify.app",
+            "https://stellular-pavlova-591ea2.netlify.app"
         )
               .AllowAnyMethod()
               .AllowAnyHeader();
