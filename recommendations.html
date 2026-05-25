@@ -52,6 +52,8 @@
           <option value="Business" data-i18n="signup.major_business">Business</option>
           <option value="Law" data-i18n="signup.major_law">Law</option>
           <option value="Architecture" data-i18n="signup.major_arch">Architecture</option>
+          <option value="Cyber Security" data-i18n="signup.major_cyber">Cyber Security</option>
+          <option value="Design" data-i18n="signup.major_design">Design</option>
           <option value="Education" data-i18n="signup.major_edu_field">Education</option>
           <option value="Science" data-i18n="signup.major_science">Science</option>
           <option value="Arts & Humanities" data-i18n="signup.major_arts">Arts &amp; Humanities</option>
@@ -68,8 +70,9 @@
         </select>
       </div>
       <div class="col-md-4">
-        <label class="form-label fw-semibold" data-i18n="recs.grade_label">Your Grade (%)</label>
-        <input type="number" id="rec-grade" class="form-control" data-i18n-placeholder="recs.grade_ph" placeholder="e.g. 85" min="0" max="100">
+        <label class="form-label fw-semibold" data-i18n="recs.ranking_label">Preferred Ranking</label>
+        <input type="number" id="rec-grade" class="form-control" data-i18n-placeholder="recs.ranking_ph" placeholder="e.g. 3" min="1" max="5">
+        <small class="text-muted d-block mt-1" data-i18n="recs.ranking_hint">5 means best and 1 means worst</small>
       </div>
       <div class="col-md-4">
         <label class="form-label fw-semibold" data-i18n="recs.budget_label">Budget</label>
@@ -112,8 +115,8 @@ async function recommend() {
   const level    = document.getElementById('rec-level').value;
   const budget   = document.getElementById('rec-budget').value;
   const distance = document.getElementById('rec-distance').value;
-  const grade    = parseFloat(document.getElementById('rec-grade').value) || 0;
-  const ranking  = Math.round((grade / 100) * 5) || 3;
+  const preferredRanking = parseInt(document.getElementById('rec-grade').value) || 3;
+  const ranking  = (preferredRanking >= 1 && preferredRanking <= 5) ? (6 - preferredRanking) : 3;
 
   const container = document.getElementById('rec-results');
   container.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary"></div></div>';
@@ -129,7 +132,7 @@ async function recommend() {
       const cityMatch = city && u.city && u.city.toLowerCase() === city.toLowerCase();
       if (cityMatch) score += distWeight;
       else if (distance === 'High' && city) score -= 4;
-      if (u.ranking >= ranking) score += 2;
+      if (u.ranking <= ranking) score += 2;
       score += (u.overallRating || 0) * 0.4;
       return { u, score };
     }).sort((a, b) => b.score - a.score);

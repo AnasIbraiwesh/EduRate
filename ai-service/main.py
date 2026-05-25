@@ -16,6 +16,7 @@ sentiment_pipe = pipeline("text-classification", model=SENTIMENT_PATH)
 filter_pipe = pipeline("text-classification", model=FILTER_PATH)
 
 SENTIMENT_MAP = {"LABEL_0": "negative", "LABEL_1": "neutral", "LABEL_2": "positive"}
+FILTER_MAP = {"LABEL_0": "appropriate", "LABEL_1": "inappropriate"}
 
 
 # --- Input models ---
@@ -54,7 +55,8 @@ def sentiment(body: TextInput):
 @app.post("/filter")
 def filter_review(body: TextInput):
     result = filter_pipe(body.text[:512])[0]
-    approved = result["label"] == "appropriate"
+    label = FILTER_MAP.get(result["label"], "inappropriate")
+    approved = label == "appropriate"
     return {"approved": approved}
 
 
@@ -63,6 +65,9 @@ def filter_review(body: TextInput):
 MAJOR_ALIASES = {
     "technology & it": ["computer science", "it", "information technology", "computing sciences", "data science", "software engineering", "cybersecurity", "technology & it"],
     "arts & humanities": ["arts", "humanities", "languages", "arts & humanities", "english language and literature"],
+    "ai": ["data science and ai", "artificial intelligence", "machine learning", "ai & machine learning", "ai"],
+    "cyber security": ["cybersecurity", "cyber security", "information security"],
+    "design": ["art and design", "design", "graphic design"],
 }
 
 def location_match_score(user_city, university_location, distance_sensitivity):

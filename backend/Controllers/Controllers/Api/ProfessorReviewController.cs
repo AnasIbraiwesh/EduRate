@@ -192,6 +192,15 @@ namespace eduRateSystem.Controllers.Api
             _context.ProfessorReviews.Add(review);
             await _context.SaveChangesAsync();
 
+            var professor = await _context.Professors.FindAsync(review.ProfessorId);
+            if (professor != null)
+            {
+                professor.Rating = await _context.ProfessorReviews
+                    .Where(r => r.ProfessorId == review.ProfessorId && !r.IsDeleted)
+                    .AverageAsync(r => (double?)r.Rating) ?? 0;
+                await _context.SaveChangesAsync();
+            }
+
             var response = new ProfessorReviewResponseDto
             {
                 ProfessorReviewId = review.ProfessorReviewId,
@@ -239,6 +248,15 @@ namespace eduRateSystem.Controllers.Api
 
             await _context.SaveChangesAsync();
 
+            var professor = await _context.Professors.FindAsync(review.ProfessorId);
+            if (professor != null)
+            {
+                professor.Rating = await _context.ProfessorReviews
+                    .Where(r => r.ProfessorId == review.ProfessorId && !r.IsDeleted)
+                    .AverageAsync(r => (double?)r.Rating) ?? 0;
+                await _context.SaveChangesAsync();
+            }
+
             var response = new ProfessorReviewResponseDto
             {
                 ProfessorReviewId = review.ProfessorReviewId,
@@ -279,6 +297,15 @@ namespace eduRateSystem.Controllers.Api
             review.IsDeleted = true;
             await _context.SaveChangesAsync();
 
+            var professor = await _context.Professors.FindAsync(review.ProfessorId);
+            if (professor != null)
+            {
+                professor.Rating = await _context.ProfessorReviews
+                    .Where(r => r.ProfessorId == review.ProfessorId && !r.IsDeleted)
+                    .AverageAsync(r => (double?)r.Rating) ?? 0;
+                await _context.SaveChangesAsync();
+            }
+
             return Ok(new { message = "Review deleted successfully." });
         }
 
@@ -296,6 +323,15 @@ namespace eduRateSystem.Controllers.Api
 
             review.IsDeleted = true;
             await _context.SaveChangesAsync();
+
+            var professor = await _context.Professors.FindAsync(review.ProfessorId);
+            if (professor != null)
+            {
+                professor.Rating = await _context.ProfessorReviews
+                    .Where(r => r.ProfessorId == review.ProfessorId && !r.IsDeleted)
+                    .AverageAsync(r => (double?)r.Rating) ?? 0;
+                await _context.SaveChangesAsync();
+            }
 
             return Ok(new { message = "Review removed by admin." });
         }
