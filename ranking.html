@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   try {
     const raw  = await API.getUniversities();
     const unis = raw.map(normalizeUniversity)
-                    .sort((a, b) => b.ranking - a.ranking || b.overallRating - a.overallRating);
+                    .sort((a, b) => a.ranking - b.ranking || b.overallRating - a.overallRating);
 
     document.getElementById('uni-grid').innerHTML = unis.map((u, i) => `
       <li class="lb-row">
