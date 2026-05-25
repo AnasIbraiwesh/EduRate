@@ -196,7 +196,7 @@ function sentimentBadgeHTML(sentiment) {
 // ── 6. Render Review Card (University) ───────────────────────
 function renderUniversityReviewCard(review) {
   const avg = +(Object.values(review.ratings).reduce((a, b) => a + b, 0) / Object.values(review.ratings).length).toFixed(1);
-  const catRows = UNIVERSITY_CATEGORIES.map(c =>
+  const catRows = UNIVERSITY_CATEGORIES.filter(c => review.ratings[c.key] != null).map(c =>
     `<div class="review-rating-item">
        <span>${c.label}</span>
        <div style="display:flex;align-items:center;gap:4px">
@@ -255,7 +255,7 @@ function renderProfessorReviewCard(review) {
             <div class="reviewer-name">${review.reviewer}
               <span class="verified-badge ms-1"><i class="bi bi-patch-check-fill" aria-hidden="true"></i> ${t('common.verified_student')}</span>
             </div>
-            <div class="reviewer-meta">${formatDate(review.date)} &middot; <strong>${escapeHTML(review.course)}</strong>${review.grade ? ` &middot; Grade: ${review.grade}` : ''}</div>
+            <div class="reviewer-meta">${formatDate(review.date)}${review.course ? ` &middot; <strong>${escapeHTML(review.course)}</strong>` : ''}${review.grade ? ` &middot; Grade: ${review.grade}` : ''}</div>
           </div>
         </div>
         <div class="d-flex align-items-center gap-2 flex-wrap">
@@ -267,7 +267,7 @@ function renderProfessorReviewCard(review) {
         </div>
       </div>
       <div class="review-ratings">
-        ${PROFESSOR_CATEGORIES.map(c =>
+        ${PROFESSOR_CATEGORIES.filter(c => review.ratings[c.key] != null).map(c =>
           `<div class="review-rating-item">
              <span>${c.label}</span>
              <div style="display:flex;align-items:center;gap:4px">

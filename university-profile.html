@@ -373,6 +373,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(() => {
           bootstrap.Modal.getInstance(reviewModal).hide();
           showToast(t('review.success_uni'), 'success');
+          setTimeout(() => location.reload(), 1200);
         })
         .catch(err => {
           const msg = err.status === 422 ? t('review.err_flagged')
