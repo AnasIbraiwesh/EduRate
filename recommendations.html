@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recommendations — EduRate</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link id="bs-rtl" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" disabled>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="navbar-placeholder"></div>
+
+<header class="page-hero">
+  <div class="container">
+    <span class="hero-eyebrow"><i class="bi bi-stars me-1"></i><span data-i18n="recs.eyebrow">Personalized For You</span></span>
+    <h1 class="mt-2 mb-2" data-i18n="recs.hero_title">Find the University That Fits You Like a Glove</h1>
+    <p class="mb-0" data-i18n="recs.hero_subtitle">Not every university is for everyone — answer 6 quick questions and we'll match you with the best fit.</p>
+  </div>
+</header>
+
+<div class="container py-5" style="max-width:750px">
+  <h2 class="fw-bold mb-1" data-i18n="recs.form_h2">Find Your University</h2>
+  <p class="text-muted mb-4" data-i18n="recs.form_desc">Enter your details and we'll recommend the best match for you.</p>
+
+  <div class="card shadow-sm p-4 mb-5">
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label fw-semibold" data-i18n="recs.city_label">City</label>
+        <select id="rec-city" class="form-select">
+          <option value="" data-i18n="recs.city_any">Any City</option>
+          <option value="Amman" data-i18n="unis.city_amman">Amman</option>
+          <option value="Irbid" data-i18n="unis.city_irbid">Irbid</option>
+          <option value="Madaba" data-i18n="unis.city_madaba">Madaba</option>
+          <option value="Salt" data-i18n="unis.city_salt">Salt</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label fw-semibold" data-i18n="recs.major_label">Major</label>
+        <select id="rec-major" class="form-select">
+          <option value="" data-i18n="recs.major_any">Any Major</option>
+          <option value="AI" data-i18n="signup.major_ai">AI &amp; Machine Learning</option>
+          <option value="Engineering" data-i18n="signup.major_engineering">Engineering</option>
+          <option value="Technology & IT" data-i18n="signup.major_tech">Technology &amp; IT</option>
+          <option value="Computer Science" data-i18n="signup.major_cs">Computer Science</option>
+          <option value="Medicine" data-i18n="signup.major_medicine">Medicine</option>
+          <option value="Pharmacy" data-i18n="signup.major_pharmacy">Pharmacy</option>
+          <option value="Nursing" data-i18n="signup.major_nursing">Nursing</option>
+          <option value="Business" data-i18n="signup.major_business">Business</option>
+          <option value="Law" data-i18n="signup.major_law">Law</option>
+          <option value="Architecture" data-i18n="signup.major_arch">Architecture</option>
+          <option value="Cyber Security" data-i18n="signup.major_cyber">Cyber Security</option>
+          <option value="Design" data-i18n="signup.major_design">Design</option>
+          <option value="Education" data-i18n="signup.major_edu_field">Education</option>
+          <option value="Science" data-i18n="signup.major_science">Science</option>
+          <option value="Arts & Humanities" data-i18n="signup.major_arts">Arts &amp; Humanities</option>
+          <option value="Social Sciences" data-i18n="signup.major_social">Social Sciences</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label fw-semibold" data-i18n="recs.level_label">Level of Study</label>
+        <select id="rec-level" class="form-select">
+          <option value="Bachelor" selected data-i18n="recs.level_bachelor">Bachelor</option>
+          <option value="Master" data-i18n="recs.level_master">Master</option>
+          <option value="PhD" data-i18n="recs.level_phd">PhD</option>
+          <option value="Diploma" data-i18n="recs.level_diploma">Diploma</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label fw-semibold" data-i18n="recs.ranking_label">Preferred Ranking</label>
+        <input type="number" id="rec-grade" class="form-control" data-i18n-placeholder="recs.ranking_ph" placeholder="e.g. 3" min="1" max="5">
+        <small class="text-muted d-block mt-1" data-i18n="recs.ranking_hint">5 means best and 1 means worst</small>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label fw-semibold" data-i18n="recs.budget_label">Budget</label>
+        <select id="rec-budget" class="form-select">
+          <option value="Low" data-i18n="recs.budget_low">Low</option>
+          <option value="Medium" selected data-i18n="recs.budget_medium">Medium</option>
+          <option value="High" data-i18n="recs.budget_high">High</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label fw-semibold" data-i18n="recs.distance_label">Distance Sensitivity</label>
+        <select id="rec-distance" class="form-select">
+          <option value="Low" data-i18n="recs.distance_low">Low (any city fine)</option>
+          <option value="Medium" selected data-i18n="recs.distance_medium">Medium</option>
+          <option value="High" data-i18n="recs.distance_high">High (same city only)</option>
+        </select>
+      </div>
+      <div class="col-12">
+        <button class="btn btn-primary w-100" onclick="recommend()">
+          <i class="bi bi-search me-2"></i><span data-i18n="recs.find_btn">Find Universities</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="rec-results" class="row g-4"></div>
+</div>
+
+<div id="footer-placeholder"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/data.js"></script>
+<script src="js/translations.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/main.js"></script>
+<script>
+async function recommend() {
+  const city     = document.getElementById('rec-city').value;
+  const major    = document.getElementById('rec-major').value;
+  const level    = document.getElementById('rec-level').value;
+  const budget   = document.getElementById('rec-budget').value;
+  const distance = document.getElementById('rec-distance').value;
+  const preferredRanking = parseInt(document.getElementById('rec-grade').value) || 3;
+  const ranking  = (preferredRanking >= 1 && preferredRanking <= 5) ? (6 - preferredRanking) : 3;
+
+  const container = document.getElementById('rec-results');
+  container.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary"></div></div>';
+
+  try {
+    const results = await API.getUniRecommendations(city, major, level, distance, budget, ranking);
+    const unis = results.map(r => normalizeUniversity(r));
+
+    // Score each university by how well it matches the user's input
+    const distWeight = distance === 'High' ? 5 : distance === 'Medium' ? 3 : 1;
+    const scored = unis.map(u => {
+      let score = 0;
+      const cityMatch = city && u.city && u.city.toLowerCase() === city.toLowerCase();
+      if (cityMatch) score += distWeight;
+      else if (distance === 'High' && city) score -= 4;
+      if (u.ranking <= ranking) score += 2;
+      score += (u.overallRating || 0) * 0.4;
+      return { u, score };
+    }).sort((a, b) => b.score - a.score);
+
+    const top = scored.slice(0, 3).map(s => s.u);
+    const labels = ['🥇 Best Match', '🥈 Good Match', '🥉 Consider'];
+    container.innerHTML = top.length
+      ? top.map((u, i) =>
+          uniCardHTML(u).replace(
+            '<div class="uni-card card-hover h-100">',
+            `<div class="uni-card card-hover h-100" style="position:relative"><span style="position:absolute;top:10px;right:10px;z-index:10;background:#1a3c5e;color:#fff;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:700">${labels[i]}</span>`
+          )
+        ).join('')
+      : `<p class="text-muted">${t('recs.no_match')}</p>`;
+  } catch (e) {
+    container.innerHTML = `<p class="text-danger">${t('recs.error')}</p>`;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => { buildNavbar('recommendations'); buildFooter(); I18N.init(); });
+</script>
+</body>
+</html>

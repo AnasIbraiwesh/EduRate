@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up — EduRate</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link id="bs-rtl" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" disabled>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { background: var(--bg); }
+    .auth-page {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 40px 16px;
+    }
+    .auth-page-inner { width: 100%; max-width: 480px; }
+    .pw-strength { height: 4px; border-radius: var(--radius-pill); margin-top: 6px; transition: width .3s, background .3s; }
+    #verify-screen { display: none; }
+  </style>
+</head>
+<body>
+
+<div id="navbar-placeholder"></div>
+
+<main class="auth-page">
+  <div class="auth-page-inner">
+
+    <!-- Registration Form -->
+    <div id="register-form-wrap">
+      <div class="auth-card">
+        <div class="auth-header">
+          <div class="auth-logo"><span dir="ltr" style="unicode-bidi:isolate">Edu<span>Rate</span></span></div>
+          <h1 class="auth-title" data-i18n="signup.title">Create Your Account</h1>
+          <p class="auth-subtitle" data-i18n="signup.subtitle">Join thousands of students sharing honest reviews</p>
+        </div>
+
+        <!-- Account type toggle -->
+        <div class="d-flex gap-2 mb-4">
+          <button type="button" class="btn btn-primary flex-fill" id="toggle-student" data-i18n="signup.student_label">🎓 Student</button>
+          <button type="button" class="btn btn-outline-secondary flex-fill" id="toggle-visitor" data-i18n="signup.visitor_label">👤 Visitor</button>
+        </div>
+
+        <form id="signup-form" novalidate aria-label="Sign up form">
+          <!-- Full Name -->
+          <div class="mb-3">
+            <label for="fullname" class="form-label" data-i18n="signup.name_label">Full Name</label>
+            <input type="text" id="fullname" name="fullname" class="form-control"
+              data-i18n-placeholder="signup.name_ph"
+              placeholder="Your full name" autocomplete="name" required>
+            <div class="invalid-feedback" id="fullname-error" role="alert"></div>
+          </div>
+
+          <!-- University Email -->
+          <div class="mb-3">
+            <label for="email" class="form-label" id="email-label" data-i18n="signup.email_label">University Email</label>
+            <input type="email" id="email" name="email"
+              class="form-control"
+              data-i18n-placeholder="signup.email_ph"
+              placeholder="yourname@university.edu.jo"
+              autocomplete="email" required>
+            <div class="form-text" id="email-hint" data-i18n="signup.email_hint">Must be a valid university email address</div>
+            <div class="invalid-feedback" id="email-error" role="alert"></div>
+          </div>
+
+          <!-- Password -->
+          <div class="mb-3">
+            <label for="password" class="form-label" data-i18n="signup.pw_label">Password</label>
+            <div class="password-wrap">
+              <input type="password" id="password" name="password"
+                class="form-control"
+                data-i18n-placeholder="signup.pw_ph"
+                placeholder="Minimum 8 characters"
+                autocomplete="new-password" required>
+              <button type="button" class="password-toggle" id="toggle-pw" aria-label="Show/hide password">
+                <i class="bi bi-eye" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="pw-strength mt-1" id="pw-strength" style="width:0;background:var(--danger)" aria-hidden="true"></div>
+            <div class="form-text" id="pw-strength-label"></div>
+            <div class="invalid-feedback" id="pw-error" role="alert"></div>
+          </div>
+
+          <!-- Student-only fields -->
+          <div id="student-fields">
+          <!-- University -->
+          <div class="mb-3">
+            <label for="university" class="form-label" data-i18n="signup.uni_label">University</label>
+            <select id="university" name="university" class="form-select" aria-label="Select your university">
+              <option value="" selected disabled data-i18n="signup.uni_default">Select your university…</option>
+            </select>
+            <div class="invalid-feedback" id="uni-error" role="alert"></div>
+          </div>
+
+          <!-- Major -->
+          <div class="mb-4">
+            <label for="major" class="form-label" data-i18n="signup.major_label">Major</label>
+            <select id="major" name="major" class="form-select" aria-label="Select your major">
+              <option value="" selected disabled data-i18n="signup.major_default">Select your major…</option>
+              <option value="Engineering" data-i18n="signup.major_engineering">Engineering</option>
+              <option value="Technology & IT" data-i18n="signup.major_tech">Technology & IT</option>
+              <option value="Medicine" data-i18n="signup.major_medicine">Medicine</option>
+              <option value="Business" data-i18n="signup.major_business">Business</option>
+              <option value="Arts & Humanities" data-i18n="signup.major_arts">Arts & Humanities</option>
+            </select>
+            <div class="invalid-feedback" id="major-error" role="alert"></div>
+          </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100 btn-lg" id="signup-btn">
+            <span id="signup-text" data-i18n="signup.btn">Create Account</span>
+            <span id="signup-spinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-label="Loading"></span>
+          </button>
+        </form>
+
+        <div class="divider-text" data-i18n="signup.or">or</div>
+        <p class="text-center" style="font-size:15px">
+          <span data-i18n="signup.have_account">Already have an account?</span>
+          <a href="login.html" class="fw-600" data-i18n="signup.login_link">Log In</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Email Verification Screen -->
+    <div id="verify-screen">
+      <div class="auth-card text-center">
+        <div style="font-size:64px;margin-bottom:16px" aria-hidden="true">📧</div>
+        <h2 class="auth-title" data-i18n="signup.verify_title">Check Your Email</h2>
+        <p class="auth-subtitle mb-4"><span data-i18n="signup.verify_desc">We've sent a verification link to</span> <strong id="verify-email"></strong>.</p>
+        <p style="font-size:14px;color:var(--text-secondary)" data-i18n="signup.verify_spam">Click the link in the email to activate your account. If you don't see it, check your spam folder.</p>
+        <div class="mt-4">
+          <a href="login.html" class="btn btn-primary btn-lg w-100" data-i18n="signup.go_login">Go to Login</a>
+        </div>
+        <p class="mt-3 text-center" style="font-size:13px;color:var(--text-secondary)">
+          <span data-i18n="signup.resend_prompt">Didn't receive the email?</span> <a href="#" data-i18n="signup.resend">Resend</a>
+        </p>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/translations.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/api.js"></script>
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  buildNavbar('');
+  buildFooter();
+  I18N.init();
+
+  if (AUTH.isLoggedIn()) window.location.href = 'index.html';
+
+  // Student / Visitor toggle
+  const studentFields = document.getElementById('student-fields');
+  const emailLabel = document.getElementById('email-label');
+  const emailHint  = document.getElementById('email-hint');
+  const emailInput = document.getElementById('email');
+  let currentMode = 'student';
+
+  function applyMode(mode) {
+    currentMode = mode;
+    if (mode === 'student') {
+      studentFields.style.display = '';
+      emailLabel.removeAttribute('data-i18n');
+      emailLabel.textContent = t('signup.email_label');
+      emailLabel.setAttribute('data-i18n', 'signup.email_label');
+      emailInput.removeAttribute('data-i18n-placeholder');
+      emailInput.placeholder = t('signup.email_ph');
+      emailInput.setAttribute('data-i18n-placeholder', 'signup.email_ph');
+      emailHint.style.display = '';
+    } else {
+      studentFields.style.display = 'none';
+      emailLabel.removeAttribute('data-i18n');
+      emailLabel.textContent = t('signup.email_label_visitor');
+      emailLabel.setAttribute('data-i18n', 'signup.email_label_visitor');
+      emailInput.removeAttribute('data-i18n-placeholder');
+      emailInput.placeholder = t('signup.email_ph_visitor');
+      emailInput.setAttribute('data-i18n-placeholder', 'signup.email_ph_visitor');
+      emailHint.style.display = 'none';
+    }
+  }
+
+  document.getElementById('toggle-student').addEventListener('click', function() {
+    applyMode('student');
+    this.className = 'btn btn-primary flex-fill';
+    document.getElementById('toggle-visitor').className = 'btn btn-outline-secondary flex-fill';
+  });
+  document.getElementById('toggle-visitor').addEventListener('click', function() {
+    applyMode('visitor');
+    this.className = 'btn btn-primary flex-fill';
+    document.getElementById('toggle-student').className = 'btn btn-outline-secondary flex-fill';
+  });
+
+  const _origSetLang = I18N.setLanguage.bind(I18N);
+  I18N.setLanguage = function(lang) {
+    _origSetLang(lang);
+    applyMode(currentMode);
+    const pwInput = document.getElementById('password');
+    if (pwInput.value.length > 0) pwInput.dispatchEvent(new Event('input'));
+    document.querySelectorAll('#signup-form .invalid-feedback').forEach(el => { el.textContent = ''; });
+    document.querySelectorAll('#signup-form .is-invalid').forEach(el => el.classList.remove('is-invalid'));
+  };
+
+  // Populate university dropdown from API
+  const uniSelect = document.getElementById('university');
+  API.getUniversities().then(unis => unis.forEach(u => {
+    const opt = document.createElement('option');
+    opt.value = u.universityId;
+    opt.textContent = u.name;
+    uniSelect.appendChild(opt);
+  })).catch(() => {});
+
+  // Password toggle
+  document.getElementById('toggle-pw').addEventListener('click', function() {
+    const pw = document.getElementById('password');
+    const icon = this.querySelector('i');
+    if (pw.type === 'password') { pw.type = 'text'; icon.className = 'bi bi-eye-slash'; }
+    else { pw.type = 'password'; icon.className = 'bi bi-eye'; }
+  });
+
+  // Password strength meter
+  document.getElementById('password').addEventListener('input', function() {
+    const val = this.value;
+    const bar = document.getElementById('pw-strength');
+    const lbl = document.getElementById('pw-strength-label');
+    let score = 0;
+    if (val.length >= 8) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+    const levels = [
+      { w: '25%',  bg: 'var(--danger)',  txt: t('signup.pw_too_short') },
+      { w: '40%',  bg: 'var(--danger)',  txt: t('signup.pw_weak') },
+      { w: '65%',  bg: 'var(--warning)', txt: t('signup.pw_fair') },
+      { w: '85%',  bg: 'var(--warning)', txt: t('signup.pw_good') },
+      { w: '100%', bg: 'var(--success)', txt: t('signup.pw_strong') }
+    ];
+    const lvl = levels[score] || levels[0];
+    bar.style.width = val.length === 0 ? '0' : lvl.w;
+    bar.style.background = lvl.bg;
+    lbl.textContent = val.length === 0 ? '' : lvl.txt;
+    lbl.style.color = lvl.bg;
+  });
+
+  // Form submit
+  document.getElementById('signup-form').addEventListener('submit', e => {
+    e.preventDefault();
+    const fullName = document.getElementById('fullname').value.trim();
+    const email    = document.getElementById('email').value.trim();
+    const pw       = document.getElementById('password').value;
+    let valid = true;
+
+    document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+    document.querySelectorAll('.invalid-feedback').forEach(el => { el.textContent = ''; });
+
+    if (!fullName) {
+      document.getElementById('fullname').classList.add('is-invalid');
+      document.getElementById('fullname-error').textContent = t('signup.err_name_required');
+      valid = false;
+    }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      document.getElementById('email').classList.add('is-invalid');
+      document.getElementById('email-error').textContent = t('signup.err_email_invalid');
+      valid = false;
+    }
+    if (!pw || pw.length < 8 || !/[A-Z]/.test(pw) || !/[0-9]/.test(pw)) {
+      document.getElementById('password').classList.add('is-invalid');
+      document.getElementById('pw-error').textContent = t('signup.err_pw_weak');
+      valid = false;
+    }
+    if (!valid) return;
+
+    const btn = document.getElementById('signup-btn');
+    const signupText = document.getElementById('signup-text');
+    btn.disabled = true;
+    document.getElementById('signup-spinner').classList.remove('d-none');
+    signupText.removeAttribute('data-i18n');
+    signupText.textContent = '…';
+
+    API.register(fullName, email, pw)
+      .then(user => {
+        AUTH.set(user);
+        window.location.href = 'index.html';
+      })
+      .catch(err => {
+        btn.disabled = false;
+        document.getElementById('signup-spinner').classList.add('d-none');
+        signupText.setAttribute('data-i18n', 'signup.btn');
+        signupText.textContent = t('signup.btn');
+        showToast(err.status === 409 ? t('signup.err_email_taken') : t('signup.err_failed'), 'error');
+      });
+  });
+});
+</script>
+</body>
+</html>
