@@ -317,10 +317,11 @@ function showToast(message, type = 'info', duration = 4000) {
   el.innerHTML = `
     <i class="bi ${icons[type] || icons.info} toast-icon" aria-hidden="true"></i>
     <span class="toast-text">${message}</span>
-    <button class="toast-close" aria-label="Close notification" onclick="document.getElementById('${id}').remove()">
+    <button class="toast-close" aria-label="Close notification">
       <i class="bi bi-x-lg" aria-hidden="true"></i>
     </button>`;
   container.appendChild(el);
+  el.querySelector('.toast-close').addEventListener('click', () => el.remove());
   if (type !== 'error' && duration > 0) {
     setTimeout(() => el.remove(), duration);
   }

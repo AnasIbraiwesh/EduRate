@@ -47,6 +47,7 @@ function normalizeUniversity(u) {
   const local = (typeof UNIVERSITIES !== 'undefined')
     ? UNIVERSITIES.find(lu => normName(lu.name) === normName(u.name))
     : null;
+  const r = u.overallRating ? +u.overallRating.toFixed(2) : (local ? local.overallRating : 0);
   return {
     id: u.universityId,
     name: u.name,
@@ -55,13 +56,13 @@ function normalizeUniversity(u) {
     description: u.description,
     website: u.websiteUrl,
     image: u.imageUrl || (local ? local.image : null),
-    overallRating: u.overallRating ? +u.overallRating.toFixed(2) : (local ? local.overallRating : 0),
+    overallRating: r,
     totalReviews: u.totalReviews || (local ? local.totalReviews : 0),
     ranking: u.ranking || 0,
-    ratings: local ? local.ratings : {
-      location: 0, reputation: 0, opportunities: 0, happiness: 0,
-      internetQuality: 0, facilities: 0, clubsActivities: 0,
-      socialLife: 0, foodCafeteria: 0, safety: 0
+    ratings: {
+      location: r, reputation: r, opportunities: r, happiness: r,
+      internetQuality: r, facilities: r, clubsActivities: r,
+      socialLife: r, foodCafeteria: r, safety: r
     },
   };
 }
