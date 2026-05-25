@@ -10,5 +10,6 @@ namespace eduRateSystem.DTOs.UniversityReview
         public string Comment { get; set; } = string.Empty;
         public string? Sentiment { get; set; }
         public DateTime CreatedAt { get; set; }
+        public string? CategoriesJson { get; set; }
     }
 }

@@ -30,8 +30,12 @@ const API = {
   createProfessor:  (data) => apiFetch('/api/professors',  { method: 'POST', body: JSON.stringify(data) }),
   deleteProfessor:  (id)   => apiFetch(`/api/professors/${id}`,  { method: 'DELETE' }),
 
-  postUniversityReview: (uniId, rating, comment) =>
-    apiFetch('/api/universityreviews', { method: 'POST', body: JSON.stringify({ universityId: uniId, rating, comment }) }),
+  postUniversityReview: (uniId, rating, categories, comment) =>
+    apiFetch('/api/universityreviews', { method: 'POST', body: JSON.stringify({
+      universityId: uniId, rating,
+      categoriesJson: JSON.stringify(categories),
+      comment
+    }) }),
   postProfessorReview: (profId, rating, comment) =>
     apiFetch('/api/professorreviews',  { method: 'POST', body: JSON.stringify({ professorId: profId, rating, comment }) }),
 
@@ -86,12 +90,14 @@ function normalizeProfessor(p) {
 }
 
 function normalizeUniReview(r) {
+  let cats = {};
+  try { cats = r.categoriesJson ? JSON.parse(r.categoriesJson) : {}; } catch(_) {}
   return {
     id: r.universityReviewId,
     reviewer: 'Verified Student',
     date: r.createdAt,
     comment: r.comment,
-    ratings: { overall: r.rating },
+    ratings: { overall: r.rating, ...cats },
     sentiment: r.sentiment || 'neutral',
   };
 }

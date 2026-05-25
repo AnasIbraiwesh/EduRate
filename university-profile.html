@@ -217,6 +217,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const uni     = normalizeUniversity(uniRaw);
     const reviews = reviewsRaw.map(normalizeUniReview);
     const profs   = profsRaw.map(normalizeProfessor);
+    UNIVERSITY_CATEGORIES.forEach(c => {
+      const vals = reviews.map(r => r.ratings[c.key]).filter(v => v != null);
+      if (vals.length) uni.ratings[c.key] = +(vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(2);
+    });
 
     // ── Header ───────────────────────────────────────────────
     document.title = `${uni.name} — EduRate`;
@@ -370,7 +374,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('submit-text').textContent = '…';
 
       const avgRating = Object.values(starValues).reduce((a, b) => a + b, 0) / Object.values(starValues).length;
-      API.postUniversityReview(uni.id, Math.round(avgRating), text)
+      API.postUniversityReview(uni.id, Math.round(avgRating), starValues, text)
         .then(() => {
           bootstrap.Modal.getInstance(reviewModal).hide();
           showToast(t('review.success_uni'), 'success');

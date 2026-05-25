@@ -195,7 +195,7 @@ function sentimentBadgeHTML(sentiment) {
 
 // ── 6. Render Review Card (University) ───────────────────────
 function renderUniversityReviewCard(review) {
-  const avg = +(Object.values(review.ratings).reduce((a, b) => a + b, 0) / Object.values(review.ratings).length).toFixed(1);
+  const avg = +review.ratings.overall.toFixed(1);
   const catRows = UNIVERSITY_CATEGORIES.filter(c => review.ratings[c.key] != null).map(c =>
     `<div class="review-rating-item">
        <span>${c.label}</span>
@@ -542,8 +542,9 @@ function sortReviews(reviews, method) {
   return copy.sort((a, b) => new Date(b.date) - new Date(a.date)); // 'recent'
 }
 function avgRating(ratings) {
-  const vals = Object.values(ratings);
-  return vals.reduce((a, b) => a + b, 0) / vals.length;
+  if (ratings.overall != null) return ratings.overall;
+  const vals = Object.values(ratings).filter(v => v != null);
+  return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
 }
 
 // ── 20. Render Pagination ─────────────────────────────────────

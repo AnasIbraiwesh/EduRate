@@ -49,7 +49,8 @@ namespace eduRateSystem.Controllers.Api
                     Rating = r.Rating,
                     Comment = r.Comment,
                     Sentiment = r.Sentiment,
-                    CreatedAt = r.CreatedAt
+                    CreatedAt = r.CreatedAt,
+                    CategoriesJson = r.CategoriesJson
                 })
                 .ToListAsync();
 
@@ -68,7 +69,8 @@ namespace eduRateSystem.Controllers.Api
                     Rating = r.Rating,
                     Comment = r.Comment,
                     Sentiment = r.Sentiment,
-                    CreatedAt = r.CreatedAt
+                    CreatedAt = r.CreatedAt,
+                    CategoriesJson = r.CategoriesJson
                 })
                 .FirstOrDefaultAsync();
 
@@ -101,7 +103,8 @@ namespace eduRateSystem.Controllers.Api
                     Rating = r.Rating,
                     Comment = r.Comment,
                     Sentiment = r.Sentiment,
-                    CreatedAt = r.CreatedAt
+                    CreatedAt = r.CreatedAt,
+                    CategoriesJson = r.CategoriesJson
                 })
                 .ToListAsync();
 
@@ -152,6 +155,7 @@ namespace eduRateSystem.Controllers.Api
                 UniversityId = dto.UniversityId,
                 Rating = dto.Rating,
                 Comment = dto.Comment,
+                CategoriesJson = dto.CategoriesJson,
                 IsDeleted = false,
                 CreatedAt = DateTime.UtcNow
             };
@@ -194,7 +198,8 @@ namespace eduRateSystem.Controllers.Api
                 Rating = review.Rating,
                 Comment = review.Comment,
                 Sentiment = review.Sentiment,
-                CreatedAt = review.CreatedAt
+                CreatedAt = review.CreatedAt,
+                CategoriesJson = review.CategoriesJson
             };
 
             return CreatedAtAction(nameof(GetById), new { id = review.UniversityReviewId }, response);

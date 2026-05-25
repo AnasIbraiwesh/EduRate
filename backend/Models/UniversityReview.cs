@@ -23,6 +23,8 @@ namespace eduRateSystem.Models
 
         public string? Sentiment { get; set; }
 
+        public string? CategoriesJson { get; set; }
+
         public bool IsDeleted { get; set; } = false;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
