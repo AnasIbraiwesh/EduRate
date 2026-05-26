@@ -24,6 +24,12 @@
 </header>
 
 <div class="container py-5" style="max-width:750px">
+  <div class="d-flex gap-2 mb-4">
+    <button id="btn-uni"  class="btn btn-primary"         onclick="showSection('uni')">🏛 University Recommendation</button>
+    <button id="btn-prof" class="btn btn-outline-primary" onclick="showSection('prof')">👨‍🏫 Professor Recommendation</button>
+  </div>
+
+  <div id="uni-section">
   <h2 class="fw-bold mb-1" data-i18n="recs.form_h2">Find Your University</h2>
   <p class="text-muted mb-4" data-i18n="recs.form_desc">Enter your details and we'll recommend the best match for you.</p>
 
@@ -98,6 +104,67 @@
       </div>
     </div>
   </div>
+  </div><!-- /uni-section -->
+
+  <div id="prof-section" style="display:none">
+  <h2 class="fw-bold mb-1">Find Your Professor</h2>
+  <p class="text-muted mb-4">Enter your preferences and we'll recommend the best professor match for you.</p>
+
+  <div class="card shadow-sm p-4 mb-5">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label fw-semibold">University</label>
+        <select id="prof-university" class="form-select">
+          <option value="">Any University</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label fw-semibold">Department</label>
+        <select id="prof-dept" class="form-select">
+          <option value="">Any Department</option>
+          <option value="AI">AI &amp; Machine Learning</option>
+          <option value="Engineering">Engineering</option>
+          <option value="Technology & IT">Technology &amp; IT</option>
+          <option value="Computer Science">Computer Science</option>
+          <option value="Medicine">Medicine</option>
+          <option value="Pharmacy">Pharmacy</option>
+          <option value="Nursing">Nursing</option>
+          <option value="Business">Business</option>
+          <option value="Law">Law</option>
+          <option value="Architecture">Architecture</option>
+          <option value="Cyber Security">Cyber Security</option>
+          <option value="Design">Design</option>
+          <option value="Education">Education</option>
+          <option value="Science">Science</option>
+          <option value="Arts & Humanities">Arts &amp; Humanities</option>
+          <option value="Social Sciences">Social Sciences</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">Course Interest</label>
+        <input type="text" id="prof-course" class="form-control" placeholder="e.g. Machine Learning">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">Teaching Style</label>
+        <select id="prof-style" class="form-select">
+          <option value="Practical">Practical</option>
+          <option value="Theoretical">Theoretical</option>
+          <option value="Mixed">Mixed</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">Min Rating</label>
+        <input type="number" id="prof-rating" class="form-control" placeholder="e.g. 4" min="1" max="5" value="4">
+        <small class="text-muted d-block mt-1">5 = highest, 1 = lowest</small>
+      </div>
+      <div class="col-12">
+        <button class="btn btn-primary w-100" onclick="recommendProf()">
+          <i class="bi bi-search me-2"></i>Find Professors
+        </button>
+      </div>
+    </div>
+  </div>
+  </div><!-- /prof-section -->
 
   <div id="rec-results" class="row g-4"></div>
 </div>
@@ -149,6 +216,67 @@ async function recommend() {
         ).join('')
       : `<p class="text-muted">${t('recs.no_match')}</p>`;
   } catch (e) {
+    container.innerHTML = `<p class="text-danger">${t('recs.error')}</p>`;
+  }
+}
+
+let _profUnisLoaded = false;
+let _uniNameById = {};
+
+function showSection(type) {
+  document.getElementById('uni-section').style.display  = type === 'uni'  ? '' : 'none';
+  document.getElementById('prof-section').style.display = type === 'prof' ? '' : 'none';
+  document.getElementById('rec-results').innerHTML = '';
+  document.getElementById('btn-uni').className  = type === 'uni'  ? 'btn btn-primary'         : 'btn btn-outline-primary';
+  document.getElementById('btn-prof').className = type === 'prof' ? 'btn btn-primary'         : 'btn btn-outline-primary';
+  if (type === 'prof') loadProfUnis();
+}
+
+async function loadProfUnis() {
+  if (_profUnisLoaded) return;
+  _profUnisLoaded = true;
+  try {
+    const raw = await API.getUniversities();
+    const sel = document.getElementById('prof-university');
+    raw.forEach(u => {
+      _uniNameById[String(u.universityId)] = u.name;
+      const opt = document.createElement('option');
+      opt.value = u.universityId;
+      opt.textContent = u.name;
+      sel.appendChild(opt);
+    });
+  } catch(_) { _profUnisLoaded = false; }
+}
+
+async function recommendProf() {
+  const uniId  = document.getElementById('prof-university').value;
+  const dept   = document.getElementById('prof-dept').value;
+  const course = document.getElementById('prof-course').value;
+  const style  = document.getElementById('prof-style').value;
+  const rating = parseFloat(document.getElementById('prof-rating').value) || 4.0;
+
+  const container = document.getElementById('rec-results');
+  container.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary"></div></div>';
+
+  try {
+    let results = await API.getProfRecommendations(dept, course, style, rating);
+    if (uniId) results = results.filter(r => String(r.universityId) === String(uniId));
+    const top = results.slice(0, 3).map(r => {
+      const p = normalizeProfessor(r);
+      p.universityName = _uniNameById[String(r.universityId)] || p.universityName;
+      p.overallRating = +p.overallRating.toFixed(2);
+      return p;
+    });
+    const labels = ['🥇 Best Match', '🥈 Good Match', '🥉 Consider'];
+    container.innerHTML = top.length
+      ? top.map((p, i) =>
+          profCardHTML(p).replace(
+            '<div class="prof-card card-hover h-100">',
+            `<div class="prof-card card-hover h-100" style="position:relative"><span style="position:absolute;top:10px;right:10px;z-index:10;background:#1a3c5e;color:#fff;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:700">${labels[i]}</span>`
+          )
+        ).join('')
+      : `<p class="text-muted">${t('recs.no_match')}</p>`;
+  } catch(e) {
     container.innerHTML = `<p class="text-danger">${t('recs.error')}</p>`;
   }
 }
