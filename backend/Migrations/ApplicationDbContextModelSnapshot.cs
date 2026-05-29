@@ -215,6 +215,12 @@ namespace eduRateSystem.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
 
+                    b.Property<DateTime?>("UniversityChangedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("UniversityId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
@@ -342,6 +348,9 @@ namespace eduRateSystem.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Semester")
+                        .HasColumnType("text");
+
                     b.Property<string>("Sentiment")
                         .HasColumnType("text");
 
@@ -353,7 +362,7 @@ namespace eduRateSystem.Migrations
 
                     b.HasIndex("ProfessorId");
 
-                    b.HasIndex("UserId", "ProfessorId")
+                    b.HasIndex("UserId", "ProfessorId", "Semester")
                         .IsUnique();
 
                     b.ToTable("ProfessorReviews");
@@ -535,6 +544,9 @@ namespace eduRateSystem.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Semester")
+                        .HasColumnType("text");
+
                     b.Property<string>("Sentiment")
                         .HasColumnType("text");
 
@@ -549,7 +561,7 @@ namespace eduRateSystem.Migrations
 
                     b.HasIndex("UniversityId");
 
-                    b.HasIndex("UserId", "UniversityId")
+                    b.HasIndex("UserId", "UniversityId", "Semester")
                         .IsUnique();
 
                     b.ToTable("UniversityReviews");
