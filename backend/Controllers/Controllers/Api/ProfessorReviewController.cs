@@ -129,10 +129,10 @@ namespace eduRateSystem.Controllers.Api
                 return Unauthorized();
             }
 
-            var professorExists = await _context.Professors
-                .AnyAsync(p => p.ProfessorId == dto.ProfessorId && !p.IsDeleted);
+            var professor = await _context.Professors
+                .FirstOrDefaultAsync(p => p.ProfessorId == dto.ProfessorId && !p.IsDeleted);
 
-            if (!professorExists)
+            if (professor == null)
             {
                 return BadRequest(new { message = "The selected professor does not exist." });
             }
@@ -141,14 +141,23 @@ namespace eduRateSystem.Controllers.Api
             if (reviewer == null || !reviewer.IsVerifiedStudent)
                 return StatusCode(403, new { message = "You must sign up with a university email (.edu.jo) to write reviews." });
 
+            if (reviewer.UniversityId == null)
+                return StatusCode(403, new { message = "Please select your university in Settings before writing reviews." });
+
+            if (professor.UniversityId != reviewer.UniversityId)
+                return StatusCode(403, new { message = "You can only review professors from your university." });
+
+            var currentSemester = GetCurrentSemester(DateTime.UtcNow);
+
             var alreadyReviewed = await _context.ProfessorReviews.AnyAsync(r =>
                 r.UserId == userId &&
                 r.ProfessorId == dto.ProfessorId &&
+                r.Semester == currentSemester &&
                 !r.IsDeleted);
 
             if (alreadyReviewed)
             {
-                return Conflict(new { message = "You already reviewed this professor." });
+                return Conflict(new { message = "You already reviewed this professor this semester." });
             }
 
             var review = new ProfessorReview
@@ -157,6 +166,7 @@ namespace eduRateSystem.Controllers.Api
                 ProfessorId = dto.ProfessorId,
                 Rating = dto.Rating,
                 Comment = dto.Comment,
+                Semester = currentSemester,
                 IsDeleted = false,
                 CreatedAt = DateTime.UtcNow
             };
@@ -192,14 +202,10 @@ namespace eduRateSystem.Controllers.Api
             _context.ProfessorReviews.Add(review);
             await _context.SaveChangesAsync();
 
-            var professor = await _context.Professors.FindAsync(review.ProfessorId);
-            if (professor != null)
-            {
-                professor.Rating = await _context.ProfessorReviews
-                    .Where(r => r.ProfessorId == review.ProfessorId && !r.IsDeleted)
-                    .AverageAsync(r => (double?)r.Rating) ?? 0;
-                await _context.SaveChangesAsync();
-            }
+            professor.Rating = await _context.ProfessorReviews
+                .Where(r => r.ProfessorId == review.ProfessorId && !r.IsDeleted)
+                .AverageAsync(r => (double?)r.Rating) ?? 0;
+            await _context.SaveChangesAsync();
 
             var response = new ProfessorReviewResponseDto
             {
@@ -334,6 +340,13 @@ namespace eduRateSystem.Controllers.Api
             }
 
             return Ok(new { message = "Review removed by admin." });
+        }
+
+        private static string GetCurrentSemester(DateTime date)
+        {
+            var month = date.Month;
+            var season = month >= 9 ? "Fall" : month >= 7 ? "Summer" : "Spring";
+            return $"{season}-{date.Year}";
         }
     }
 }

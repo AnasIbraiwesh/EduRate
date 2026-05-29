@@ -139,14 +139,23 @@ namespace eduRateSystem.Controllers.Api
             if (reviewer == null || !reviewer.IsVerifiedStudent)
                 return StatusCode(403, new { message = "You must sign up with a university email (.edu.jo) to write reviews." });
 
+            if (reviewer.UniversityId == null)
+                return StatusCode(403, new { message = "Please select your university in Settings before writing reviews." });
+
+            if (reviewer.UniversityId != dto.UniversityId)
+                return StatusCode(403, new { message = "You can only review your own university." });
+
+            var currentSemester = GetCurrentSemester(DateTime.UtcNow);
+
             var alreadyReviewed = await _context.UniversityReviews.AnyAsync(r =>
                 r.UserId == userId &&
                 r.UniversityId == dto.UniversityId &&
+                r.Semester == currentSemester &&
                 !r.IsDeleted);
 
             if (alreadyReviewed)
             {
-                return Conflict(new { message = "You Already Reviewed This University." });
+                return Conflict(new { message = "You already reviewed this university this semester." });
             }
 
             var review = new UniversityReview
@@ -156,6 +165,7 @@ namespace eduRateSystem.Controllers.Api
                 Rating = dto.Rating,
                 Comment = dto.Comment,
                 CategoriesJson = dto.CategoriesJson,
+                Semester = currentSemester,
                 IsDeleted = false,
                 CreatedAt = DateTime.UtcNow
             };
@@ -298,6 +308,13 @@ namespace eduRateSystem.Controllers.Api
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "Review Removed By Admin." });
+        }
+
+        private static string GetCurrentSemester(DateTime date)
+        {
+            var month = date.Month;
+            var season = month >= 9 ? "Fall" : month >= 7 ? "Summer" : "Spring";
+            return $"{season}-{date.Year}";
         }
     }
 }

@@ -14,5 +14,7 @@ namespace eduRateSystem.DTOs.Auth
         [Required]
         [MinLength(6)]
         public string Password { get; set; } = string.Empty;
+
+        public int? UniversityId { get; set; }
     }
 }

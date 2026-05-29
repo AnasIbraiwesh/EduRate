@@ -322,6 +322,16 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('modal-auth-msg').style.display = '';
         document.getElementById('uni-review-form').style.display = 'none';
         document.getElementById('modal-footer-content').innerHTML = '';
+      } else if (!user.universityId) {
+        document.getElementById('modal-auth-msg').innerHTML = `<div style="font-size:48px;margin-bottom:16px">🏫</div><h3>${t('review.no_uni_title')}</h3><p class="text-muted mb-4">${t('review.no_uni_desc')}</p><a href="settings.html" class="btn btn-primary">${t('nav.settings')}</a>`;
+        document.getElementById('modal-auth-msg').style.display = '';
+        document.getElementById('uni-review-form').style.display = 'none';
+        document.getElementById('modal-footer-content').innerHTML = '';
+      } else if (Number(user.universityId) !== Number(uni.id)) {
+        document.getElementById('modal-auth-msg').innerHTML = `<div style="font-size:48px;margin-bottom:16px">🏫</div><h3>${t('review.wrong_uni_title')}</h3><p class="text-muted mb-4">${t('review.wrong_uni_desc')}</p><a href="settings.html" class="btn btn-outline-primary">${t('nav.settings')}</a>`;
+        document.getElementById('modal-auth-msg').style.display = '';
+        document.getElementById('uni-review-form').style.display = 'none';
+        document.getElementById('modal-footer-content').innerHTML = '';
       } else {
         document.getElementById('modal-auth-msg').style.display = 'none';
         document.getElementById('uni-review-form').style.display = '';
