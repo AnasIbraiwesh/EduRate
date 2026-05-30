@@ -318,7 +318,7 @@ function showToast(message, type = 'info', duration = 4000) {
   el.innerHTML = `
     <i class="bi ${icons[type] || icons.info} toast-icon" aria-hidden="true"></i>
     <span class="toast-text">${message}</span>
-    <button class="toast-close" aria-label="Close notification">
+    <button type="button" class="toast-close" aria-label="Close notification">
       <i class="bi bi-x-lg" aria-hidden="true"></i>
     </button>`;
   container.querySelectorAll('.toast-item').forEach(existing => {

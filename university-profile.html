@@ -341,6 +341,12 @@ document.addEventListener('DOMContentLoaded', () => {
             <span id="submit-text">${t('profile.submit_review')}</span>
             <span id="submit-spinner" class="spinner-border spinner-border-sm ms-2 d-none" aria-label="Submitting"></span>
           </button>`;
+        document.getElementById('review-text').value = '';
+        document.getElementById('review-text').classList.remove('is-invalid');
+        document.getElementById('review-text-error').textContent = '';
+        document.getElementById('char-count').textContent = '0 / 50';
+        document.getElementById('char-count').style.color = 'var(--danger)';
+        document.getElementById('abusive-warning').classList.add('d-none');
         buildStarInputsForCategories();
         document.getElementById('submit-review-btn').addEventListener('click', handleSubmitReview);
       }
