@@ -300,6 +300,7 @@ function ratingBarHTML(label, value, max = 5) {
 
 // ── 9. Toast Notifications ────────────────────────────────────
 function showToast(message, type = 'info', duration = 4000) {
+  if (type === 'danger' || type === 'warning') type = 'error';
   let container = document.getElementById('toast-container');
   if (!container) {
     container = document.createElement('div');
@@ -308,6 +309,9 @@ function showToast(message, type = 'info', duration = 4000) {
     container.setAttribute('role', 'status');
     container.setAttribute('aria-live', 'polite');
     document.body.appendChild(container);
+    container.addEventListener('click', (e) => {
+      e.target.closest('.toast-close')?.closest('.toast-item')?.remove();
+    });
   }
   const icons = { success: 'bi-check-circle-fill', error: 'bi-exclamation-circle-fill', info: 'bi-info-circle-fill' };
   const id = 'toast-' + Date.now();
@@ -325,7 +329,6 @@ function showToast(message, type = 'info', duration = 4000) {
     if (existing.querySelector('.toast-text')?.textContent === message) existing.remove();
   });
   container.appendChild(el);
-  el.querySelector('.toast-close').addEventListener('click', () => el.remove());
   if (type !== 'error' && duration > 0) {
     setTimeout(() => el.remove(), duration);
   }
