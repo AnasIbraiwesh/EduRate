@@ -60,7 +60,7 @@ function normalizeUniversity(u) {
     country: locParts[1] ? locParts[1].trim() : 'Jordan',
     description: u.description,
     website: u.websiteUrl,
-    image: u.imageUrl || (local ? local.image : null),
+    image: (local && local.image) ? local.image : u.imageUrl,
     overallRating: r,
     totalReviews: u.totalReviews || (local ? local.totalReviews : 0),
     ranking: u.ranking || 0,
