@@ -102,25 +102,11 @@ namespace eduRateSystem.Seed
                 },
                 new University
                 {
-                    Name        = "Applied Science Private University",
-                    Location    = "Amman, Jordan",
-                    Description = "The largest private university in Jordan by campus area, offering 59 specializations across 12 faculties to over 5,900 students from 50+ countries.",
-                    WebsiteUrl  = "http://www.asu.edu.jo",
-                    Ranking     = 8,
-                    BudgetLevel = 3,
-                    Majors      = "Pharmacy, Engineering, Information Technology, Business, Law, Nursing, Art and Design",
-                    Levels      = "Bachelor, Master",
-                    ImageUrl    = "https://www.asu.edu.jo/PublishingImages/logo-02.png",
-                    IsDeleted   = false,
-                    CreatedAt   = DateTime.UtcNow
-                },
-                new University
-                {
                     Name        = "Al-Ahliyya Amman University",
                     Location    = "Amman, Jordan",
                     Description = "Jordan's first private university, established in 1990. Houses 12 colleges offering undergraduate and postgraduate programs in law, engineering, business, IT, pharmacy, and nursing.",
                     WebsiteUrl  = "https://www.ammanu.edu.jo",
-                    Ranking     = 9,
+                    Ranking     = 8,
                     BudgetLevel = 3,
                     Majors      = "Business, Information Technology, Engineering, Law, Pharmacy, Nursing, Medical Engineering",
                     Levels      = "Bachelor, Master",
@@ -134,7 +120,7 @@ namespace eduRateSystem.Seed
                     Location    = "Salt, Jordan",
                     Description = "A government-supported public university founded by Royal Decree in 1996, distinguished by applied engineering and technical education with 22 colleges across 13 campus sites throughout Jordan.",
                     WebsiteUrl  = "https://www.bau.edu.jo",
-                    Ranking     = 10,
+                    Ranking     = 9,
                     BudgetLevel = 3,
                     Majors      = "Engineering Technology, Computer Sciences, Medicine, Architecture, Agriculture, Business, Nursing",
                     Levels      = "Bachelor, Master, PhD",
@@ -168,10 +154,9 @@ namespace eduRateSystem.Seed
             var yu   = universities[3];
             var gju  = universities[4];
             var aum  = universities[5];
-            var asu  = universities[6];
-            var aau  = universities[7];
-            var bau  = universities[8];
-            var htu  = universities[9];
+            var aau  = universities[6];
+            var bau  = universities[7];
+            var htu  = universities[8];
 
             // ── Professors ──────────────────────────────────────────────────────────────
 
@@ -717,86 +702,6 @@ namespace eduRateSystem.Seed
                     CoursesJson   = """["Risk Management","Financial Analysis","Business Analytics","Corporate Finance"]""",
                     TeachingStyle = "Practical",
                     Rating        = 3.4,
-                    ImageUrl      = null,
-                    IsDeleted     = false,
-                    CreatedAt     = DateTime.UtcNow
-                },
-
-                // ── Applied Science Private University ────────────────────────────
-                new Professor
-                {
-                    FullName      = "Mwaffaq Abu Alhija",
-                    UniversityId  = asu.UniversityId,
-                    Department    = "Cybersecurity and Cloud Computing",
-                    Specialization = "Cybersecurity, cloud computing, network security",
-                    CoursesJson   = """["Cybersecurity","Cloud Computing","Network Security","Ethical Hacking"]""",
-                    TeachingStyle = "Practical",
-                    Rating        = 4.0,
-                    ImageUrl      = null,
-                    IsDeleted     = false,
-                    CreatedAt     = DateTime.UtcNow
-                },
-                new Professor
-                {
-                    FullName      = "Ahmad Hanandeh",
-                    UniversityId  = asu.UniversityId,
-                    Department    = "Intelligent Systems",
-                    Specialization = "Machine learning, intelligent systems, technology management",
-                    CoursesJson   = """["Machine Learning","Intelligent Systems","Artificial Intelligence","Technology Management"]""",
-                    TeachingStyle = "Practical",
-                    Rating        = 4.3,
-                    ImageUrl      = null,
-                    IsDeleted     = false,
-                    CreatedAt     = DateTime.UtcNow
-                },
-                new Professor
-                {
-                    FullName      = "Ghadeer Al Dweik",
-                    UniversityId  = asu.UniversityId,
-                    Department    = "Nursing",
-                    Specialization = "Critical care nursing, clinical nursing, nursing science",
-                    CoursesJson   = """["Critical Care Nursing","Clinical Nursing","Nursing Research","Patient Safety"]""",
-                    TeachingStyle = "Practical",
-                    Rating        = 3.8,
-                    ImageUrl      = null,
-                    IsDeleted     = false,
-                    CreatedAt     = DateTime.UtcNow
-                },
-                new Professor
-                {
-                    FullName      = "Mahmoud Alghizzawi",
-                    UniversityId  = asu.UniversityId,
-                    Department    = "Marketing",
-                    Specialization = "Digital marketing, e-marketing, social media analytics",
-                    CoursesJson   = """["Digital Marketing","Social Media Marketing","E-Commerce","Consumer Behavior"]""",
-                    TeachingStyle = "Practical",
-                    Rating        = 3.2,
-                    ImageUrl      = null,
-                    IsDeleted     = false,
-                    CreatedAt     = DateTime.UtcNow
-                },
-                new Professor
-                {
-                    FullName      = "Ahmed Otoom",
-                    UniversityId  = asu.UniversityId,
-                    Department    = "Information Technology",
-                    Specialization = "Healthcare informatics, machine learning, clinical data systems",
-                    CoursesJson   = """["Healthcare Informatics","Machine Learning","Data Mining","Clinical Information Systems"]""",
-                    TeachingStyle = "Practical",
-                    Rating        = 3.6,
-                    ImageUrl      = null,
-                    IsDeleted     = false,
-                    CreatedAt     = DateTime.UtcNow
-                },
-                new Professor
-                {
-                    FullName      = "Nagham Hendi",
-                    UniversityId  = asu.UniversityId,
-                    Department    = "Pharmacy",
-                    Specialization = "Genomics, pharmaceutical chemistry, drug discovery",
-                    CoursesJson   = """["Pharmaceutical Chemistry","Genomics","Drug Discovery","Medicinal Chemistry"]""",
-                    TeachingStyle = "Practical",
-                    Rating        = 2.8,
                     ImageUrl      = null,
                     IsDeleted     = false,
                     CreatedAt     = DateTime.UtcNow
