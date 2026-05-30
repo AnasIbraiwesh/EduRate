@@ -136,15 +136,6 @@ const UNIVERSITIES = [
     professors: [2, 5]
   },
   {
-    id: 7,
-    name: "Applied Science Private University",
-    image: "https://www.asu.edu.jo/PublishingImages/logo-02.png",
-    shortName: "ASU",
-    city: "Amman",
-    country: "Jordan",
-    website: "http://www.asu.edu.jo"
-  },
-  {
     id: 6,
     name: "Al-Balqa Applied University",
     shortName: "BAU",

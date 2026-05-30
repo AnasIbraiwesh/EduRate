@@ -1,4 +1,6 @@
-const BASE_URL = 'https://edurate-vd6d.onrender.com';
+const BASE_URL = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+  ? 'https://edurate-vd6d.onrender.com'
+  : '';
 
 async function apiFetch(path, options = {}) {
   const token = (typeof AUTH !== 'undefined') ? AUTH.get()?.token : null;
@@ -60,7 +62,7 @@ function normalizeUniversity(u) {
     country: locParts[1] ? locParts[1].trim() : 'Jordan',
     description: u.description,
     website: u.websiteUrl,
-    image: (local && local.image) ? local.image : u.imageUrl,
+    image: u.imageUrl || (local ? local.image : null),
     overallRating: r,
     totalReviews: u.totalReviews || (local ? local.totalReviews : 0),
     ranking: u.ranking || 0,
