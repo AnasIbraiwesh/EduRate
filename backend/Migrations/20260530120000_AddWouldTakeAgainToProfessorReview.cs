@@ -1,21 +1,21 @@
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
+using eduRateSystem.Data;
 
 #nullable disable
 
 namespace eduRateSystem.Migrations
 {
     /// <inheritdoc />
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20260530120000_AddWouldTakeAgainToProfessorReview")]
     public partial class AddWouldTakeAgainToProfessorReview : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
-                name: "WouldTakeAgain",
-                table: "ProfessorReviews",
-                type: "boolean",
-                nullable: true);
+            migrationBuilder.Sql(
+                "ALTER TABLE \"ProfessorReviews\" ADD COLUMN IF NOT EXISTS \"WouldTakeAgain\" boolean;");
         }
 
         /// <inheritdoc />
