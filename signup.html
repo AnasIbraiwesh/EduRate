@@ -286,7 +286,8 @@ document.addEventListener('DOMContentLoaded', () => {
     signupText.removeAttribute('data-i18n');
     signupText.textContent = '…';
 
-    API.register(fullName, email, pw)
+    const uniId = parseInt(document.getElementById('university').value) || null;
+    API.register(fullName, email, pw, uniId)
       .then(user => {
         AUTH.set(user);
         window.location.href = 'index.html';

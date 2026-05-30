@@ -11,9 +11,10 @@ async function apiFetch(path, options = {}) {
 
 const API = {
   login:    (email, password)           => apiFetch('/api/auth/login',    { method: 'POST', body: JSON.stringify({ email, password }) }),
-  register: (fullName, email, password) => apiFetch('/api/auth/register', { method: 'POST', body: JSON.stringify({ fullName, email, password }) }),
+  register: (fullName, email, password, universityId) => apiFetch('/api/auth/register', { method: 'POST', body: JSON.stringify({ fullName, email, password, universityId }) }),
   logout:   ()                          => apiFetch('/api/auth/logout',   { method: 'POST' }),
   me:       ()                          => apiFetch('/api/auth/me'),
+  updateUniversity: (universityId)      => apiFetch('/api/auth/me/university', { method: 'PUT', body: JSON.stringify({ universityId }) }),
 
   getUniversities: ()   => apiFetch('/api/universities'),
   getUniversity:   (id) => apiFetch(`/api/universities/${id}`),

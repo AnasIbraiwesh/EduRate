@@ -37,7 +37,8 @@ function buildNavbar(activePage) {
              ? `<li><a class="dropdown-item" href="admin.html"><i class="bi bi-shield-lock me-2"></i>${tFn('nav.admin_dashboard')}</a></li>`
              : user.role?.toLowerCase() === 'professor'
                ? `<li><a class="dropdown-item" href="dashboard.html"><i class="bi bi-speedometer2 me-2"></i>${tFn('nav.dashboard')}</a></li>`
-               : `<li><a class="dropdown-item" href="recommendations.html"><i class="bi bi-stars me-2"></i>${tFn('nav.my_recs')}</a></li>`}
+               : `<li><a class="dropdown-item" href="recommendations.html"><i class="bi bi-stars me-2"></i>${tFn('nav.my_recs')}</a></li>
+                  <li><a class="dropdown-item" href="settings.html"><i class="bi bi-gear me-2"></i>${tFn('nav.settings')}</a></li>`}
            <li><hr class="dropdown-divider"></li>
            <li><a class="dropdown-item text-danger" href="#" id="logout-btn"><i class="bi bi-box-arrow-right me-2"></i>${tFn('nav.logout')}</a></li>
          </ul>

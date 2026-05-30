@@ -25,6 +25,8 @@ namespace eduRateSystem.Models
 
         public string? CategoriesJson { get; set; }
 
+        public string? Semester { get; set; }
+
         public bool IsDeleted { get; set; } = false;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

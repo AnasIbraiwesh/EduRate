@@ -89,11 +89,11 @@ namespace eduRateSystem.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<UniversityReview>()
-                .HasIndex(ur => new { ur.UserId, ur.UniversityId })
+                .HasIndex(ur => new { ur.UserId, ur.UniversityId, ur.Semester })
                 .IsUnique();
 
             modelBuilder.Entity<ProfessorReview>()
-                .HasIndex(pr => new { pr.UserId, pr.ProfessorId })
+                .HasIndex(pr => new { pr.UserId, pr.ProfessorId, pr.Semester })
                 .IsUnique();
 
         }

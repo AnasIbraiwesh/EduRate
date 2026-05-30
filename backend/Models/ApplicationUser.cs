@@ -14,6 +14,10 @@ namespace eduRateSystem.Models
 
         public bool IsActive { get; set; } = true;
 
+        public int? UniversityId { get; set; }
+
+        public DateTime? UniversityChangedAt { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public ICollection<UniversityReview> UniversityReviews { get; set; } = new List<UniversityReview>();
