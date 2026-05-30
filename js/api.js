@@ -39,8 +39,8 @@ const API = {
       categoriesJson: JSON.stringify(categories),
       comment
     }) }),
-  postProfessorReview: (profId, rating, comment, wouldTakeAgain) =>
-    apiFetch('/api/professorreviews',  { method: 'POST', body: JSON.stringify({ professorId: profId, rating, comment, wouldTakeAgain }) }),
+  postProfessorReview: (profId, difficulty, workload, friendliness, comment, wouldTakeAgain) =>
+    apiFetch('/api/professorreviews',  { method: 'POST', body: JSON.stringify({ professorId: profId, difficulty, workload, friendliness, comment, wouldTakeAgain }) }),
 
   getUniRecommendations: (city, major, level, distanceSensitivity, budgetSensitivity, ranking) =>
     apiFetch(`/api/recommendations/universities?city=${encodeURIComponent(city)}&major=${encodeURIComponent(major)}&level=${encodeURIComponent(level)}&distanceSensitivity=${encodeURIComponent(distanceSensitivity)}&budgetSensitivity=${encodeURIComponent(budgetSensitivity)}&ranking=${ranking}`),
@@ -85,10 +85,10 @@ function normalizeProfessor(p) {
     universityName: p.universityName || '',
     overallRating: p.overallRating || 0,
     totalReviews: p.totalReviews || 0,
-    wouldTakeAgain: 0,
+    wouldTakeAgain: p.wouldTakeAgainPercent ?? 0,
     isVerified: false,
     courses,
-    ratings: { difficulty: p.overallRating || 0, workload: p.overallRating || 0, friendliness: p.overallRating || 0 },
+    ratings: { difficulty: p.avgDifficulty || 0, workload: p.avgWorkload || 0, friendliness: p.avgFriendliness || 0 },
   };
 }
 
@@ -111,7 +111,7 @@ function normalizeProfReview(r) {
     reviewer: 'Verified Student',
     date: r.createdAt,
     comment: r.comment,
-    ratings: { overall: r.rating },
+    ratings: { difficulty: r.difficulty, workload: r.workload, friendliness: r.friendliness },
     sentiment: r.sentiment || null,
     wouldTakeAgain: r.wouldTakeAgain ?? null,
     course: '',

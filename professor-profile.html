@@ -306,6 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ── Rating Metrics ────────────────────────────────────────
     document.getElementById('rating-metrics').innerHTML =
+      ratingBarHTML(t('dash.metric_overall'), prof.overallRating || 0) +
       PROFESSOR_CATEGORIES.map(c => ratingBarHTML(c.label, prof.ratings[c.key] || 0)).join('') +
       `<div class="mt-4 p-3" style="background:#eafaf1;border-radius:var(--radius-md);display:flex;align-items:center;gap:12px">
          <div style="font-size:28px;font-weight:700;color:var(--success)">${prof.wouldTakeAgain}%</div>
@@ -462,8 +463,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('submit-spinner').classList.remove('d-none');
       document.getElementById('submit-text').textContent = '…';
 
-      const avgRating = Math.round(((starValues.friendliness * 2) + (6 - starValues.difficulty) + (6 - starValues.workload)) / 4);
-      API.postProfessorReview(prof.id, avgRating, text, wtaSelected)
+      API.postProfessorReview(prof.id, starValues.difficulty, starValues.workload, starValues.friendliness, text, wtaSelected)
         .then(() => {
           bootstrap.Modal.getInstance(reviewModal).hide();
           showToast(t('review.success_prof'), 'success');

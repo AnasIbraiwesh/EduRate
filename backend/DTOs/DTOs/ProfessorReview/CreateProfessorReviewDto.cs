@@ -8,8 +8,16 @@ namespace eduRateSystem.DTOs.ProfessorReview
         public int ProfessorId { get; set; }
 
         [Required]
-        [Range(1, 5, ErrorMessage = "Rating must be between 1 and 5.")]
-        public int Rating { get; set; }
+        [Range(1, 5, ErrorMessage = "Difficulty must be between 1 and 5.")]
+        public int Difficulty { get; set; }
+
+        [Required]
+        [Range(1, 5, ErrorMessage = "Workload must be between 1 and 5.")]
+        public int Workload { get; set; }
+
+        [Required]
+        [Range(1, 5, ErrorMessage = "Friendliness must be between 1 and 5.")]
+        public int Friendliness { get; set; }
 
         [Required]
         public string Comment { get; set; } = string.Empty;

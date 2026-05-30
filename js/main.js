@@ -233,7 +233,8 @@ function renderUniversityReviewCard(review) {
 
 // ── 7. Render Review Card (Professor) ────────────────────────
 function renderProfessorReviewCard(review) {
-  const avg = +(Object.values(review.ratings).reduce((a, b) => a + b, 0) / Object.values(review.ratings).length).toFixed(1);
+  const r = review.ratings;
+  const avg = +(((2 * r.friendliness) + (6 - r.difficulty) + (6 - r.workload)) / 4).toFixed(1);
   const wta = review.wouldTakeAgain == null ? ''
     : review.wouldTakeAgain
       ? `<span class="chip" style="background:#d5f5e3;color:#1e8449"><i class="bi bi-check-circle-fill me-1"></i>${t('common.would_take')}</span>`
@@ -550,6 +551,9 @@ function sortReviews(reviews, method) {
 }
 function avgRating(ratings) {
   if (ratings.overall != null) return ratings.overall;
+  // Professor reviews: same inverting formula used for the displayed overall.
+  if (ratings.friendliness != null && ratings.difficulty != null && ratings.workload != null)
+    return (2 * ratings.friendliness + (6 - ratings.difficulty) + (6 - ratings.workload)) / 4;
   const vals = Object.values(ratings).filter(v => v != null);
   return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
 }
