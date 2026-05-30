@@ -23,6 +23,8 @@ namespace eduRateSystem.Models
 
         public string? Sentiment { get; set; }
 
+        public bool? WouldTakeAgain { get; set; }
+
         public string? Semester { get; set; }
 
         public bool IsDeleted { get; set; } = false;

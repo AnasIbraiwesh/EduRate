@@ -110,7 +110,7 @@ namespace eduRateSystem.Seed
                     BudgetLevel = 3,
                     Majors      = "Pharmacy, Engineering, Information Technology, Business, Law, Nursing, Art and Design",
                     Levels      = "Bachelor, Master",
-                    ImageUrl    = null,
+                    ImageUrl    = "https://www.unirank.org/i/logos-seals/applied-science-private-university-jo-logo-seal.png",
                     IsDeleted   = false,
                     CreatedAt   = DateTime.UtcNow
                 },

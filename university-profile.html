@@ -396,6 +396,9 @@ document.addEventListener('DOMContentLoaded', () => {
             : err.status === 409 ? t('review.err_already_uni')
             : err.status === 400 ? t('review.err_proof')
             : t('review.err_failed');
+          if ([409, 403, 422].includes(err.status)) {
+            bootstrap.Modal.getInstance(reviewModal)?.hide();
+          }
           showToast(msg, 'error');
         })
         .finally(() => {

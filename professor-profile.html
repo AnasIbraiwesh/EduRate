@@ -255,6 +255,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const prof    = normalizeProfessor(profRaw);
     _profReviews  = reviewsRaw.map(normalizeProfReview);
 
+    // Calculate Would Take Again % from actual review data
+    const wtaPool = _profReviews.filter(r => r.wouldTakeAgain != null);
+    prof.wouldTakeAgain = wtaPool.length
+      ? Math.round(wtaPool.filter(r => r.wouldTakeAgain === true).length / wtaPool.length * 100)
+      : 0;
+
     // ── Header ─────────────────────────────────────────────────
     document.title = `${prof.name} — EduRate`;
     document.getElementById('prof-name').textContent = prof.name;
@@ -445,8 +451,8 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('submit-spinner').classList.remove('d-none');
       document.getElementById('submit-text').textContent = '…';
 
-      const avgRating = Math.round((starValues.difficulty + starValues.workload + starValues.friendliness) / 3);
-      API.postProfessorReview(prof.id, avgRating, text)
+      const avgRating = Math.round(((starValues.friendliness * 2) + (6 - starValues.difficulty) + (6 - starValues.workload)) / 4);
+      API.postProfessorReview(prof.id, avgRating, text, wtaSelected)
         .then(() => {
           bootstrap.Modal.getInstance(reviewModal).hide();
           showToast(t('review.success_prof'), 'success');
@@ -458,6 +464,9 @@ document.addEventListener('DOMContentLoaded', () => {
             : err.status === 409 ? t('review.err_already_prof')
             : err.status === 400 ? t('review.err_proof')
             : t('review.err_failed');
+          if ([409, 403, 422].includes(err.status)) {
+            bootstrap.Modal.getInstance(reviewModal)?.hide();
+          }
           showToast(msg, 'error');
         })
         .finally(() => {
