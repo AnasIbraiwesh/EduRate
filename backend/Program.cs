@@ -81,13 +81,6 @@ builder.Services.Configure<AuthenticationOptions>(options =>
 
 var app = builder.Build();
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseHsts();
-}
-
-app.UseHttpsRedirection();
-
 app.UseRouting();
 
 app.UseCors("FrontendPolicy");

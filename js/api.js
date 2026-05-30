@@ -1,4 +1,6 @@
-const BASE_URL = 'https://edurate-vd6d.onrender.com';
+const BASE_URL = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+  ? 'https://edurate-vd6d.onrender.com'
+  : '';
 
 async function apiFetch(path, options = {}) {
   const token = (typeof AUTH !== 'undefined') ? AUTH.get()?.token : null;
