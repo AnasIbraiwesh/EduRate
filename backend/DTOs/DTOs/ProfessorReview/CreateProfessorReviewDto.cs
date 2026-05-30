@@ -13,5 +13,7 @@ namespace eduRateSystem.DTOs.ProfessorReview
 
         [Required]
         public string Comment { get; set; } = string.Empty;
+
+        public bool? WouldTakeAgain { get; set; }
     }
 }

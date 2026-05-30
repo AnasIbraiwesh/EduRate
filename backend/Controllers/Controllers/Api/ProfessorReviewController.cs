@@ -53,6 +53,7 @@ namespace eduRateSystem.Controllers.Api
                     Rating = r.Rating,
                     Comment = r.Comment,
                     Sentiment = r.Sentiment,
+                    WouldTakeAgain = r.WouldTakeAgain,
                     CreatedAt = r.CreatedAt
                 })
                 .ToListAsync();
@@ -73,6 +74,7 @@ namespace eduRateSystem.Controllers.Api
                     Rating = r.Rating,
                     Comment = r.Comment,
                     Sentiment = r.Sentiment,
+                    WouldTakeAgain = r.WouldTakeAgain,
                     CreatedAt = r.CreatedAt
                 })
                 .FirstOrDefaultAsync();
@@ -106,6 +108,7 @@ namespace eduRateSystem.Controllers.Api
                     Rating = r.Rating,
                     Comment = r.Comment,
                     Sentiment = r.Sentiment,
+                    WouldTakeAgain = r.WouldTakeAgain,
                     CreatedAt = r.CreatedAt
                 })
                 .ToListAsync();
@@ -166,6 +169,7 @@ namespace eduRateSystem.Controllers.Api
                 ProfessorId = dto.ProfessorId,
                 Rating = dto.Rating,
                 Comment = dto.Comment,
+                WouldTakeAgain = dto.WouldTakeAgain,
                 Semester = currentSemester,
                 IsDeleted = false,
                 CreatedAt = DateTime.UtcNow
@@ -179,24 +183,26 @@ namespace eduRateSystem.Controllers.Api
                     var client = _httpClientFactory.CreateClient();
                     var payload = JsonSerializer.Serialize(new { text = dto.Comment });
 
-                    var filterContent = new StringContent(payload, Encoding.UTF8, "application/json");
-                    var filterRes = await client.PostAsync($"{aiUrl}/filter", filterContent);
-                    if (filterRes.IsSuccessStatusCode)
-                    {
-                        var filterData = JsonSerializer.Deserialize<JsonElement>(await filterRes.Content.ReadAsStringAsync());
-                        if (!filterData.GetProperty("approved").GetBoolean())
-                            return StatusCode(422, new { message = "Your review was flagged as inappropriate and could not be submitted." });
-                    }
-
+                    var filterContent    = new StringContent(payload, Encoding.UTF8, "application/json");
                     var sentimentContent = new StringContent(payload, Encoding.UTF8, "application/json");
-                    var sentimentRes = await client.PostAsync($"{aiUrl}/sentiment", sentimentContent);
-                    if (sentimentRes.IsSuccessStatusCode)
+                    var filterTask    = client.PostAsync($"{aiUrl}/filter",    filterContent);
+                    var sentimentTask = client.PostAsync($"{aiUrl}/sentiment", sentimentContent);
+                    await Task.WhenAll(filterTask, sentimentTask);
+
+                    if (!filterTask.Result.IsSuccessStatusCode)
+                        return StatusCode(503, new { message = "The AI moderation service is currently unavailable. Please try again later." });
+
+                    var filterData = JsonSerializer.Deserialize<JsonElement>(await filterTask.Result.Content.ReadAsStringAsync());
+                    if (!filterData.GetProperty("approved").GetBoolean())
+                        return StatusCode(422, new { message = "Your review was flagged as inappropriate and could not be submitted." });
+
+                    if (sentimentTask.Result.IsSuccessStatusCode)
                     {
-                        var sentimentData = JsonSerializer.Deserialize<JsonElement>(await sentimentRes.Content.ReadAsStringAsync());
+                        var sentimentData = JsonSerializer.Deserialize<JsonElement>(await sentimentTask.Result.Content.ReadAsStringAsync());
                         review.Sentiment = sentimentData.GetProperty("label").GetString();
                     }
                 }
-                catch { /* AI service unavailable — skip silently */ }
+                catch { return StatusCode(503, new { message = "The AI moderation service is currently unavailable. Please try again later." }); }
             }
 
             _context.ProfessorReviews.Add(review);
@@ -214,6 +220,7 @@ namespace eduRateSystem.Controllers.Api
                 Rating = review.Rating,
                 Comment = review.Comment,
                 Sentiment = review.Sentiment,
+                WouldTakeAgain = review.WouldTakeAgain,
                 CreatedAt = review.CreatedAt
             };
 
@@ -270,6 +277,7 @@ namespace eduRateSystem.Controllers.Api
                 Rating = review.Rating,
                 Comment = review.Comment,
                 Sentiment = review.Sentiment,
+                WouldTakeAgain = review.WouldTakeAgain,
                 CreatedAt = review.CreatedAt
             };
 

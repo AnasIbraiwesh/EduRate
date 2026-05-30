@@ -354,6 +354,9 @@ namespace eduRateSystem.Migrations
                     b.Property<string>("Sentiment")
                         .HasColumnType("text");
 
+                    b.Property<bool?>("WouldTakeAgain")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("text");

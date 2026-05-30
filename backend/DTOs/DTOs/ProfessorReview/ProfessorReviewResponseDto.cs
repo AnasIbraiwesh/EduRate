@@ -9,6 +9,7 @@ namespace eduRateSystem.DTOs.ProfessorReview
         public int Rating { get; set; }
         public string Comment { get; set; } = string.Empty;
         public string? Sentiment { get; set; }
+        public bool? WouldTakeAgain { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }
