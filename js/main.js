@@ -321,6 +321,9 @@ function showToast(message, type = 'info', duration = 4000) {
     <button class="toast-close" aria-label="Close notification">
       <i class="bi bi-x-lg" aria-hidden="true"></i>
     </button>`;
+  container.querySelectorAll('.toast-item').forEach(existing => {
+    if (existing.querySelector('.toast-text')?.textContent === message) existing.remove();
+  });
   container.appendChild(el);
   el.querySelector('.toast-close').addEventListener('click', () => el.remove());
   if (type !== 'error' && duration > 0) {
