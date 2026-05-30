@@ -44,7 +44,23 @@ namespace eduRateSystem.Controllers.Api
                     Specialization = p.Specialization,
                     CreatedAt = p.CreatedAt,
                     OverallRating = p.ProfessorReviews.Any(r => !r.IsDeleted)
-                        ? p.ProfessorReviews.Where(r => !r.IsDeleted).Average(r => (double)r.Rating)
+                        ? (2 * p.ProfessorReviews.Where(r => !r.IsDeleted).Average(r => (double)r.Friendliness)
+                           + (6 - p.ProfessorReviews.Where(r => !r.IsDeleted).Average(r => (double)r.Difficulty))
+                           + (6 - p.ProfessorReviews.Where(r => !r.IsDeleted).Average(r => (double)r.Workload))) / 4.0
+                        : 0,
+                    AvgDifficulty = p.ProfessorReviews.Any(r => !r.IsDeleted)
+                        ? p.ProfessorReviews.Where(r => !r.IsDeleted).Average(r => (double)r.Difficulty)
+                        : 0,
+                    AvgWorkload = p.ProfessorReviews.Any(r => !r.IsDeleted)
+                        ? p.ProfessorReviews.Where(r => !r.IsDeleted).Average(r => (double)r.Workload)
+                        : 0,
+                    AvgFriendliness = p.ProfessorReviews.Any(r => !r.IsDeleted)
+                        ? p.ProfessorReviews.Where(r => !r.IsDeleted).Average(r => (double)r.Friendliness)
+                        : 0,
+                    WouldTakeAgainPercent = p.ProfessorReviews.Any(r => !r.IsDeleted && r.WouldTakeAgain != null)
+                        ? (p.ProfessorReviews.Count(r => !r.IsDeleted && r.WouldTakeAgain == true) * 100
+                           + p.ProfessorReviews.Count(r => !r.IsDeleted && r.WouldTakeAgain != null) / 2)
+                          / p.ProfessorReviews.Count(r => !r.IsDeleted && r.WouldTakeAgain != null)
                         : 0,
                     TotalReviews = p.ProfessorReviews.Count(r => !r.IsDeleted),
                     CoursesJson = p.CoursesJson
@@ -72,7 +88,23 @@ namespace eduRateSystem.Controllers.Api
                     Specialization = p.Specialization,
                     CreatedAt = p.CreatedAt,
                     OverallRating = p.ProfessorReviews.Any(r => !r.IsDeleted)
-                        ? p.ProfessorReviews.Where(r => !r.IsDeleted).Average(r => (double)r.Rating)
+                        ? (2 * p.ProfessorReviews.Where(r => !r.IsDeleted).Average(r => (double)r.Friendliness)
+                           + (6 - p.ProfessorReviews.Where(r => !r.IsDeleted).Average(r => (double)r.Difficulty))
+                           + (6 - p.ProfessorReviews.Where(r => !r.IsDeleted).Average(r => (double)r.Workload))) / 4.0
+                        : 0,
+                    AvgDifficulty = p.ProfessorReviews.Any(r => !r.IsDeleted)
+                        ? p.ProfessorReviews.Where(r => !r.IsDeleted).Average(r => (double)r.Difficulty)
+                        : 0,
+                    AvgWorkload = p.ProfessorReviews.Any(r => !r.IsDeleted)
+                        ? p.ProfessorReviews.Where(r => !r.IsDeleted).Average(r => (double)r.Workload)
+                        : 0,
+                    AvgFriendliness = p.ProfessorReviews.Any(r => !r.IsDeleted)
+                        ? p.ProfessorReviews.Where(r => !r.IsDeleted).Average(r => (double)r.Friendliness)
+                        : 0,
+                    WouldTakeAgainPercent = p.ProfessorReviews.Any(r => !r.IsDeleted && r.WouldTakeAgain != null)
+                        ? (p.ProfessorReviews.Count(r => !r.IsDeleted && r.WouldTakeAgain == true) * 100
+                           + p.ProfessorReviews.Count(r => !r.IsDeleted && r.WouldTakeAgain != null) / 2)
+                          / p.ProfessorReviews.Count(r => !r.IsDeleted && r.WouldTakeAgain != null)
                         : 0,
                     TotalReviews = p.ProfessorReviews.Count(r => !r.IsDeleted),
                     CoursesJson = p.CoursesJson

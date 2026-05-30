@@ -19,6 +19,15 @@ namespace eduRateSystem.Models
         public int Rating { get; set; }
 
         [Required]
+        public int Difficulty { get; set; }
+
+        [Required]
+        public int Workload { get; set; }
+
+        [Required]
+        public int Friendliness { get; set; }
+
+        [Required]
         public string Comment { get; set; } = string.Empty;
 
         public string? Sentiment { get; set; }

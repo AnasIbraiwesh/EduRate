@@ -51,6 +51,9 @@ namespace eduRateSystem.Controllers.Api
                     ProfessorReviewId = r.ProfessorReviewId,
                     ProfessorId = r.ProfessorId,
                     Rating = r.Rating,
+                    Difficulty = r.Difficulty,
+                    Workload = r.Workload,
+                    Friendliness = r.Friendliness,
                     Comment = r.Comment,
                     Sentiment = r.Sentiment,
                     WouldTakeAgain = r.WouldTakeAgain,
@@ -72,6 +75,9 @@ namespace eduRateSystem.Controllers.Api
                     ProfessorReviewId = r.ProfessorReviewId,
                     ProfessorId = r.ProfessorId,
                     Rating = r.Rating,
+                    Difficulty = r.Difficulty,
+                    Workload = r.Workload,
+                    Friendliness = r.Friendliness,
                     Comment = r.Comment,
                     Sentiment = r.Sentiment,
                     WouldTakeAgain = r.WouldTakeAgain,
@@ -106,6 +112,9 @@ namespace eduRateSystem.Controllers.Api
                     ProfessorReviewId = r.ProfessorReviewId,
                     ProfessorId = r.ProfessorId,
                     Rating = r.Rating,
+                    Difficulty = r.Difficulty,
+                    Workload = r.Workload,
+                    Friendliness = r.Friendliness,
                     Comment = r.Comment,
                     Sentiment = r.Sentiment,
                     WouldTakeAgain = r.WouldTakeAgain,
@@ -167,7 +176,10 @@ namespace eduRateSystem.Controllers.Api
             {
                 UserId = userId,
                 ProfessorId = dto.ProfessorId,
-                Rating = dto.Rating,
+                Difficulty = dto.Difficulty,
+                Workload = dto.Workload,
+                Friendliness = dto.Friendliness,
+                Rating = (int)Math.Round((2.0 * dto.Friendliness + (6 - dto.Difficulty) + (6 - dto.Workload)) / 4.0),
                 Comment = dto.Comment,
                 WouldTakeAgain = dto.WouldTakeAgain,
                 Semester = currentSemester,
@@ -208,16 +220,16 @@ namespace eduRateSystem.Controllers.Api
             _context.ProfessorReviews.Add(review);
             await _context.SaveChangesAsync();
 
-            professor.Rating = await _context.ProfessorReviews
-                .Where(r => r.ProfessorId == review.ProfessorId && !r.IsDeleted)
-                .AverageAsync(r => (double?)r.Rating) ?? 0;
-            await _context.SaveChangesAsync();
+            await RecomputeProfessorRating(review.ProfessorId);
 
             var response = new ProfessorReviewResponseDto
             {
                 ProfessorReviewId = review.ProfessorReviewId,
                 ProfessorId = review.ProfessorId,
                 Rating = review.Rating,
+                Difficulty = review.Difficulty,
+                Workload = review.Workload,
+                Friendliness = review.Friendliness,
                 Comment = review.Comment,
                 Sentiment = review.Sentiment,
                 WouldTakeAgain = review.WouldTakeAgain,
@@ -256,25 +268,24 @@ namespace eduRateSystem.Controllers.Api
                 return Forbid();
             }
 
-            review.Rating = dto.Rating;
+            review.Difficulty = dto.Difficulty;
+            review.Workload = dto.Workload;
+            review.Friendliness = dto.Friendliness;
+            review.Rating = (int)Math.Round((2.0 * dto.Friendliness + (6 - dto.Difficulty) + (6 - dto.Workload)) / 4.0);
             review.Comment = dto.Comment;
 
             await _context.SaveChangesAsync();
 
-            var professor = await _context.Professors.FindAsync(review.ProfessorId);
-            if (professor != null)
-            {
-                professor.Rating = await _context.ProfessorReviews
-                    .Where(r => r.ProfessorId == review.ProfessorId && !r.IsDeleted)
-                    .AverageAsync(r => (double?)r.Rating) ?? 0;
-                await _context.SaveChangesAsync();
-            }
+            await RecomputeProfessorRating(review.ProfessorId);
 
             var response = new ProfessorReviewResponseDto
             {
                 ProfessorReviewId = review.ProfessorReviewId,
                 ProfessorId = review.ProfessorId,
                 Rating = review.Rating,
+                Difficulty = review.Difficulty,
+                Workload = review.Workload,
+                Friendliness = review.Friendliness,
                 Comment = review.Comment,
                 Sentiment = review.Sentiment,
                 WouldTakeAgain = review.WouldTakeAgain,
@@ -311,14 +322,7 @@ namespace eduRateSystem.Controllers.Api
             review.IsDeleted = true;
             await _context.SaveChangesAsync();
 
-            var professor = await _context.Professors.FindAsync(review.ProfessorId);
-            if (professor != null)
-            {
-                professor.Rating = await _context.ProfessorReviews
-                    .Where(r => r.ProfessorId == review.ProfessorId && !r.IsDeleted)
-                    .AverageAsync(r => (double?)r.Rating) ?? 0;
-                await _context.SaveChangesAsync();
-            }
+            await RecomputeProfessorRating(review.ProfessorId);
 
             return Ok(new { message = "Review deleted successfully." });
         }
@@ -338,16 +342,34 @@ namespace eduRateSystem.Controllers.Api
             review.IsDeleted = true;
             await _context.SaveChangesAsync();
 
-            var professor = await _context.Professors.FindAsync(review.ProfessorId);
-            if (professor != null)
-            {
-                professor.Rating = await _context.ProfessorReviews
-                    .Where(r => r.ProfessorId == review.ProfessorId && !r.IsDeleted)
-                    .AverageAsync(r => (double?)r.Rating) ?? 0;
-                await _context.SaveChangesAsync();
-            }
+            await RecomputeProfessorRating(review.ProfessorId);
 
             return Ok(new { message = "Review removed by admin." });
+        }
+
+        // Overall = (2*Friendliness + (6 - Difficulty) + (6 - Workload)) / 4
+        // Friendliness raises the score; higher Difficulty/Workload lower it. Stays within 1-5.
+        private async Task RecomputeProfessorRating(int professorId)
+        {
+            var professor = await _context.Professors.FindAsync(professorId);
+            if (professor == null) return;
+
+            var reviews = _context.ProfessorReviews
+                .Where(r => r.ProfessorId == professorId && !r.IsDeleted);
+
+            if (await reviews.AnyAsync())
+            {
+                var avgDifficulty   = await reviews.AverageAsync(r => (double)r.Difficulty);
+                var avgWorkload     = await reviews.AverageAsync(r => (double)r.Workload);
+                var avgFriendliness = await reviews.AverageAsync(r => (double)r.Friendliness);
+                professor.Rating = (2 * avgFriendliness + (6 - avgDifficulty) + (6 - avgWorkload)) / 4.0;
+            }
+            else
+            {
+                professor.Rating = 0;
+            }
+
+            await _context.SaveChangesAsync();
         }
 
         private static string GetCurrentSemester(DateTime date)
