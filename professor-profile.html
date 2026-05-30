@@ -170,7 +170,7 @@
                 <i class="bi bi-x-circle me-1" aria-hidden="true"></i><span data-i18n="prof_profile.wta_no">No</span>
               </button>
             </div>
-            <div class="invalid-feedback d-block" id="wta-error" style="display:none!important" role="alert"></div>
+            <div class="invalid-feedback" id="wta-error" role="alert"></div>
           </div>
 
           <!-- Rating categories -->
@@ -414,7 +414,18 @@ document.addEventListener('DOMContentLoaded', () => {
         buildStarInput('star-workload',     'workload',     v => starValues.workload     = v);
         buildStarInput('star-friendliness', 'friendliness', v => starValues.friendliness = v);
 
+        document.getElementById('review-text').value = '';
+        document.getElementById('review-text').classList.remove('is-invalid');
+        document.getElementById('review-text-error').textContent = '';
+        document.getElementById('review-text-error').style.display = '';
+        document.getElementById('char-count').textContent = '0 / 50';
+        document.getElementById('char-count').style.color = 'var(--danger)';
+        document.getElementById('abusive-warning').classList.add('d-none');
+
         wtaSelected = null;
+        const wtaErr = document.getElementById('wta-error');
+        wtaErr.textContent = '';
+        wtaErr.style.display = 'none';
         document.querySelectorAll('.wta-btn').forEach(btn => {
           btn.classList.remove('btn-success','btn-danger');
           btn.classList.add(btn.dataset.val === 'true' ? 'btn-outline-success' : 'btn-outline-danger');
@@ -437,7 +448,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const text = document.getElementById('review-text').value.trim();
       let valid = true;
       document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-      document.querySelectorAll('.invalid-feedback').forEach(el => el.textContent = '');
+      document.querySelectorAll('.invalid-feedback').forEach(el => { el.textContent = ''; el.style.display = ''; });
 
       if (wtaSelected === null) { document.getElementById('wta-error').textContent = t('prof_profile.wta_err'); document.getElementById('wta-error').style.display = 'block'; valid = false; }
       if (!starValues.difficulty || !starValues.workload || !starValues.friendliness) { showToast(t('prof_profile.rating_err_cats'), 'error'); valid = false; }
